@@ -4,4 +4,15 @@
     body {
         @apply font-manrope;
     }
+
+    th {
+        @apply border border-slate-300 p-2;
+    }
+    td {
+        @apply border border-slate-300 p-2;
+    }
+}
+
+.rgba-black-0.2 {
+    background-color: rgba(0, 0, 0, 0.2);
 }
