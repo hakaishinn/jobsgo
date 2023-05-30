@@ -1,14 +1,11 @@
 import ViewDetailCV from '~/components/candidate/cv/viewDetailCV';
-import Footer from '~/components/candidate/footer';
-import Header from '~/components/candidate/header';
+import CandidateLayout from '~/layout/candidateLayout';
 
 function ViewDetailCVPage() {
     return (
-        <>
-            <Header></Header>
+        <CandidateLayout>
             <ViewDetailCV></ViewDetailCV>
-            <Footer></Footer>
-        </>
+        </CandidateLayout>
     );
 }
 

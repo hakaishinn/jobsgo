@@ -1,14 +1,11 @@
 import DetailJob from '~/components/candidate/detailJob';
-import Footer from '~/components/candidate/footer';
-import Header from '~/components/candidate/header';
+import CandidateLayout from '~/layout/candidateLayout';
 
 function DetailJobPage() {
     return (
-        <>
-            <Header></Header>
+        <CandidateLayout>
             <DetailJob></DetailJob>
-            <Footer></Footer>
-        </>
+        </CandidateLayout>
     );
 }
 

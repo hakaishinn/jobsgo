@@ -1,14 +1,11 @@
 import FormCV from '~/components/candidate/cv/formCV';
-import Footer from '~/components/candidate/footer';
-import Header from '~/components/candidate/header';
+import CandidateLayout from '~/layout/candidateLayout';
 
 function CreateCV() {
     return (
-        <>
-            <Header></Header>
+        <CandidateLayout>
             <FormCV tab={'create'}></FormCV>
-            <Footer></Footer>
-        </>
+        </CandidateLayout>
     );
 }
 

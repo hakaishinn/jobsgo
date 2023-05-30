@@ -1,14 +1,12 @@
 import CustomSlider from '~/components/candidate/slider';
-import Footer from '~/components/candidate/footer';
-import Header from '~/components/candidate/header';
 import Search from '~/components/candidate/search';
 import { Button } from '@mui/material';
 import ItemHomeSearch from '~/components/candidate/search/itemHomeSearch';
 import { FileUploadOutlined, Add } from '@mui/icons-material';
+import CandidateLayout from '~/layout/candidateLayout';
 function Home() {
     return (
-        <>
-            <Header></Header>
+        <CandidateLayout>
             <div className="bg-[#f6fafb] h-[210px] relative mb-8">
                 <Search className="absolute bottom-0 left-[50%] translate-x-[-50%] translate-y-[50%] w-[60%]"></Search>
                 <h1 className="font-bold text-4xl text-center block absolute top-[50%] left-[50%] translate-x-[-50%] w-max">
@@ -54,8 +52,7 @@ function Home() {
             <CustomSlider type={'recruiter'} title={'Công ty nổi bật'}></CustomSlider>
             <CustomSlider type={'two-row'} title={'Việc mới nhất'}></CustomSlider>
             <CustomSlider type={'two-row'} title={'Việc dành cho bạn'}></CustomSlider>
-            <Footer></Footer>
-        </>
+        </CandidateLayout>
     );
 }
 

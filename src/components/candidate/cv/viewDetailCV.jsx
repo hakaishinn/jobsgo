@@ -1,5 +1,7 @@
 import { Slider } from '@mui/material';
 import MenuCV from './menuCV';
+import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
+import BackGroundTemplate1 from '~/assets/images/candidate/background-template-1-cv.jpg';
 
 function ViewDetailCV() {
     const value = 70;
@@ -12,12 +14,12 @@ function ViewDetailCV() {
                 <div className="w-[80%] mx-auto shadow-ssm max-w-[1200px] min-w-[900px]">
                     <div
                         className="bg-cover bg-center bg-no-repeat"
-                        style={{ backgroundImage: 'url("https://jobsgo.vn/cv_template/theme_19/images/header.png")' }}
+                        style={{ backgroundImage: `url("${BackGroundTemplate1}")` }}
                     >
                         <div className="flex justify-start items-center">
                             <div className="p-16">
                                 <div className="border-4 border-[#000] overflow-hidden rounded-lg w-[200px] h-[200px]">
-                                    <img src="https://employer.jobsgo.vn/media/img/male.jpg" alt="avatar" />
+                                    <img src={AvatarMale} alt="avatar" />
                                 </div>
                             </div>
                             <div>

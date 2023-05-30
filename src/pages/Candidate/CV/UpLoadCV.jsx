@@ -1,14 +1,11 @@
 import UploadCV from '~/components/candidate/cv/uploadCV';
-import Footer from '~/components/candidate/footer';
-import Header from '~/components/candidate/header';
+import CandidateLayout from '~/layout/candidateLayout';
 
 function UploadCVPage() {
     return (
-        <>
-            <Header></Header>
+        <CandidateLayout>
             <UploadCV></UploadCV>
-            <Footer></Footer>
-        </>
+        </CandidateLayout>
     );
 }
 

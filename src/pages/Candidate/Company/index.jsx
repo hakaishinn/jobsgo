@@ -1,13 +1,10 @@
 import ListCompany from '~/components/candidate/listCompany';
-import Footer from '~/components/candidate/footer';
-import Header from '~/components/candidate/header';
+import CandidateLayout from '~/layout/candidateLayout';
 function Company() {
     return (
-        <>
-            <Header></Header>
+        <CandidateLayout>
             <ListCompany></ListCompany>
-            <Footer></Footer>
-        </>
+        </CandidateLayout>
     );
 }
 

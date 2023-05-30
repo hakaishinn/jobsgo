@@ -1,6 +1,7 @@
 import { DeleteOutline, EditOutlined, FileDownloadOutlined } from '@mui/icons-material';
 import MenuCV from './menuCV';
 import { Link } from 'react-router-dom';
+import Template1CV from '~/assets/images/candidate/template-1-cv.png';
 
 function ListCV() {
     return (
@@ -12,7 +13,7 @@ function ListCV() {
                 <div className="grid grid-cols-2 gap-4">
                     <div className="p-2 border rounded-lg flex justify-start items-center">
                         <Link to={'/cv/view/1'} className="max-w-[100px] mr-4">
-                            <img src="https://jobsgo.vn/cv_template/assets/images/theme/theme_19.png" alt="cv1" />
+                            <img src={Template1CV} alt="cv1" />
                         </Link>
                         <div>
                             <p className="font-bold">CV thứ nhất</p>
@@ -35,7 +36,7 @@ function ListCV() {
                     </div>
                     <div className="p-2 border rounded-lg flex justify-start items-center">
                         <Link to={'/cv/view/1'} className="max-w-[100px] mr-4">
-                            <img src="https://jobsgo.vn/cv_template/assets/images/theme/theme_19.png" alt="cv1" />
+                            <img src={Template1CV} alt="cv1" />
                         </Link>
                         <div>
                             <p className="font-bold">CV thứ nhất</p>
@@ -58,7 +59,7 @@ function ListCV() {
                     </div>
                     <div className="p-2 border rounded-lg flex justify-start items-center">
                         <Link to={'/cv/view/1'} className="max-w-[100px] mr-4">
-                            <img src="https://jobsgo.vn/cv_template/assets/images/theme/theme_19.png" alt="cv1" />
+                            <img src={Template1CV} alt="cv1" />
                         </Link>
                         <div>
                             <p className="font-bold">CV thứ nhất</p>

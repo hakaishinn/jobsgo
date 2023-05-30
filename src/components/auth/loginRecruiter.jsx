@@ -14,6 +14,7 @@ function LoginRecruiter() {
                         Email <span className="text-red-700">*</span>
                     </label>
                     <input
+                        name="email"
                         id="email"
                         type="email"
                         className="w-full border py-1 px-2 outline-none focus:border-sky-500 focus:shadow-ssm shadow-sky-500"
@@ -25,6 +26,7 @@ function LoginRecruiter() {
                         Mật khẩu <span className="text-red-700">*</span>
                     </label>
                     <input
+                        name="password"
                         id="password"
                         type="password"
                         className="w-full border py-1 px-2 outline-none focus:border-sky-500 focus:shadow-ssm shadow-sky-500"

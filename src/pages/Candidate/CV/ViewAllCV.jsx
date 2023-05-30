@@ -1,14 +1,11 @@
 import ListCV from '~/components/candidate/cv/listCV';
-import Footer from '~/components/candidate/footer';
-import Header from '~/components/candidate/header';
+import CandidateLayout from '~/layout/candidateLayout';
 
 function ViewAllCV() {
     return (
-        <>
-            <Header></Header>
+        <CandidateLayout>
             <ListCV></ListCV>
-            <Footer></Footer>
-        </>
+        </CandidateLayout>
     );
 }
 

@@ -7,6 +7,7 @@ import MenuCV from './menuCV';
 import ModalLanguage from '~/components/modal/modalLanguage';
 import ModalSoftSkill from '~/components/modal/modalSoftSkill';
 import ModalHobby from '~/components/modal/modalHobby';
+import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
 
 function FormCV({ tab }) {
     const [showModalProSkill, setShowModalProSkill] = useState(false);
@@ -38,7 +39,7 @@ function FormCV({ tab }) {
                 <div className="col-span-2">
                     <div className="flex justify-start items-center border p-4">
                         <div className="w-[170px] h-[170px]">
-                            <img src="https://employer.jobsgo.vn/media/img/male.jpg?colorgb=1684848082" alt="avatar" />
+                            <img src={AvatarMale} alt="avatar" />
                         </div>
                         <div className="ml-4 text-[#333] flex-1">
                             <div className="flex">
@@ -60,6 +61,10 @@ function FormCV({ tab }) {
                                     <option value={2}>Trưởng nhóm/Trưởng phòng</option>
                                     <option value={3}>Giám đốc và cấp cao hơn</option>
                                 </select>
+                            </div>
+                            <div className="flex">
+                                <strong className="w-max mr-2">Vị trí ứng tuyển: </strong>
+                                <input type="text" placeholder="(Chưa có dữ liệu)" className="outline-none flex-1" />
                             </div>
                         </div>
                     </div>
@@ -118,6 +123,13 @@ function FormCV({ tab }) {
                     </div>
                     <div className="border p-4 text-[#333] mt-4">
                         <h3 className="uppercase text-lg text-sky-600 font-semibold">Giới thiệu bản thân</h3>
+                        <textarea
+                            placeholder="(Chưa có dữ liệu)"
+                            className="w-full outline-none border p-2 mt-4 min-h-[100px]"
+                        ></textarea>
+                    </div>
+                    <div className="border p-4 text-[#333] mt-4">
+                        <h3 className="uppercase text-lg text-sky-600 font-semibold">Mục tiêu nghề nghiệp</h3>
                         <textarea
                             placeholder="(Chưa có dữ liệu)"
                             className="w-full outline-none border p-2 mt-4 min-h-[100px]"

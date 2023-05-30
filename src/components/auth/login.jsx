@@ -1,35 +1,36 @@
-import { auth } from '~/firebase';
-import { signInWithEmailAndPassword } from 'firebase/auth';
-
 import { Link, useNavigate } from 'react-router-dom';
 import FacebookIcon from '@mui/icons-material/Facebook';
 import GoogleIcon from '@mui/icons-material/Google';
 import PhoneIcon from '@mui/icons-material/Phone';
-import { useState } from 'react';
+import { useContext, useState } from 'react';
+import { AppContext } from '~/context/AppProvider';
+import * as authService from '~/service/candidate/authService';
+import Loading from '../loading';
+import BackGroundAuth from '~/assets/images/background-auth.jpg';
 
 function Login() {
+    const { setUser } = useContext(AppContext);
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
 
-    const handleLogin = () => {
-        signInWithEmailAndPassword(auth, email, password)
-            .then((userCredential) => {
-                const user = userCredential.user;
-                console.log(user);
-                navigate('/');
-            })
-            .catch((error) => {
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                console.log(errorCode, errorMessage);
-            });
+    const handleLogin = async () => {
+        setIsLoading(true);
+        const res = await authService.login(email, password);
+        if (res?.success) {
+            localStorage.setItem('user', JSON.stringify(res?.data));
+            setUser(res?.data);
+            navigate('/');
+        }
+        setIsLoading(false);
     };
     return (
         <div
             className="bg-cover bg-center bg-no-repeat bg-fixed min-h-screen flex justify-center items-center"
-            style={{ backgroundImage: 'url("https://jobsgo.vn/bolt/assets/images/backgrounds/bg-9.jpg")' }}
+            style={{ backgroundImage: `url("${BackGroundAuth}")` }}
         >
+            {isLoading && <Loading />}
             <div className="bg-white p-4 w-[30%] min-w-[400px] rounded-lg">
                 <h2 className="text-3xl font-semibold text-center text-gray-700 pb-2 border-b">Đăng nhập</h2>
                 <div className="my-4">
@@ -37,6 +38,7 @@ function Login() {
                         Email <span className="text-red-700">*</span>
                     </label>
                     <input
+                        name="email"
                         id="email"
                         type="email"
                         className="w-full border py-1 px-2 outline-none focus:border-sky-500 focus:shadow-ssm shadow-sky-500"
@@ -50,6 +52,7 @@ function Login() {
                         Mật khẩu <span className="text-red-700">*</span>
                     </label>
                     <input
+                        name="password"
                         id="password"
                         type="password"
                         className="w-full border py-1 px-2 outline-none focus:border-sky-500 focus:shadow-ssm shadow-sky-500"

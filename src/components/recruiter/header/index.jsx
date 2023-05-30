@@ -29,8 +29,8 @@ function Header() {
         <div className="bg-sky-600">
             <div className="container m-auto flex justify-between items-center min-h-[50px] text-white text-sm">
                 <div className="flex items-center">
-                    <Link to={'/recruiter/managerJobs/open'} className="max-w-[120px]">
-                        <img src="https://jobsgo.vn/img/logo-2019.png" alt="logo" />
+                    <Link to={'/recruiter/managerJobs/open'} className="block h-[50px] py-1">
+                        <img src="https://jobsgo.vn/img/logo-2019.png" alt="logo" className="h-full w-auto" />
                     </Link>
 
                     <div className="flex items-center ml-4 text-sm">
