@@ -1,12 +1,12 @@
 import FormCV from '~/components/candidate/cv/formCV';
 import CandidateLayout from '~/layout/candidateLayout';
 
-function CreateCV() {
+function UpdateCV() {
     return (
         <CandidateLayout>
-            <FormCV tab={'create'} type={'create'}></FormCV>
+            <FormCV type={'update'}></FormCV>
         </CandidateLayout>
     );
 }
 
-export default CreateCV;
+export default UpdateCV;

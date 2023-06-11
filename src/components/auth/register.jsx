@@ -3,7 +3,7 @@ import { auth } from '~/firebase';
 
 import { useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
-import * as authService from '~/service/candidate/authService';
+import * as authService from '~/service/auth/authService';
 import Loading from '../loading';
 
 function Register() {

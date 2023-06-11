@@ -11,6 +11,11 @@
     td {
         @apply border border-slate-300 p-2;
     }
+
+    ul,
+    ol {
+        list-style: revert;
+    }
 }
 
 .rgba-black-0.2 {

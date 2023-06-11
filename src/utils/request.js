@@ -12,14 +12,18 @@ const request = axios.create({
     // },
 });
 
-request.interceptors.request.use(async (config) => {
-    const userToken = await localStorage.getItem('user');
-    if (userToken) {
-        const token = JSON.parse(userToken).token;
-        config.headers.Authorization = `Bearer ${token}`;
-    }
-    return config;
-});
+// request.interceptors.request.use(
+//     async (config) => {
+//         const token = JSON.parse(localStorage.getItem('user'));
+//         if (token) {
+//             config.headers.Authorization = `Bearer ${token.accessToken}`;
+//         }
+//         return config;
+//     },
+//     (error) => {
+//         return Promise.reject(error);
+//     },
+// );
 
 // request.interceptors.response.use(
 //     (response) => {

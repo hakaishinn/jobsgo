@@ -4,7 +4,7 @@ import GoogleIcon from '@mui/icons-material/Google';
 import PhoneIcon from '@mui/icons-material/Phone';
 import { useContext, useState } from 'react';
 import { AppContext } from '~/context/AppProvider';
-import * as authService from '~/service/candidate/authService';
+import * as authService from '~/service/auth/authService';
 import Loading from '../loading';
 import BackGroundAuth from '~/assets/images/background-auth.jpg';
 

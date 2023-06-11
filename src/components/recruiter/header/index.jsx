@@ -35,13 +35,13 @@ function Header() {
 
                     <div className="flex items-center ml-4 text-sm">
                         <span>
-                            CSKH: <strong>Ngô Thị Thu Giang</strong>
+                            CSKH: <strong>Dương Đình Thanh</strong>
                         </span>
                         <div className="flex items-center mx-4">
                             <Phone className="mr-1"></Phone> 0387878747
                         </div>
                         <div className="flex items-center">
-                            <MailOutline className="mr-1"></MailOutline> giang@gmail.com
+                            <MailOutline className="mr-1"></MailOutline> thanh@gmail.com
                         </div>
                     </div>
                 </div>
@@ -66,7 +66,7 @@ function Header() {
                                     <KeyOutlined className="mr-2" />
                                     Đổi mật khẩu
                                 </Link>
-                                <Link to={'/recruiter'} className="hover:bg-black/10 flex items-center p-2">
+                                <Link to={'/recruiter/login'} className="hover:bg-black/10 flex items-center p-2">
                                     <LogoutOutlined className="mr-2" />
                                     Đăng xuất
                                 </Link>

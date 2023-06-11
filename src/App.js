@@ -27,6 +27,7 @@ import ViewDetailCVPage from './pages/Candidate/CV/ViewDetailCV';
 import UploadCVPage from './pages/Candidate/CV/UpLoadCV';
 import InfoPage from './pages/Recruiter/Info';
 import ChangePasswordPage from './pages/Recruiter/changePassword';
+import UpdateCV from './pages/Candidate/CV/UpdateCV';
 function App() {
     return (
         <Router>
@@ -43,6 +44,7 @@ function App() {
                     <Route path="/cv/upload" element={<UploadCVPage />}></Route>
                     <Route path="/cv/view" element={<ViewAllCV />}></Route>
                     <Route path="/cv/view/:id" element={<ViewDetailCVPage />}></Route>
+                    <Route path="/cv/update/:id" element={<UpdateCV />}></Route>
 
                     <Route path="/recruiter/login" element={<LoginRecruiter />}></Route>
                     <Route path="/recruiter/register" element={<RegisterRecruiter />}></Route>

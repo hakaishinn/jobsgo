@@ -2,9 +2,41 @@ import { BusinessCenter, EditOutlined, PauseCircleOutlineRounded, PlayCircleOutl
 import { Autocomplete, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
 import BtnCreateJob from '../btnCreateJob';
+import { useEffect, useState } from 'react';
+
+import * as jobService from '~/service/jobService';
 
 const addr = ['Hà Nội', 'Đà Nẵng', 'Quảng Nam'];
 function FormManagerJob({ className, title, tab }) {
+    const [listJob, setListJob] = useState([]);
+
+    useEffect(() => {
+        const getData = async () => {
+            if (tab === 'pending') {
+                const res = await jobService.viewJobPending();
+                if (res?.success && res?.data?.length > 0) {
+                    setListJob(res.data);
+                }
+            } else if (tab === 'open') {
+                const res = await jobService.viewJobOpen();
+                if (res?.success && res?.data?.length > 0) {
+                    setListJob(res.data);
+                }
+            } else if (tab === 'pause') {
+                const res = await jobService.viewJobPause();
+                if (res?.success && res?.data?.length > 0) {
+                    setListJob(res.data);
+                }
+            }
+            if (tab === 'expired') {
+                const res = await jobService.viewJobExpired();
+                if (res?.success && res?.data?.length > 0) {
+                    setListJob(res.data);
+                }
+            }
+        };
+        getData();
+    }, [tab]);
     return (
         <div className={className}>
             <BtnCreateJob />
@@ -46,43 +78,45 @@ function FormManagerJob({ className, title, tab }) {
                             <td className="border border-slate-300"></td>
                         </tr>
 
-                        <tr>
-                            <td>
-                                <Link
-                                    to={'/recruiter/jobs/1'}
-                                    className="text-lime-600 underline font-semibold text-base"
-                                >
-                                    Tuyển Fresher
-                                </Link>
-                                <p>Tạo lúc 22:06 - 24/05/2023</p>
-                                <p>Cập nhật lúc 14:49 - 25/05/2023</p>
-                            </td>
-                            <td>Đà Nẵng</td>
-                            <td>
-                                <div className="flex justify-center items-center">
-                                    <div className="flex justify-center items-center font-semibold text-xl">1</div>
-                                </div>
-                            </td>
-                            <td className="border border-slate-300 p-2 ">
-                                <div className="flex flex-col items-stretch justify-center">
-                                    <button className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5">
-                                        <EditOutlined fontSize="small" className="mr-1" /> Chỉnh sửa
-                                    </button>
-                                    {tab === 'open' && (
+                        {listJob.map((job) => (
+                            <tr key={job.id}>
+                                <td>
+                                    <Link
+                                        to={`/recruiter/jobs/${job.id}`}
+                                        className="text-lime-600 underline font-semibold text-base"
+                                    >
+                                        {job.title}
+                                    </Link>
+                                    <p>Tạo lúc {job.createAt}</p>
+                                    <p>Cập nhật lúc {job.updateAt ? job.updateAt : 'Chưa cập nhật'}</p>
+                                </td>
+                                <td>{job.city}</td>
+                                <td>
+                                    <div className="flex justify-center items-center">
+                                        <div className="flex justify-center items-center font-semibold text-xl">0</div>
+                                    </div>
+                                </td>
+                                <td className="border border-slate-300 p-2 ">
+                                    <div className="flex flex-col items-stretch justify-center">
                                         <button className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5">
-                                            <PauseCircleOutlineRounded fontSize="small" className="mr-1" />
-                                            Tạm dừng
+                                            <EditOutlined fontSize="small" className="mr-1" /> Chỉnh sửa
                                         </button>
-                                    )}
-                                    {tab === 'pause' && (
-                                        <button className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5">
-                                            <PlayCircleOutline fontSize="small" className="mr-1" />
-                                            Kích hoạt
-                                        </button>
-                                    )}
-                                </div>
-                            </td>
-                        </tr>
+                                        {tab === 'open' && (
+                                            <button className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5">
+                                                <PauseCircleOutlineRounded fontSize="small" className="mr-1" />
+                                                Tạm dừng
+                                            </button>
+                                        )}
+                                        {tab === 'pause' && (
+                                            <button className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5">
+                                                <PlayCircleOutline fontSize="small" className="mr-1" />
+                                                Kích hoạt
+                                            </button>
+                                        )}
+                                    </div>
+                                </td>
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

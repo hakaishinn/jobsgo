@@ -1,9 +1,26 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ListCandidate from '../listCandidate';
 import BtnCreateJob from '../btnCreateJob';
+import { useParams } from 'react-router-dom';
+import * as jobService from '~/service/jobService';
 
 function JobDetail({ className }) {
+    const { id } = useParams();
+    console.log(id);
     const [tab, setTab] = useState(1);
+    const [job, setJob] = useState({});
+    console.log(job);
+    useEffect(() => {
+        const getData = async () => {
+            if (id) {
+                const res = await jobService.getJobById(id);
+                if (res?.success) {
+                    setJob(res.data);
+                }
+            }
+        };
+        getData();
+    }, [id]);
     const classActive = 'border-b border-red-700 text-[#000]';
     return (
         <div className={className}>
@@ -30,58 +47,61 @@ function JobDetail({ className }) {
                         <div className="grid grid-cols-2">
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">Tiêu đề việc làm</h2>
-                                <p>Tuyển fresher</p>
+                                <p>{job.title}</p>
                             </div>
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">Địa điểm việc làm</h2>
-                                <p>250 Nguyễn Sinh Sắc, Phường 2, Sa Đéc, Đồng Tháp - Đồng Tháp</p>
+                                <p>{`${job.specificAddress}, ${job.ward}, ${job.district}, ${job.city}`}</p>
                             </div>
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">Mô tả công việc</h2>
-                                <p>- Làm fulltime từ t2 đến t6</p>
-                                <p>- Làm việc chuyên cần</p>
-                                <p>- Tính cách hòa đồng</p>
+                                <div className="pl-4" dangerouslySetInnerHTML={{ __html: job.description }}></div>
                             </div>
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">
                                     Ngành nghề chuyên môn
                                 </h2>
-                                <p>- HTML</p>
-                                <p>- CSS</p>
-                                <p>- JavaScript</p>
+                                <ul>
+                                    {job.listProSkill?.map((proSkill, index) => (
+                                        <p key={proSkill.id}>{proSkill.name}</p>
+                                    ))}
+                                </ul>
                             </div>
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">Yêu cầu công việc</h2>
-                                <p>- Chủ động trong công việc</p>
-                                <p>- Tích cực, có trách nhiệm</p>
+                                <div className="pl-4" dangerouslySetInnerHTML={{ __html: job.required }}></div>
                             </div>
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">
                                     Yêu cầu bằng cấp(tối thiểu)
                                 </h2>
-                                <p>- Đại học</p>
+                                <p>{job.degree}</p>
                             </div>
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">
                                     Quyền lợi được hưởng
                                 </h2>
-                                <p>- Bảo hiểm xã hội đầy đủ</p>
+                                <div className="pl-4" dangerouslySetInnerHTML={{ __html: job.benefit }}></div>
                             </div>
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">
                                     Tính chất công việc
                                 </h2>
-                                <p>- Full-time</p>
+                                <p>{job.natureOfWork}</p>
                             </div>
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">
                                     Yêu cầu kinh nghiệm
                                 </h2>
-                                <p>- Không yêu cầu</p>
+                                <p>
+                                    - Từ {job.numberYearExperienceStart} năm đến {job.numberYearExperienceEnd} năm
+                                </p>
                             </div>
                             <div>
                                 <h2 className="text-base font-semibold uppercase underline my-2">Lương</h2>
-                                <p>- 6 triệu</p>
+                                <p>
+                                    - Từ {job.salaryFrom} triệu đến {job.salaryTo} triệu
+                                </p>
                             </div>
                         </div>
                     </div>
@@ -89,8 +109,8 @@ function JobDetail({ className }) {
                     <div className="col-span-3">
                         <div className="border p-4 shadow-ssm mb-4">
                             <h2 className="text-base uppercase font-semibold mb-2 rounded-lg">Lịch sử thao tác</h2>
-                            <p className="text-gray-600">Công việc Tuyển Fresher đã được tạo thành công</p>
-                            <p className="text-gray-400">22:06 - 24/05/2023</p>
+                            <p className="text-gray-600">Công việc {job.title} đã được tạo thành công</p>
+                            <p className="text-gray-400">{job.createAt}</p>
                         </div>
                     </div>
                 </div>

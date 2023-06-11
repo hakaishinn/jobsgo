@@ -2,13 +2,29 @@ import { Slider } from '@mui/material';
 import MenuCV from './menuCV';
 import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
 import BackGroundTemplate1 from '~/assets/images/candidate/background-template-1-cv.jpg';
+import { useParams } from 'react-router-dom';
+import { useEffect, useState } from 'react';
+
+import * as resumeService from '~/service/resumeService';
+import * as format from '~/utils/format';
 
 function ViewDetailCV() {
-    const value = 70;
+    const { id } = useParams();
+    const [resume, setResume] = useState();
+
+    useEffect(() => {
+        const getResume = async () => {
+            const res = await resumeService.getResumeById(id);
+            if (res?.success) {
+                setResume(res.data);
+            }
+        };
+        getResume();
+    }, [id]);
     return (
         <div className="mt-[100px]">
             <div className="container mx-auto">
-                <MenuCV tab={'viewDetailCV'} />
+                <MenuCV tab={'viewDetailCV'} id={id} />
             </div>
             <div className="text-lg mt-8">
                 <div className="w-[80%] mx-auto shadow-ssm max-w-[1200px] min-w-[900px]">
@@ -23,8 +39,8 @@ function ViewDetailCV() {
                                 </div>
                             </div>
                             <div>
-                                <h2 className="text-5xl mb-2">Dương Đình Thanh</h2>
-                                <h2 className="text-3xl">Frontend ReactJS</h2>
+                                <h2 className="text-5xl mb-2">{resume?.name}</h2>
+                                <h2 className="text-3xl">{resume?.positionApply}</h2>
                             </div>
                         </div>
                     </div>
@@ -36,87 +52,106 @@ function ViewDetailCV() {
                                     <h2 className="text-3xl uppercase font-bold mb-4">Thông tin liên hệ</h2>
                                     <div className="mb-4">
                                         <p className="font-semibold mb-2 text-xl">Số điện thoại</p>
-                                        <p>0385078386</p>
+                                        <p>{resume?.phone}</p>
                                     </div>
                                     <div className="mb-4">
                                         <p className="font-semibold mb-2 text-xl">Email</p>
-                                        <p>thanh@gmail.com</p>
+                                        <p>{resume?.email}</p>
                                     </div>
                                     <div className="mb-4">
                                         <p className="font-semibold mb-2 text-xl">Ngày sinh</p>
-                                        <p>29/03/2001</p>
+                                        <p>{format.formatDate(resume?.birthday)}</p>
                                     </div>
                                     <div className="mb-4">
                                         <p className="font-semibold mb-2 text-xl">Địa chỉ</p>
-                                        <p>Huế</p>
+                                        <p>{resume?.address}</p>
                                     </div>
                                 </div>
                                 <div className="mb-12">
                                     <h2 className="text-3xl uppercase font-bold mb-2">Kỹ năng</h2>
                                     <ul className="ml-4 mb-4">
-                                        <li className="text-lg font-bold list-disc">Java</li>
-                                        <li className="text-lg font-bold list-disc">ReactJS</li>
+                                        {resume?.listResumeProSkill.map((proSkill) => (
+                                            <li key={proSkill.id} className="text-lg list-disc">
+                                                {proSkill?.proSkillName} ({proSkill?.yearExperience} năm)
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                                 <div className="mb-12">
                                     <h2 className="text-3xl uppercase font-bold mb-4">Sở thích</h2>
                                     <ul className="ml-4 mb-8">
-                                        <li className="text-lg font-bold list-disc">Chơi game</li>
-                                        <li className="text-lg font-bold list-disc">Nghe nhạc</li>
+                                        {resume?.listResumeHobby?.map((hobby) => (
+                                            <li key={hobby.id} className="text-lg list-disc">
+                                                {hobby?.name}
+                                            </li>
+                                        ))}
                                     </ul>
                                 </div>
                                 <div className="mb-12">
                                     <h2 className="text-3xl uppercase font-bold mb-4">Kỹ năng mềm</h2>
-                                    <div>
-                                        <p className="text-lg font-bold">Làm việc nhóm</p>
-                                        <div className="flex justify-center items-center">
-                                            <Slider
-                                                size="medium"
-                                                disabled
-                                                defaultValue={value}
-                                                aria-label="Disabled slider"
-                                            />
-                                            <span className="ml-2">({value}%)</span>
+                                    {resume?.listResumeSoftSkill?.map((softSkill) => (
+                                        <div key={softSkill.id}>
+                                            <p className="text-lg">{softSkill?.softSkillName}</p>
+                                            <div className="flex justify-center items-center">
+                                                <Slider
+                                                    size="medium"
+                                                    disabled
+                                                    value={softSkill?.prowess}
+                                                    aria-label="Disabled slider"
+                                                />
+                                                <span className="ml-2">({softSkill?.prowess}%)</span>
+                                            </div>
                                         </div>
-                                    </div>
+                                    ))}
                                 </div>
                             </div>
                         </div>
 
                         <div className="col-span-6 pr-8">
                             <div className="mb-12">
+                                <h2 className="text-3xl uppercase font-bold mb-4">Giới thiệu bản thân</h2>
+                                <div className="mb-4">
+                                    <p className="text-justify">{resume?.introduce}</p>
+                                </div>
+                            </div>
+                            <div className="mb-12">
                                 <h2 className="text-3xl uppercase font-bold mb-4">Mục tiêu nghề nghiệp</h2>
                                 <div className="mb-4">
-                                    <p className="text-justify">
-                                        Mục tiêu nghề nghiệp IT của tôi là trở thành một chuyên gia công nghệ thông tin
-                                        có sự hiểu biết sâu rộng về các công nghệ mới nhất. Tôi muốn áp dụng kiến thức
-                                        và kỹ năng của mình để thúc đẩy sự phát triển công nghệ và đóng góp vào việc xây
-                                        dựng các giải pháp thông tin sáng tạo và tiên tiến. Tôi mong muốn làm việc trong
-                                        một môi trường động lực và có cơ hội học hỏi liên tục để nâng cao trình độ
-                                        chuyên môn của mình. Qua sự đóng góp của tôi, tôi hy vọng có thể thúc đẩy sự
-                                        phát triển kỹ thuật và tạo ra những giải pháp công nghệ tiên tiến và hiệu quả
-                                        cho doanh nghiệp.
-                                    </p>
+                                    <p className="text-justify">{resume?.careerGoals}</p>
                                 </div>
                             </div>
                             <div className="mb-12">
                                 <h2 className="text-3xl uppercase font-bold mb-4">Học vấn</h2>
-                                <div className="mb-4">
-                                    <p className="font-bold">2019-2023</p>
-                                    <p>Đại học bách khoa Đà Nẵng</p>
-                                    <p>Công nghệ thông tin</p>
-                                    <p>Điểm trung bình: 3.11</p>
-                                </div>
+                                {resume?.listResumeEducation?.map((education) => (
+                                    <div key={education.id} className="mb-4">
+                                        <p className="font-bold">{education?.nameSchool}</p>
+                                        <p>Bằng cấp: {education?.degree}</p>
+                                        <p>Chuyên ngành: {education?.majors}</p>
+                                        <p>
+                                            {education?.statusEducation
+                                                ? `Tốt nghiệp năm ${education?.graduationYear}`
+                                                : 'Đang học tại đây'}
+                                        </p>
+                                        <p>{education?.description}</p>
+                                    </div>
+                                ))}
                             </div>
                             <div className="mb-12">
                                 <h2 className="text-3xl uppercase font-bold mb-4">Kinh nghiệm làm việc</h2>
-                                <div className="mb-4">
-                                    <p className="font-bold">FPT từ 2/2023 đến 4/2023</p>
-                                    <p>Vị trí: Thực tập sinh</p>
-                                    <p>Thực tập sinh tại FPT về Java Web</p>
-                                </div>
+
+                                {resume?.listWorkExperience?.map((workExp) => (
+                                    <div key={workExp.id} className="mb-4">
+                                        <p className="font-bold">{workExp?.nameCompany}</p>
+                                        <p>
+                                            Thời gian: {format.formatDate(workExp?.startDay)} đến{' '}
+                                            {workExp?.statusWork ? 'nay' : format.formatDate(workExp?.endDay)}
+                                        </p>
+                                        <p>Vị trí: {workExp?.position}</p>
+                                        <p>{workExp?.description}</p>
+                                    </div>
+                                ))}
                             </div>
-                            <div className="mb-12">
+                            {/* <div className="mb-12">
                                 <h2 className="text-3xl uppercase font-bold mb-4">Hoạt động</h2>
                                 <div className="mb-4">
                                     <p className="font-bold">Ngày hội tuyển dụng IT (9/4/2023 - 9/4/2023)</p>
@@ -135,7 +170,7 @@ function ViewDetailCV() {
                                 <div className="mb-4">
                                     <p className="font-bold">Chứng chỉ IELTS 7.0 (2023)</p>
                                 </div>
-                            </div>
+                            </div> */}
                         </div>
                     </div>
                 </div>

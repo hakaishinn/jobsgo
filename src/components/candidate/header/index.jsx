@@ -38,7 +38,7 @@ function Header() {
     return (
         <div className="shadow-sm fixed top-0 right-0 left-0 bg-white z-10">
             <nav className="h-20 flex justify-between items-center container m-auto">
-                <div className="flex justify-start items-center">
+                <div className="flex justify-start items-center h-full">
                     <Link to="/" className="block h-20 py-3">
                         <img src={Logo} alt="Logo" className="h-full w-auto"></img>
                     </Link>

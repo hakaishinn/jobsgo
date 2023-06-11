@@ -1,7 +1,7 @@
-import { Create, FileUpload, Visibility } from '@mui/icons-material';
+import { Create, FileUpload, Update, Visibility } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
 
-function MenuCV({ tab }) {
+function MenuCV({ tab, id }) {
     const classActive = 'bg-sky-700 text-white';
     return (
         <div className="flex gap-4">
@@ -32,6 +32,15 @@ function MenuCV({ tab }) {
                 <Visibility className="mr-1" fontSize="small" />
                 Xem CV
             </Link>
+            {tab === 'viewDetailCV' && (
+                <Link
+                    to={`/cv/update/${id}`}
+                    className={`flex items-center px-4 py-1 border border-sky-500 rounded-md uppercase font-semibold hover:bg-sky-700 hover:text-white`}
+                >
+                    <Update className="mr-1" fontSize="small" />
+                    Chỉnh sửa CV
+                </Link>
+            )}
             {/* <Link
                 to={'cv/template'}
                 className={`flex items-center px-4 py-1 border border-sky-500 rounded-md uppercase font-semibold hover:bg-sky-700 hover:text-white ${

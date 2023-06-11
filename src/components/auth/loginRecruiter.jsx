@@ -1,10 +1,32 @@
-import { Link } from 'react-router-dom';
+import { useContext, useState } from 'react';
+import { Link, useNavigate } from 'react-router-dom';
+import { AppContext } from '~/context/AppProvider';
+import * as authService from '~/service/auth/authService';
+import Loading from '../loading';
+
 function LoginRecruiter() {
+    const { setUser } = useContext(AppContext);
+    const navigate = useNavigate();
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    const [isLoading, setIsLoading] = useState(false);
+
+    const handleLogin = async () => {
+        setIsLoading(true);
+        const res = await authService.login(email, password);
+        if (res?.success) {
+            localStorage.setItem('user', JSON.stringify(res?.data));
+            setUser(res?.data);
+            navigate('/');
+        }
+        setIsLoading(false);
+    };
     return (
         <div
             className="bg-cover bg-center bg-no-repeat bg-fixed min-h-screen flex justify-center items-center text-sm"
             style={{ backgroundImage: 'url("https://jobsgo.vn/bolt/assets/images/backgrounds/bg-9.jpg")' }}
         >
+            {isLoading && <Loading />}
             <div className="bg-white p-4 w-[30%] min-w-[400px] rounded-lg">
                 <h2 className="text-3xl font-semibold text-center text-gray-700 pb-2 border-b">
                     Đăng nhập dành cho nhà tuyển dụng
@@ -18,6 +40,8 @@ function LoginRecruiter() {
                         id="email"
                         type="email"
                         className="w-full border py-1 px-2 outline-none focus:border-sky-500 focus:shadow-ssm shadow-sky-500"
+                        value={email}
+                        onChange={(e) => setEmail(e.target.value)}
                     />
                     {/* <span className="text-sm text-red-600">abc</span> */}
                 </div>
@@ -30,6 +54,8 @@ function LoginRecruiter() {
                         id="password"
                         type="password"
                         className="w-full border py-1 px-2 outline-none focus:border-sky-500 focus:shadow-ssm shadow-sky-500"
+                        value={password}
+                        onChange={(e) => setPassword(e.target.value)}
                     />
                     {/* {false && <span className="text-sm text-red-600">abc</span>} */}
                 </div>
@@ -38,7 +64,10 @@ function LoginRecruiter() {
                 </div>
 
                 <div>
-                    <button className="w-full p-2 text-center uppercase bg-sky-800 text-white hover:opacity-90">
+                    <button
+                        className="w-full p-2 text-center uppercase bg-sky-800 text-white hover:opacity-90"
+                        onClick={handleLogin}
+                    >
                         Đăng nhập
                     </button>
                 </div>
