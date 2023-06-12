@@ -10,9 +10,12 @@ import { AppContext } from '~/context/AppProvider';
 import Logo from '~/assets/images/candidate/candidate-logo.png';
 import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
 
+import * as careerService from '~/service/careerService';
+
 function Header() {
     const { user, setUser } = useContext(AppContext);
     const [isLogin, setIsLogin] = useState(false);
+    const [listCareer, setListCareer] = useState([]);
 
     const CustomTooltip = styled(({ className, ...props }) => (
         <Tooltip placement="top-start" {...props} classes={{ popper: className }} />
@@ -35,6 +38,16 @@ function Header() {
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [JSON.stringify(user)]);
 
+    useEffect(() => {
+        const getListCareer = async () => {
+            const res = await careerService.getAllCareer();
+            if (res?.data) {
+                setListCareer(res.data);
+            }
+        };
+        getListCareer();
+    }, []);
+
     return (
         <div className="shadow-sm fixed top-0 right-0 left-0 bg-white z-10">
             <nav className="h-20 flex justify-between items-center container m-auto">
@@ -50,13 +63,9 @@ function Header() {
                                     <div className="flex">
                                         <div className="flex flex-col p-3">
                                             <h2 className="font-semibold pb-2">Việc theo ngành nghề</h2>
-                                            <Link className="hover:text-[#1772bd] p-1">
-                                                Việc làm Công nghệ thông tin
-                                            </Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm Kinh doanh</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm Kế toán</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm Kỹ thuật</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm Marketing</Link>
+                                            {listCareer?.map((career) => (
+                                                <Link className="hover:text-[#1772bd] p-1">Việc làm {career.name}</Link>
+                                            ))}
                                         </div>
                                         <div className="flex flex-col p-3">
                                             <h2 className="font-semibold pb-2">Việc theo địa điểm</h2>
