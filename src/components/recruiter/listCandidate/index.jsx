@@ -1,12 +1,38 @@
 import { HowToRegOutlined, LockPersonOutlined, PersonOffOutlined } from '@mui/icons-material';
 import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ModalCVDetail from '~/components/modal/modalCVDetail';
+import * as handleDate from '~/utils/handleDate';
+import * as applyService from '~/service/applyService';
 
-function ListCandidate({ type, tab }) {
-    const [typeCandidate, setTypeCandidate] = useState(1);
+function ListCandidate({ type, tab, listResume, setListResume }) {
     const classActive = 'bg-lime-600 text-white';
+    const [typeCandidate, setTypeCandidate] = useState(1);
+    const [resumeCurrent, setResumeCurrent] = useState();
+    const [showModalDetailCV, setShowModalDetailCV] = useState(false);
+
+    const handleApprove = async (id) => {
+        const res = await applyService.approve(id);
+        if (res?.success) {
+            setListResume(listResume.filter((resume) => resume.applyId !== id));
+        }
+    };
+    const handleConsider = async (id) => {
+        const res = await applyService.consider(id);
+        if (res?.success) {
+            setListResume(listResume.filter((resume) => resume.applyId !== id));
+        }
+    };
+    const handleDenied = async (id) => {
+        const res = await applyService.denied(id);
+        if (res?.success) {
+            setListResume(listResume.filter((resume) => resume.applyId !== id));
+        }
+    };
+
     return (
         <div>
+            {showModalDetailCV && <ModalCVDetail resume={resumeCurrent} setShowModalDetailCV={setShowModalDetailCV} />}
             {/* button */}
             {type === 'detailJob' && (
                 <div className="flex items-center">
@@ -58,58 +84,86 @@ function ListCandidate({ type, tab }) {
                         </tr>
                     </thead>
                     <tbody>
-                        <tr>
-                            <td>
-                                <Link className="block max-w-[100px]">
-                                    <img
-                                        src="https://employer.jobsgo.vn/media/img/male.jpg?v=1684939280"
-                                        alt="avatar"
-                                    />
-                                </Link>
-                            </td>
-                            <td>
-                                <p>Năm sinh: 29/03/2001</p>
-                                <p>Giới tính: Nam</p>
-                                <p>Chỗ ở: Huế</p>
-                            </td>
-                            <td>
-                                <Link className="text-lime-600 underline font-semibold text-base">Tuyển Fresher</Link>
-                                <p>Ngày ứng tuyển: 25/05/2023</p>
-                            </td>
-                            <td>
-                                <p>Vị trí: Fresher - FPT</p>
-                            </td>
-                            <td>
-                                <p>- 1 năm kinh nghiệm Java</p>
-                                <p>- 1 năm kinh nghiệm ReactJS</p>
-                            </td>
-                            <td>
-                                <p>- Học đại học bách khoa Đà Nẵng</p>
-                                <p>- Chuyên ngành: Công nghệ thông tin</p>
-                            </td>
-                            {tab !== 'search' && (
+                        {listResume?.map((resume) => (
+                            <tr key={resume.resumeId}>
                                 <td>
-                                    {tab !== 'selected' && (
-                                        <button className="p-1 mb-2 w-full flex items-center justify-center border rounded-lg hover:bg-black/5">
-                                            <HowToRegOutlined fontSize="small" className="mr-1" />{' '}
-                                            <span className="w-max">Duyệt</span>
-                                        </button>
-                                    )}
-                                    {tab !== 'consider' && (
-                                        <button className="p-1 mb-2 w-full flex items-center justify-center border rounded-lg hover:bg-black/5">
-                                            <LockPersonOutlined fontSize="small" className="mr-1" />
-                                            <span className="w-max">Xem xét</span>
-                                        </button>
-                                    )}
-                                    {tab !== 'denied' && (
-                                        <button className="p-1 mb-2 w-full flex items-center justify-center border rounded-lg hover:bg-black/5">
-                                            <PersonOffOutlined fontSize="small" className="mr-1" />
-                                            <span className="w-max">Từ chối</span>
-                                        </button>
-                                    )}
+                                    <div
+                                        className="block max-w-[100px] cursor-pointer"
+                                        onClick={() => {
+                                            setResumeCurrent(resume);
+                                            setShowModalDetailCV(true);
+                                        }}
+                                    >
+                                        <img
+                                            src="https://employer.jobsgo.vn/media/img/male.jpg?v=1684939280"
+                                            alt="avatar"
+                                        />
+                                    </div>
                                 </td>
-                            )}
-                        </tr>
+                                <td>
+                                    <p>Năm sinh: {handleDate.formatDate(resume.birthday)}</p>
+                                    <p>Giới tính: Nam</p>
+                                    <p>Chỗ ở: {resume.address}</p>
+                                </td>
+                                <td>
+                                    <Link
+                                        to={`/recruiter/jobs/${resume?.jobId}`}
+                                        className="text-lime-600 underline font-semibold text-base"
+                                    >
+                                        {resume.nameJobApply}
+                                    </Link>
+                                    <p>Ngày ứng tuyển: {handleDate.formatDate(resume.applyAt)}</p>
+                                </td>
+                                <td>
+                                    {resume?.listWorkExperience.map((exp) => (
+                                        <p key={exp.id}>Vị trí: {`${exp.position}-${exp.nameCompany}`}</p>
+                                    ))}
+                                </td>
+                                <td>
+                                    {resume?.listResumeProSkill?.map((proSkill) => (
+                                        <p key={proSkill.id}>
+                                            - {proSkill.yearExperience} năm kinh nghiệm {proSkill.proSkillName}
+                                        </p>
+                                    ))}
+                                </td>
+                                <td>
+                                    {resume?.listResumeEducation?.map((education) => (
+                                        <p key={education.id}>{`${education.nameSchool} - ${education.majors}`}</p>
+                                    ))}
+                                </td>
+                                {tab !== 'search' && (
+                                    <td>
+                                        {tab !== 'selected' && (
+                                            <button
+                                                className="p-1 mb-2 w-full flex items-center justify-center border rounded-lg hover:bg-black/5"
+                                                onClick={() => handleApprove(resume.applyId)}
+                                            >
+                                                <HowToRegOutlined fontSize="small" className="mr-1" />{' '}
+                                                <span className="w-max">Duyệt</span>
+                                            </button>
+                                        )}
+                                        {tab !== 'consider' && (
+                                            <button
+                                                className="p-1 mb-2 w-full flex items-center justify-center border rounded-lg hover:bg-black/5"
+                                                onClick={() => handleConsider(resume.applyId)}
+                                            >
+                                                <LockPersonOutlined fontSize="small" className="mr-1" />
+                                                <span className="w-max">Xem xét</span>
+                                            </button>
+                                        )}
+                                        {tab !== 'denied' && (
+                                            <button
+                                                className="p-1 mb-2 w-full flex items-center justify-center border rounded-lg hover:bg-black/5"
+                                                onClick={() => handleDenied(resume.applyId)}
+                                            >
+                                                <PersonOffOutlined fontSize="small" className="mr-1" />
+                                                <span className="w-max">Từ chối</span>
+                                            </button>
+                                        )}
+                                    </td>
+                                )}
+                            </tr>
+                        ))}
                     </tbody>
                 </table>
             </div>

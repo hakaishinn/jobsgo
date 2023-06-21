@@ -23,7 +23,7 @@ function Footer() {
         getData();
     }, []);
     return (
-        <div className="bg-slate-200 py-8 mt-8">
+        <div className="bg-slate-200 py-8">
             <div className="grid grid-cols-6 gap-2 container m-auto">
                 <div className="flex flex-col justify-start items-start col-span-2">
                     <p className="font-bold mb-3">CÔNG TY CỔ PHẦN JOBSGO</p>
@@ -59,7 +59,9 @@ function Footer() {
                 <div className="flex flex-col">
                     <p className="font-bold mb-3">Việc làm theo ngành nghề</p>
                     {listCareer?.map((career) => (
-                        <Link className="hover:text-[#1772bd] pb-1">{career.name}</Link>
+                        <Link key={career.id} className="hover:text-[#1772bd] pb-1">
+                            {career.name}
+                        </Link>
                     ))}
                 </div>
                 <div className="flex flex-col">

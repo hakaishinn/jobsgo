@@ -1,7 +1,7 @@
 import SaveIcon from '@mui/icons-material/Save';
 import { Switch } from '@mui/material';
 import { useState } from 'react';
-import * as format from '~/utils/format';
+import * as format from '~/utils/handleDate';
 
 function ModalExp({ setShowModalExp, setResume, resume, keyModal }) {
     const [exp, setExp] = useState(() => {

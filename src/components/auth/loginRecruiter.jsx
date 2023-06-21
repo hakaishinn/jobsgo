@@ -14,10 +14,10 @@ function LoginRecruiter() {
     const handleLogin = async () => {
         setIsLoading(true);
         const res = await authService.login(email, password);
-        if (res?.success) {
+        if (res?.success && res?.data?.roles.includes('RECRUITER')) {
             localStorage.setItem('user', JSON.stringify(res?.data));
             setUser(res?.data);
-            navigate('/');
+            navigate('/recruiter/managerJobs/open');
         }
         setIsLoading(false);
     };

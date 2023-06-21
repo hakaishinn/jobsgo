@@ -41,6 +41,7 @@ function MenuCV({ tab, id }) {
                     Chỉnh sửa CV
                 </Link>
             )}
+
             {/* <Link
                 to={'cv/template'}
                 className={`flex items-center px-4 py-1 border border-sky-500 rounded-md uppercase font-semibold hover:bg-sky-700 hover:text-white ${

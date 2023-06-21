@@ -3,12 +3,27 @@ import { Autocomplete, TextField } from '@mui/material';
 import { Link } from 'react-router-dom';
 import BtnCreateJob from '../btnCreateJob';
 import { useEffect, useState } from 'react';
+import * as handelDate from '~/utils/handleDate';
 
 import * as jobService from '~/service/jobService';
 
 const addr = ['Hà Nội', 'Đà Nẵng', 'Quảng Nam'];
 function FormManagerJob({ className, title, tab }) {
     const [listJob, setListJob] = useState([]);
+
+    const handlePause = async (id) => {
+        const res = await jobService.changeStatusPause(id);
+        if (res?.success) {
+            setListJob(listJob.filter((job) => job.id !== id));
+        }
+    };
+
+    const handleStatusApply = async (id) => {
+        const res = await jobService.changeStatusApply(id);
+        if (res?.success) {
+            setListJob(listJob.filter((job) => job.id !== id));
+        }
+    };
 
     useEffect(() => {
         const getData = async () => {
@@ -87,28 +102,44 @@ function FormManagerJob({ className, title, tab }) {
                                     >
                                         {job.title}
                                     </Link>
-                                    <p>Tạo lúc {job.createAt}</p>
-                                    <p>Cập nhật lúc {job.updateAt ? job.updateAt : 'Chưa cập nhật'}</p>
+                                    <p>Tạo lúc: {handelDate.formatDate(job.createAt, 'dd-mm-yyyy hh:MM:ss')}</p>
+                                    <p>
+                                        Cập nhật lúc:{' '}
+                                        {job.updateAt
+                                            ? handelDate.formatDate(job.updateAt, 'dd-mm-yyyy hh:MM:ss')
+                                            : 'Chưa cập nhật'}
+                                    </p>
                                 </td>
                                 <td>{job.city}</td>
                                 <td>
                                     <div className="flex justify-center items-center">
-                                        <div className="flex justify-center items-center font-semibold text-xl">0</div>
+                                        <div className="flex justify-center items-center font-semibold text-xl">
+                                            {job?.listApply?.length}
+                                        </div>
                                     </div>
                                 </td>
                                 <td className="border border-slate-300 p-2 ">
                                     <div className="flex flex-col items-stretch justify-center">
-                                        <button className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5">
+                                        <Link
+                                            to={`/recruiter/jobs/update/${job.id}`}
+                                            className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5"
+                                        >
                                             <EditOutlined fontSize="small" className="mr-1" /> Chỉnh sửa
-                                        </button>
+                                        </Link>
                                         {tab === 'open' && (
-                                            <button className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5">
+                                            <button
+                                                className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5"
+                                                onClick={() => handlePause(job?.id)}
+                                            >
                                                 <PauseCircleOutlineRounded fontSize="small" className="mr-1" />
                                                 Tạm dừng
                                             </button>
                                         )}
                                         {tab === 'pause' && (
-                                            <button className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5">
+                                            <button
+                                                className="px-2 py-1 mb-2 flex items-center justify-center border rounded-lg hover:bg-black/5"
+                                                onClick={() => handleStatusApply(job?.id)}
+                                            >
                                                 <PlayCircleOutline fontSize="small" className="mr-1" />
                                                 Kích hoạt
                                             </button>

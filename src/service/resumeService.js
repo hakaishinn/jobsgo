@@ -1,14 +1,13 @@
 import request from '~/utils/request';
 
-const user = JSON.parse(localStorage.getItem('user'));
-const config = {
-    headers: {
-        Authorization: 'Bearer ' + user.accessToken,
-    },
-};
-
 export const getResumeById = async (id) => {
     try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
         const res = await request.get(`/resumes/${id}`, config);
         return res.data;
     } catch (error) {
@@ -18,6 +17,12 @@ export const getResumeById = async (id) => {
 
 export const getAllByCandidateID = async () => {
     try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
         const res = await request.get(`/resumes/candidate/${user.userId}`, config);
         return res.data;
     } catch (error) {
@@ -27,6 +32,12 @@ export const getAllByCandidateID = async () => {
 
 export const create = async (resume) => {
     try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
         const res = await request.post('/resumes', resume, config);
         return res.data;
     } catch (error) {
@@ -36,6 +47,12 @@ export const create = async (resume) => {
 
 export const update = async (resume, id) => {
     try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
         const res = await request.put(`/resumes/${id}`, resume, config);
         return res.data;
     } catch (error) {
@@ -45,6 +62,12 @@ export const update = async (resume, id) => {
 
 export const deleteById = async (id) => {
     try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
         const res = await request.delete(`/resumes/${id}`, config);
         return res.data;
     } catch (error) {

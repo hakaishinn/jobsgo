@@ -2,9 +2,50 @@ import { People, Search } from '@mui/icons-material';
 import { Autocomplete, TextField } from '@mui/material';
 import ListCandidate from '../listCandidate';
 import BtnCreateJob from '../btnCreateJob';
+import { useEffect, useState } from 'react';
+
+import * as applyService from '~/service/applyService';
 
 function FormManagerCandidate({ className, title, tab }) {
     const jobs = ['Tuyển fresher'];
+    const [listResume, setListResume] = useState([]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            if (user) {
+                switch (tab) {
+                    case 'apply':
+                        const resApply = await applyService.getAllResumeApply(user.userId);
+                        if (resApply?.success) {
+                            setListResume(resApply.data);
+                        }
+                        break;
+                    case 'selected':
+                        const resSelected = await applyService.getAllResumeApprove(user.userId);
+                        if (resSelected?.success) {
+                            setListResume(resSelected.data);
+                        }
+                        break;
+                    case 'consider':
+                        const resConsider = await applyService.getAllResumeConsider(user.userId);
+                        if (resConsider?.success) {
+                            setListResume(resConsider.data);
+                        }
+                        break;
+                    case 'denied':
+                        const resDenied = await applyService.getAllResumeDenied(user.userId);
+                        if (resDenied?.success) {
+                            setListResume(resDenied.data);
+                        }
+                        break;
+                    default:
+                        break;
+                }
+            }
+        };
+        getData();
+    }, [tab]);
     return (
         <div className={className}>
             <BtnCreateJob />
@@ -75,7 +116,7 @@ function FormManagerCandidate({ className, title, tab }) {
                 </div>
 
                 <div>
-                    <ListCandidate tab={tab}></ListCandidate>
+                    <ListCandidate listResume={listResume} setListResume={setListResume} tab={tab}></ListCandidate>
                 </div>
             </div>
         </div>

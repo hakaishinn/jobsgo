@@ -1,158 +1,154 @@
 import request from '~/utils/request';
 
-export const addJob = async (job) => {
+export const apply = async (jobId, resumeId) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        const res = await request.post('/jobs', job, {
+        const config = {
             headers: {
                 Authorization: 'Bearer ' + user.accessToken,
             },
-        });
+        };
+        const res = await request.post(
+            '/apply',
+            {
+                jobId: jobId,
+                resumeId: resumeId,
+            },
+            config,
+        );
         return res.data;
     } catch (error) {
         console.log(error);
     }
 };
 
-export const updateJob = async (job, id) => {
+export const checkApply = async (jobId, candidateId) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        const res = await request.put(`/jobs/${id}`, job, {
+        const config = {
             headers: {
                 Authorization: 'Bearer ' + user.accessToken,
             },
-        });
+        };
+        const res = await request.get(`/apply/check/jobs/${jobId}/${candidateId}`, config);
         return res.data;
     } catch (error) {
         console.log(error);
     }
 };
 
-export const viewJobPending = async () => {
+export const getAllResumeApply = async (recruiterId) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        const res = await request.get('/jobs/pending', {
+        const config = {
             headers: {
                 Authorization: 'Bearer ' + user.accessToken,
             },
-        });
+        };
+        const res = await request.get(`/apply/recruiter/${recruiterId}/resumes/apply`, config);
         return res.data;
     } catch (error) {
         console.log(error);
     }
 };
 
-export const viewJobOpen = async () => {
-    try {
-        const res = await request.get('/public/jobs/open');
-        return res.data;
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-export const viewJobPause = async () => {
+export const getAllResumeConsider = async (recruiterId) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        const res = await request.get('/jobs/pause', {
+        const config = {
             headers: {
                 Authorization: 'Bearer ' + user.accessToken,
             },
-        });
+        };
+        const res = await request.get(`/apply/recruiter/${recruiterId}/resumes/consider`, config);
         return res.data;
     } catch (error) {
         console.log(error);
     }
 };
 
-export const viewJobExpired = async () => {
+export const getAllResumeApprove = async (recruiterId) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        const res = await request.get('/jobs/expired', {
+        const config = {
             headers: {
                 Authorization: 'Bearer ' + user.accessToken,
             },
-        });
+        };
+        const res = await request.get(`/apply/recruiter/${recruiterId}/resumes/approve`, config);
         return res.data;
     } catch (error) {
         console.log(error);
     }
 };
 
-export const getJobById = async (id) => {
-    try {
-        const res = await request.get(`/public/jobs/${id}`);
-        return res.data;
-    } catch (error) {
-        console.log(error);
-    }
-};
-
-export const changeStatusPause = async (id) => {
+export const getAllResumeDenied = async (recruiterId) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        const res = await request.put(`/jobs/changeStatusPause/${id}`, null, {
+        const config = {
             headers: {
                 Authorization: 'Bearer ' + user.accessToken,
             },
-        });
-        return res.data;
-    } catch (error) {
-        console.log(error);
-    }
-};
-export const changeStatusApply = async (id) => {
-    try {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const res = await request.put(`/jobs/changeStatusApply/${id}`, null, {
-            headers: {
-                Authorization: 'Bearer ' + user.accessToken,
-            },
-        });
+        };
+        const res = await request.get(`/apply/recruiter/${recruiterId}/resumes/denied`, config);
         return res.data;
     } catch (error) {
         console.log(error);
     }
 };
 
-export const viewAllJobApplyByCandidateId = async () => {
+export const approve = async (id) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
-        const res = await request.get(`/jobs/apply/candidate/${user.userId}`, {
+        const config = {
             headers: {
                 Authorization: 'Bearer ' + user.accessToken,
             },
-        });
+        };
+        const res = await request.put(`/apply/approve/resume/${id}`, null, config);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const consider = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
+        const res = await request.put(`/apply/consider/resume/${id}`, null, config);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const denied = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
+        const res = await request.put(`/apply/denied/resume/${id}`, null, config);
         return res.data;
     } catch (error) {
         console.log(error);
     }
 };
 
-export const search = async (keyword = null, address = null) => {
+export const deleteById = async (id) => {
     try {
-        const res = await request.get(`/public/jobs/search`, {
-            params: {
-                keyword: keyword,
-                address: address,
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
             },
-        });
-        return res.data;
-    } catch (error) {
-        console.log(error);
-    }
-};
-export const viewJobByCareerId = async (id) => {
-    try {
-        const res = await request.get(`/public/jobs/careers/${id}`);
-        return res.data;
-    } catch (error) {
-        console.log(error);
-    }
-};
-export const viewJobNoExp = async () => {
-    try {
-        const res = await request.get(`/public/jobs/noExp`);
+        };
+        const res = await request.delete(`/apply/${id}`, config);
         return res.data;
     } catch (error) {
         console.log(error);

@@ -6,12 +6,16 @@ import {
     KeyOutlined,
     LogoutOutlined,
 } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Tooltip, tooltipClasses } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useContext } from 'react';
+import { AppContext } from '~/context/AppProvider';
 
 function Header() {
+    const { user, setUser } = useContext(AppContext);
+    const navigate = useNavigate();
     const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
         ({ theme }) => ({
             [`& .${tooltipClasses.tooltip}`]: {
@@ -25,6 +29,13 @@ function Header() {
             },
         }),
     );
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        localStorage.removeItem('user');
+        setUser(undefined);
+        navigate('/recruiter/login');
+    };
     return (
         <div className="bg-sky-600">
             <div className="container m-auto flex justify-between items-center min-h-[50px] text-white text-sm">
@@ -66,7 +77,11 @@ function Header() {
                                     <KeyOutlined className="mr-2" />
                                     Đổi mật khẩu
                                 </Link>
-                                <Link to={'/recruiter/login'} className="hover:bg-black/10 flex items-center p-2">
+                                <Link
+                                    to={'/recruiter/login'}
+                                    className="hover:bg-black/10 flex items-center p-2"
+                                    onClick={handleLogout}
+                                >
                                     <LogoutOutlined className="mr-2" />
                                     Đăng xuất
                                 </Link>
@@ -77,7 +92,7 @@ function Header() {
                             <div className="w-[35px] h-[35px] mr-2 rounded-full border-2 border-white overflow-hidden">
                                 <img src="https://employer.jobsgo.vn/bolt/assets/images/image.png" alt="avatar" />
                             </div>
-                            <p>thanh@gmail.com</p>
+                            <p>{user?.email}</p>
                         </div>
                     </CustomTooltip>
                 </div>

@@ -3,13 +3,12 @@ import ListCandidate from '../listCandidate';
 import BtnCreateJob from '../btnCreateJob';
 import { useParams } from 'react-router-dom';
 import * as jobService from '~/service/jobService';
+import * as handleDate from '~/utils/handleDate';
 
 function JobDetail({ className }) {
     const { id } = useParams();
-    console.log(id);
     const [tab, setTab] = useState(1);
     const [job, setJob] = useState({});
-    console.log(job);
     useEffect(() => {
         const getData = async () => {
             if (id) {
@@ -43,74 +42,85 @@ function JobDetail({ className }) {
 
             {tab === 1 ? (
                 <div className="grid grid-cols-11 gap-8 p-4">
-                    <div className="col-span-8">
-                        <div className="grid grid-cols-2">
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">Tiêu đề việc làm</h2>
-                                <p>{job.title}</p>
-                            </div>
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">Địa điểm việc làm</h2>
-                                <p>{`${job.specificAddress}, ${job.ward}, ${job.district}, ${job.city}`}</p>
-                            </div>
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">Mô tả công việc</h2>
-                                <div className="pl-4" dangerouslySetInnerHTML={{ __html: job.description }}></div>
-                            </div>
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">
-                                    Ngành nghề chuyên môn
-                                </h2>
-                                <ul>
-                                    {job.listProSkill?.map((proSkill, index) => (
-                                        <p key={proSkill.id}>{proSkill.name}</p>
-                                    ))}
-                                </ul>
-                            </div>
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">Yêu cầu công việc</h2>
-                                <div className="pl-4" dangerouslySetInnerHTML={{ __html: job.required }}></div>
-                            </div>
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">
-                                    Yêu cầu bằng cấp(tối thiểu)
-                                </h2>
-                                <p>{job.degree}</p>
-                            </div>
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">
-                                    Quyền lợi được hưởng
-                                </h2>
-                                <div className="pl-4" dangerouslySetInnerHTML={{ __html: job.benefit }}></div>
-                            </div>
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">
-                                    Tính chất công việc
-                                </h2>
-                                <p>{job.natureOfWork}</p>
-                            </div>
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">
-                                    Yêu cầu kinh nghiệm
-                                </h2>
+                    <div className="col-span-4">
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">Tiêu đề việc làm</h2>
+                            <p>{job?.title}</p>
+                        </div>
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">Mô tả công việc</h2>
+                            <div className="pl-4" dangerouslySetInnerHTML={{ __html: job?.description }}></div>
+                        </div>
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">Yêu cầu công việc</h2>
+                            <div className="pl-4" dangerouslySetInnerHTML={{ __html: job?.required }}></div>
+                        </div>
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">Quyền lợi được hưởng</h2>
+                            <div className="pl-4" dangerouslySetInnerHTML={{ __html: job?.benefit }}></div>
+                        </div>
+                    </div>
+
+                    <div className="col-span-4">
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">Địa điểm việc làm</h2>
+                            <p>{`${job?.specificAddress}, ${job?.ward}, ${job?.district}, ${job?.city}`}</p>
+                        </div>
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">Ngành nghề chuyên môn</h2>
+                            <ul>
+                                {job?.listProSkill?.map((proSkill) => (
+                                    <li key={proSkill.id} className="ml-4">
+                                        {proSkill.name}
+                                    </li>
+                                ))}
+                            </ul>
+                        </div>
+
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">
+                                Yêu cầu bằng cấp(tối thiểu)
+                            </h2>
+                            <p>{job?.degree}</p>
+                        </div>
+
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">Tính chất công việc</h2>
+                            <p>{job?.natureOfWork}</p>
+                        </div>
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">Yêu cầu kinh nghiệm</h2>
+                            {job.statusExp ? (
+                                <p>Không yêu cầu kinh nghiệm</p>
+                            ) : (
                                 <p>
-                                    - Từ {job.numberYearExperienceStart} năm đến {job.numberYearExperienceEnd} năm
+                                    - Từ {job?.numberYearExperienceStart} năm đến {job?.numberYearExperienceEnd} năm
                                 </p>
-                            </div>
-                            <div>
-                                <h2 className="text-base font-semibold uppercase underline my-2">Lương</h2>
+                            )}
+                        </div>
+                        <div>
+                            <h2 className="text-base font-semibold uppercase underline my-2">Lương</h2>
+                            {job.statusSalary ? (
+                                <p>Thỏa thuận </p>
+                            ) : (
                                 <p>
-                                    - Từ {job.salaryFrom} triệu đến {job.salaryTo} triệu
+                                    - Từ {job?.salaryFrom} triệu đến {job?.salaryTo} triệu
                                 </p>
-                            </div>
+                            )}
                         </div>
                     </div>
 
                     <div className="col-span-3">
                         <div className="border p-4 shadow-ssm mb-4">
                             <h2 className="text-base uppercase font-semibold mb-2 rounded-lg">Lịch sử thao tác</h2>
-                            <p className="text-gray-600">Công việc {job.title} đã được tạo thành công</p>
-                            <p className="text-gray-400">{job.createAt}</p>
+                            <p className="text-gray-600">Công việc {job?.title} đã được tạo thành công</p>
+                            <p className="text-gray-400">
+                                {handleDate.formatDate(job?.createAt, 'dd-mm-yyyy hh:MM:ss')}
+                            </p>
+                            <p className="text-gray-600">Công việc {job?.title} đã được cập nhật</p>
+                            <p className="text-gray-400">
+                                {handleDate.formatDate(job?.updateAt, 'dd-mm-yyyy hh:MM:ss')}
+                            </p>
                         </div>
                     </div>
                 </div>

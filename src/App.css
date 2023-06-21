@@ -18,6 +18,7 @@
     }
 }
 
-.rgba-black-0.2 {
-    background-color: rgba(0, 0, 0, 0.2);
+.slick-track {
+    margin-left: 0 !important;
+    margin-right: 0 !important;
 }

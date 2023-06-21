@@ -6,6 +6,9 @@ import JobItem from './jobItem';
 import ArrowBackIosNewIcon from '@mui/icons-material/ArrowBackIosNew';
 import ArrowForwardIosIcon from '@mui/icons-material/ArrowForwardIos';
 import CompanyItem from './companyItem';
+import { useEffect, useState } from 'react';
+import * as jobService from '~/service/jobService';
+import * as userService from '~/service/userService';
 
 function SampleNextArrow(props) {
     const { onClick } = props;
@@ -30,19 +33,20 @@ function SamplePrevArrow(props) {
         </div>
     );
 }
-function CustomSlider({ type, title, data }) {
+function CustomSlider({ type, title }) {
+    const [data, setData] = useState([]);
     let settings = {
         dots: true,
-        infinite: true,
+        infinite: false,
         speed: 500,
         slidesToShow: 8,
         slidesToScroll: 3,
         nextArrow: <SampleNextArrow />,
         prevArrow: <SamplePrevArrow />,
     };
-    if (type === 'two-row') {
+    if (type === 'job') {
         settings = {
-            infinite: true,
+            infinite: false,
             centerPadding: '60px',
             slidesToShow: 3,
             speed: 500,
@@ -53,57 +57,43 @@ function CustomSlider({ type, title, data }) {
             prevArrow: <SamplePrevArrow />,
         };
     }
+
+    useEffect(() => {
+        const getData = async () => {
+            if (type === 'job') {
+                const res = await jobService.viewJobOpen();
+                if (res?.success) {
+                    setData(res.data);
+                }
+            } else {
+                const res = await userService.getAllRecruiter();
+                if (res?.success) {
+                    setData(res.data);
+                }
+            }
+        };
+        getData();
+    }, [type]);
     return (
-        <div className={`${type === 'recruiter' ? 'bg-white' : ' bg-slate-100'} mt-16 pb-8`}>
+        <div className={`${type === 'company' ? 'bg-white' : ' bg-slate-100'} mt-16 pb-8`}>
             <div className="container m-auto ">
                 <h2 className="text-xl font-bold py-3">{title}</h2>
                 <div>
-                    {type === 'two-row' ? (
+                    {type === 'job' ? (
                         <Slider {...settings}>
-                            <JobItem></JobItem>
-                            <JobItem></JobItem>
-                            <JobItem></JobItem>
-                            <JobItem></JobItem>
-                            <JobItem></JobItem>
-                            <JobItem></JobItem>
-                            <JobItem></JobItem>
-                            <JobItem></JobItem>
+                            {data?.map((job) => (
+                                <div key={job?.id}>
+                                    <JobItem job={job}></JobItem>
+                                </div>
+                            ))}
                         </Slider>
                     ) : (
                         <Slider {...settings}>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
-                            <div className="hover:border-[#ccc] border border-transparent">
-                                <CompanyItem></CompanyItem>
-                            </div>
+                            {data?.map((company) => (
+                                <div key={company?.id} className="hover:scale-110">
+                                    <CompanyItem company={company}></CompanyItem>
+                                </div>
+                            ))}
                         </Slider>
                     )}
                 </div>

@@ -10,7 +10,7 @@ import ModalHobby from '~/components/modal/modalHobby';
 import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
 import { Autocomplete, Button, Slider, TextField } from '@mui/material';
 import { typePositions } from '~/data/constants';
-import * as format from '~/utils/format';
+import * as format from '~/utils/handleDate';
 
 import * as resumeService from '~/service/resumeService';
 

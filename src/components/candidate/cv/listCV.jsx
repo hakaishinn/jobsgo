@@ -1,4 +1,4 @@
-import { DeleteOutline, EditOutlined, FileDownloadOutlined } from '@mui/icons-material';
+import { DeleteOutline, EditOutlined } from '@mui/icons-material';
 import MenuCV from './menuCV';
 import { Link } from 'react-router-dom';
 import Template1CV from '~/assets/images/candidate/template-1-cv.png';
@@ -44,17 +44,16 @@ function ListCV() {
                             <div>
                                 <p className="font-bold">{resume.positionApply}</p>
                                 <p className="my-2">Mẫu CV 1</p>
-                                <div className="flex items-center">
-                                    <button className="p-1 border rounded-lg flex items-center justify-center">
+                                <div className="flex items-center gap-2">
+                                    <Link
+                                        to={`/cv/update/${resume.resumeId}`}
+                                        className="p-1 border rounded-lg flex items-center justify-center px-2 hover:bg-gray-100"
+                                    >
                                         <EditOutlined fontSize="small" className="mr-1" />
                                         Chỉnh sửa
-                                    </button>
-                                    <button className="p-1 border rounded-lg flex items-center justify-center mx-4">
-                                        <FileDownloadOutlined className="mr-1" />
-                                        Tải xuống
-                                    </button>
+                                    </Link>
                                     <button
-                                        className="p-1 border rounded-lg flex items-center justify-center"
+                                        className="p-1 border rounded-lg flex items-center justify-center px-2 hover:bg-gray-100"
                                         onClick={() => handleDelete(resume?.resumeId)}
                                     >
                                         <DeleteOutline className="mr-1" />

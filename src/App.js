@@ -28,6 +28,11 @@ import UploadCVPage from './pages/Candidate/CV/UpLoadCV';
 import InfoPage from './pages/Recruiter/Info';
 import ChangePasswordPage from './pages/Recruiter/changePassword';
 import UpdateCV from './pages/Candidate/CV/UpdateCV';
+import UpdateJobPage from './pages/Recruiter/Job/UpdateJob';
+import ListApplyPage from './pages/Candidate/listJobApply';
+import JobByCareer from './pages/Candidate/JobByCareer';
+import JobNoExp from './pages/Candidate/JobNoExp';
+
 function App() {
     return (
         <Router>
@@ -39,7 +44,10 @@ function App() {
                     <Route path="/company" element={<Company />}></Route>
                     <Route path="/company/:id" element={<CompanyDetailPage />}></Route>
                     <Route path="/jobs" element={<SearchJob />}></Route>
+                    <Route path="/jobs/noExp" element={<JobNoExp />}></Route>
+                    <Route path="/jobs/careers/:id" element={<JobByCareer />}></Route>
                     <Route path="/jobs/:id" element={<DetailJobPage />}></Route>
+                    <Route path="/jobs/job-applied" element={<ListApplyPage />}></Route>
                     <Route path="/cv/create" element={<CreateCV />}></Route>
                     <Route path="/cv/upload" element={<UploadCVPage />}></Route>
                     <Route path="/cv/view" element={<ViewAllCV />}></Route>
@@ -60,6 +68,7 @@ function App() {
                     <Route path="/recruiter/search" element={<SearchCandidatePage />}></Route>
                     <Route path="/recruiter/fit" element={<CandidateFit />}></Route>
                     <Route path="/recruiter/jobs/create" element={<CreateJobPage />}></Route>
+                    <Route path="/recruiter/jobs/update/:id" element={<UpdateJobPage />}></Route>
                     <Route path="/recruiter/info" element={<InfoPage />}></Route>
                     <Route path="/recruiter/changePassword" element={<ChangePasswordPage />}></Route>
                 </Routes>

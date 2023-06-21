@@ -18,7 +18,7 @@ function Login() {
     const handleLogin = async () => {
         setIsLoading(true);
         const res = await authService.login(email, password);
-        if (res?.success) {
+        if (res?.success && res?.data?.roles.includes('CANDIDATE')) {
             localStorage.setItem('user', JSON.stringify(res?.data));
             setUser(res?.data);
             navigate('/');

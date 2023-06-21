@@ -4,7 +4,9 @@ import { Button } from '@mui/material';
 import ItemHomeSearch from '~/components/candidate/search/itemHomeSearch';
 import { FileUploadOutlined, Add } from '@mui/icons-material';
 import CandidateLayout from '~/layout/candidateLayout';
+import { useNavigate } from 'react-router-dom';
 function Home() {
+    const navigate = useNavigate();
     return (
         <CandidateLayout>
             <div className="bg-[#f6fafb] h-[210px] relative mb-8">
@@ -24,7 +26,13 @@ function Home() {
                             <p className="text-xs text-[#666] py-3">
                                 Bạn đã có sẵn CV chưa, Tải CV lên để ứng tuyển với hàng ngàn công việc hot
                             </p>
-                            <Button variant="contained" startIcon={<FileUploadOutlined />}>
+                            <Button
+                                variant="contained"
+                                startIcon={<FileUploadOutlined />}
+                                onClick={() => {
+                                    navigate('/cv/upload');
+                                }}
+                            >
                                 Tải lên CV
                             </Button>
                         </div>
@@ -38,7 +46,13 @@ function Home() {
                             <p className="text-xs text-[#666] py-3">
                                 Tạo CV xin việc Online chuẩn, đẹp miễn phí với JobsGO
                             </p>
-                            <Button variant="contained" startIcon={<Add />}>
+                            <Button
+                                variant="contained"
+                                startIcon={<Add />}
+                                onClick={() => {
+                                    navigate('/cv/create');
+                                }}
+                            >
                                 Tạo CV ngay
                             </Button>
                         </div>
@@ -48,10 +62,10 @@ function Home() {
                     </div>
                 </div>
             </div>
-            <CustomSlider type={'two-row'} title={'Việc tuyển gấp'}></CustomSlider>
-            <CustomSlider type={'recruiter'} title={'Công ty nổi bật'}></CustomSlider>
-            <CustomSlider type={'two-row'} title={'Việc mới nhất'}></CustomSlider>
-            <CustomSlider type={'two-row'} title={'Việc dành cho bạn'}></CustomSlider>
+            <CustomSlider type={'job'} title={'Việc tuyển gấp'}></CustomSlider>
+            <CustomSlider type={'company'} title={'Công ty nổi bật'}></CustomSlider>
+            <CustomSlider type={'job'} title={'Việc mới nhất'}></CustomSlider>
+            <CustomSlider type={'job'} title={'Việc dành cho bạn'}></CustomSlider>
         </CandidateLayout>
     );
 }

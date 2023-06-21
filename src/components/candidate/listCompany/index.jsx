@@ -1,11 +1,31 @@
 import { Autocomplete, Button, TextField } from '@mui/material';
 import CompanyItem from '../slider/companyItem';
+import { useEffect, useState } from 'react';
 
-const jobs = ['CNTT', 'Bất động sản', 'Kinh doanh', 'Du lịch'];
-const addr = ['Hà Nội', 'Đà Nẵng', 'Quảng Nam'];
+import * as careerService from '~/service/careerService';
+import * as userService from '~/service/userService';
+import addressArray from '~/data/address.json';
+
 function ListCompany() {
+    const [listCareer, setListCareer] = useState([]);
+    const [listCompany, setListCompany] = useState([]);
+    const cityArray = addressArray.map((city) => city.name);
+    useEffect(() => {
+        const getData = async () => {
+            const resCareer = await careerService.getAllCareer();
+            if (resCareer?.success) {
+                setListCareer(resCareer?.data);
+            }
+
+            const resListCompany = await userService.getAllRecruiter();
+            if (resListCompany?.success) {
+                setListCompany(resListCompany?.data);
+            }
+        };
+        getData();
+    }, []);
     return (
-        <div>
+        <div className='mb-8'>
             <div
                 className="mt-[80px]"
                 style={{ backgroundImage: 'url("https://jobsgo.vn/static/assets/img/1600x300-2.jpg")' }}
@@ -19,14 +39,14 @@ function ListCompany() {
                         <Autocomplete
                             className="bg-white rounded-md"
                             disablePortal
-                            options={jobs}
+                            options={listCareer?.map((career) => career.name)}
                             sx={{ width: 300 }}
                             renderInput={(params) => <TextField {...params} placeholder="Ngành nghề" />}
                         />
                         <Autocomplete
                             className="mx-3 bg-white rounded-md"
                             disablePortal
-                            options={addr}
+                            options={cityArray}
                             sx={{ width: 300 }}
                             renderInput={(params) => <TextField {...params} placeholder="Địa điểm" />}
                         />
@@ -40,42 +60,11 @@ function ListCompany() {
 
             <div className="mt-8">
                 <div className="grid grid-cols-5 gap-4 container m-auto">
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
-                    <div className="border hover:shadow-ssm">
-                        <CompanyItem></CompanyItem>
-                    </div>
+                    {listCompany?.map((company) => (
+                        <div className="border hover:shadow-ssm">
+                            <CompanyItem company={company}></CompanyItem>
+                        </div>
+                    ))}
                 </div>
             </div>
         </div>
