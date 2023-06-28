@@ -4,6 +4,9 @@ import { Link } from 'react-router-dom';
 import ModalCVDetail from '~/components/modal/modalCVDetail';
 import * as handleDate from '~/utils/handleDate';
 import * as applyService from '~/service/applyService';
+import * as emailService from '~/service/emailService';
+
+import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
 
 function ListCandidate({ type, tab, listResume, setListResume }) {
     const classActive = 'bg-lime-600 text-white';
@@ -11,22 +14,32 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
     const [resumeCurrent, setResumeCurrent] = useState();
     const [showModalDetailCV, setShowModalDetailCV] = useState(false);
 
-    const handleApprove = async (id) => {
-        const res = await applyService.approve(id);
+    const handleApprove = async (resume) => {
+        const res = await applyService.approve(resume.applyId);
         if (res?.success) {
-            setListResume(listResume.filter((resume) => resume.applyId !== id));
+            emailService.sendEmail(
+                resume?.email,
+                `[JobsGO] Thông báo ứng tuyển`,
+                `CV của bạn đã được nhà tuyển dụng chọn trong công việc ${resume?.nameJobApply}`,
+            );
+            setListResume(listResume.filter((resumeItem) => resumeItem.applyId !== resume.applyId));
         }
     };
-    const handleConsider = async (id) => {
-        const res = await applyService.consider(id);
+    const handleConsider = async (resume) => {
+        const res = await applyService.consider(resume.applyId);
         if (res?.success) {
-            setListResume(listResume.filter((resume) => resume.applyId !== id));
+            setListResume(listResume.filter((resumeItem) => resumeItem.applyId !== resume.applyId));
         }
     };
-    const handleDenied = async (id) => {
-        const res = await applyService.denied(id);
+    const handleDenied = async (resume) => {
+        const res = await applyService.denied(resume.applyId);
         if (res?.success) {
-            setListResume(listResume.filter((resume) => resume.applyId !== id));
+            emailService.sendEmail(
+                resume?.email,
+                `[JobsGO] Thông báo ứng tuyển`,
+                `CV của bạn đã bị nhà tuyển dụng từ chối trong công việc ${resume?.nameJobApply}`,
+            );
+            setListResume(listResume.filter((resumeItem) => resumeItem.applyId !== resume.applyId));
         }
     };
 
@@ -76,7 +89,8 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
                         <tr>
                             <th className="text-sky-600">Ảnh đại diện</th>
                             <th className="text-sky-600">Họ tên</th>
-                            <th className="text-sky-600">Công việc ứng tuyển</th>
+
+                            {type !== 'search' && <th className="text-sky-600">Công việc ứng tuyển</th>}
                             <th className="text-sky-600">Kinh nghiệm làm việc</th>
                             <th className="text-sky-600">Kỹ năng chuyên môn</th>
                             <th className="text-sky-600">Học vấn</th>
@@ -94,10 +108,7 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
                                             setShowModalDetailCV(true);
                                         }}
                                     >
-                                        <img
-                                            src="https://employer.jobsgo.vn/media/img/male.jpg?v=1684939280"
-                                            alt="avatar"
-                                        />
+                                        <img src={resume?.image || AvatarMale} alt="avatar" />
                                     </div>
                                 </td>
                                 <td>
@@ -105,15 +116,17 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
                                     <p>Giới tính: Nam</p>
                                     <p>Chỗ ở: {resume.address}</p>
                                 </td>
-                                <td>
-                                    <Link
-                                        to={`/recruiter/jobs/${resume?.jobId}`}
-                                        className="text-lime-600 underline font-semibold text-base"
-                                    >
-                                        {resume.nameJobApply}
-                                    </Link>
-                                    <p>Ngày ứng tuyển: {handleDate.formatDate(resume.applyAt)}</p>
-                                </td>
+                                {type !== 'search' && (
+                                    <td>
+                                        <Link
+                                            to={`/recruiter/jobs/${resume?.jobId}`}
+                                            className="text-lime-600 underline font-semibold text-base"
+                                        >
+                                            {resume.nameJobApply}
+                                        </Link>
+                                        <p>Ngày ứng tuyển: {handleDate.formatDate(resume.applyAt)}</p>
+                                    </td>
+                                )}
                                 <td>
                                     {resume?.listWorkExperience.map((exp) => (
                                         <p key={exp.id}>Vị trí: {`${exp.position}-${exp.nameCompany}`}</p>
@@ -136,7 +149,7 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
                                         {tab !== 'selected' && (
                                             <button
                                                 className="p-1 mb-2 w-full flex items-center justify-center border rounded-lg hover:bg-black/5"
-                                                onClick={() => handleApprove(resume.applyId)}
+                                                onClick={() => handleApprove(resume)}
                                             >
                                                 <HowToRegOutlined fontSize="small" className="mr-1" />{' '}
                                                 <span className="w-max">Duyệt</span>
@@ -145,7 +158,7 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
                                         {tab !== 'consider' && (
                                             <button
                                                 className="p-1 mb-2 w-full flex items-center justify-center border rounded-lg hover:bg-black/5"
-                                                onClick={() => handleConsider(resume.applyId)}
+                                                onClick={() => handleConsider(resume)}
                                             >
                                                 <LockPersonOutlined fontSize="small" className="mr-1" />
                                                 <span className="w-max">Xem xét</span>
@@ -154,7 +167,7 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
                                         {tab !== 'denied' && (
                                             <button
                                                 className="p-1 mb-2 w-full flex items-center justify-center border rounded-lg hover:bg-black/5"
-                                                onClick={() => handleDenied(resume.applyId)}
+                                                onClick={() => handleDenied(resume)}
                                             >
                                                 <PersonOffOutlined fontSize="small" className="mr-1" />
                                                 <span className="w-max">Từ chối</span>

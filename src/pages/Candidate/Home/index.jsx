@@ -5,8 +5,11 @@ import ItemHomeSearch from '~/components/candidate/search/itemHomeSearch';
 import { FileUploadOutlined, Add } from '@mui/icons-material';
 import CandidateLayout from '~/layout/candidateLayout';
 import { useNavigate } from 'react-router-dom';
+import { AppContext } from '~/context/AppProvider';
+import { useContext } from 'react';
 function Home() {
     const navigate = useNavigate();
+    const { user } = useContext(AppContext);
     return (
         <CandidateLayout>
             <div className="bg-[#f6fafb] h-[210px] relative mb-8">
@@ -62,10 +65,10 @@ function Home() {
                     </div>
                 </div>
             </div>
-            <CustomSlider type={'job'} title={'Việc tuyển gấp'}></CustomSlider>
-            <CustomSlider type={'company'} title={'Công ty nổi bật'}></CustomSlider>
-            <CustomSlider type={'job'} title={'Việc mới nhất'}></CustomSlider>
-            <CustomSlider type={'job'} title={'Việc dành cho bạn'}></CustomSlider>
+            <CustomSlider type={'job-featured'} title={'Việc làm nổi bật'}></CustomSlider>
+            <CustomSlider option={'company'} type={'company-featured'} title={'Công ty nổi bật'}></CustomSlider>
+            {user && <CustomSlider type={'job-for-you'} title={'Việc dành cho bạn'}></CustomSlider>}
+            <CustomSlider type={'job-new'} title={'Việc làm mới nhất'}></CustomSlider>
         </CandidateLayout>
     );
 }

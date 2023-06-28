@@ -1,21 +1,17 @@
-import { useEffect, useState } from 'react';
-import { Link } from 'react-router-dom';
-import * as userService from '~/service/userService';
+import { useContext, useEffect, useState } from 'react';
+import { Link, createSearchParams, useNavigate } from 'react-router-dom';
 import * as careerService from '~/service/careerService';
+import { AppContext } from '~/context/AppProvider';
 import { FacebookOutlined, LinkedIn, PublicOutlined, Twitter } from '@mui/icons-material';
 
 function Footer() {
-    const [admin, setAdmin] = useState();
+    const navigate = useNavigate();
+    const { admin } = useContext(AppContext);
     const [listCareer, setListCareer] = useState([]);
 
     useEffect(() => {
         const getData = async () => {
-            const resAdmin = await userService.getUserById(1);
-            if (resAdmin?.success) {
-                setAdmin(resAdmin.data);
-            }
-
-            const resCareer = await careerService.getAllCareer();
+            const resCareer = await careerService.getAllCareer(7);
             if (resCareer?.success) {
                 setListCareer(resCareer.data);
             }
@@ -26,7 +22,7 @@ function Footer() {
         <div className="bg-slate-200 py-8">
             <div className="grid grid-cols-6 gap-2 container m-auto">
                 <div className="flex flex-col justify-start items-start col-span-2">
-                    <p className="font-bold mb-3">CÔNG TY CỔ PHẦN JOBSGO</p>
+                    <p className="font-bold mb-3 uppercase">{admin?.name}</p>
                     <div>
                         <span>
                             <strong>Địa chỉ: </strong>
@@ -36,13 +32,17 @@ function Footer() {
                     <div>
                         <span>
                             <strong>Email: </strong>
-                            <Link className="text-cyan-600">{admin?.email}</Link>
+                            <Link to={`mailto:${admin?.email}`} className="text-cyan-600">
+                                {admin?.email}
+                            </Link>
                         </span>
                     </div>
                     <div>
                         <span>
                             <strong>Liên hệ: </strong>
-                            <Link className="text-cyan-600">{admin?.phone}</Link>
+                            <Link to={`tel:${admin?.phone}`} className="text-cyan-600">
+                                {admin?.phone}
+                            </Link>
                         </span>
                     </div>
                 </div>
@@ -50,16 +50,86 @@ function Footer() {
                 <div className="flex flex-col">
                     <p className="font-bold mb-3">Việc làm theo địa điểm</p>
 
-                    <Link className="hover:text-[#1772bd] pb-1">Hà Nội</Link>
-                    <Link className="hover:text-[#1772bd] pb-1">Đà Nẵng</Link>
-                    <Link className="hover:text-[#1772bd] pb-1">Hồ Chí Minh</Link>
-                    <Link className="hover:text-[#1772bd] pb-1">Bình Dương</Link>
-                    <Link className="hover:text-[#1772bd] pb-1">Quảng Nam</Link>
+                    <Link
+                        className="hover:text-[#1772bd] pb-1"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate({
+                                pathname: '/jobs',
+                                search: createSearchParams({
+                                    keyword: '',
+                                    address: 'Hà Nội',
+                                }).toString(),
+                            });
+                        }}
+                    >
+                        Hà Nội
+                    </Link>
+                    <Link
+                        className="hover:text-[#1772bd] pb-1"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate({
+                                pathname: '/jobs',
+                                search: createSearchParams({
+                                    keyword: '',
+                                    address: 'Đà Nẵng',
+                                }).toString(),
+                            });
+                        }}
+                    >
+                        Đà Nẵng
+                    </Link>
+                    <Link
+                        className="hover:text-[#1772bd] pb-1"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate({
+                                pathname: '/jobs',
+                                search: createSearchParams({
+                                    keyword: '',
+                                    address: 'Hồ Chí Minh',
+                                }).toString(),
+                            });
+                        }}
+                    >
+                        Hồ Chí Minh
+                    </Link>
+                    <Link
+                        className="hover:text-[#1772bd] pb-1"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate({
+                                pathname: '/jobs',
+                                search: createSearchParams({
+                                    keyword: '',
+                                    address: 'Bình Dương',
+                                }).toString(),
+                            });
+                        }}
+                    >
+                        Bình Dương
+                    </Link>
+                    <Link
+                        className="hover:text-[#1772bd] pb-1"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate({
+                                pathname: '/jobs',
+                                search: createSearchParams({
+                                    keyword: '',
+                                    address: 'Quảng Nam',
+                                }).toString(),
+                            });
+                        }}
+                    >
+                        Quảng Nam
+                    </Link>
                 </div>
                 <div className="flex flex-col">
                     <p className="font-bold mb-3">Việc làm theo ngành nghề</p>
                     {listCareer?.map((career) => (
-                        <Link key={career.id} className="hover:text-[#1772bd] pb-1">
+                        <Link to={`/jobs/careers/${career.id}`} key={career.id} className="hover:text-[#1772bd] pb-1">
                             {career.name}
                         </Link>
                     ))}
@@ -74,16 +144,16 @@ function Footer() {
                     <p className="font-bold mb-3">Mạng xã hội</p>
 
                     <div className="flex justify-between">
-                        <Link>
+                        <Link to={admin?.facebook || '/'}>
                             <FacebookOutlined color="primary" fontSize="large" />
                         </Link>
-                        <Link>
+                        <Link to={admin?.linkedin || '/'}>
                             <LinkedIn color="primary" fontSize="large" />
                         </Link>
-                        <Link>
+                        <Link to={admin?.twitter || '/'}>
                             <Twitter color="primary" fontSize="large" />
                         </Link>
-                        <Link>
+                        <Link to={admin?.website || '/'}>
                             <PublicOutlined color="primary" fontSize="large" />
                         </Link>
                     </div>

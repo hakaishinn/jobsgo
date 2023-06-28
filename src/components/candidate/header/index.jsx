@@ -36,12 +36,11 @@ function Header() {
         } else {
             setIsLogin(false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(user)]);
+    }, [user]);
 
     useEffect(() => {
         const getListCareer = async () => {
-            const res = await careerService.getAllCareer();
+            const res = await careerService.getAllCareer(7);
             if (res?.data) {
                 setListCareer(res.data);
             }
@@ -154,7 +153,7 @@ function Header() {
                                         </div>
                                         <div className="flex flex-col p-3">
                                             <h2 className="font-semibold pb-2">Việc theo nhu cầu</h2>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm tuyển gấp</Link>
+                                            {/* <Link className="hover:text-[#1772bd] p-1">Việc làm tuyển gấp</Link> */}
                                             <Link className="hover:text-[#1772bd] p-1">Việc làm nổi bật</Link>
                                             <Link to={`/jobs/noExp`} className="hover:text-[#1772bd] p-1">
                                                 Việc làm không kinh nghiệm
@@ -231,7 +230,7 @@ function Header() {
                                     <Link to={'/jobs/job-applied'} className="p-1 hover:text-[#1772bd]">
                                         Việc làm đã ứng tuyển
                                     </Link>
-                                    <Link to={'#'} className="p-1 hover:text-[#1772bd]">
+                                    <Link to={'/candidate/changePassword'} className="p-1 hover:text-[#1772bd]">
                                         Đổi mật khẩu
                                     </Link>
                                     <button
@@ -256,7 +255,7 @@ function Header() {
                                 <div className="w-[36px] h-[36px] object-cover">
                                     <img src={AvatarMale} alt="avatar"></img>
                                 </div>
-                                <span className="pl-2 font-semibold">{user?.name || 'Dương Đình Thanh'}</span>
+                                <span className="pl-2 font-semibold">{user?.name || user?.email}</span>
                                 <ArrowDropDownIcon></ArrowDropDownIcon>
                             </div>
                         </CustomTooltip>
@@ -280,10 +279,10 @@ function Header() {
                     <CustomTooltip
                         title={
                             <div className="flex flex-col">
-                                <Link to={'/recruiter/login'} className="p-1 hover:text-[#1772bd]">
+                                <Link to={'/recruiter/jobs/create'} className="p-1 hover:text-[#1772bd]">
                                     Đăng tin Online
                                 </Link>
-                                <Link to={'/recruiter/login'} className="p-1 hover:text-[#1772bd]">
+                                <Link to={'/recruiter/search'} className="p-1 hover:text-[#1772bd]">
                                     Tìm hồ sơ
                                 </Link>
                             </div>

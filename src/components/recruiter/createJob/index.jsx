@@ -9,12 +9,15 @@ import * as careerService from '~/service/careerService';
 import * as softSkillService from '~/service/softSkillService';
 import * as languageService from '~/service/languageService';
 import * as jobService from '~/service/jobService';
+import * as usedPackageService from '~/service/usedPackageService';
 import CustomQuill from '~/components/quill';
 import { degrees, genders, typePositions, natureOfWorks } from '~/data/constants';
 import BtnCreateJob from '../btnCreateJob';
+import { useNavigate } from 'react-router-dom';
 
 function CreateJob({ className }) {
-    const { user } = useContext(AppContext);
+    const { recruiter } = useContext(AppContext);
+    const navigate = useNavigate();
 
     const cityArray = addressArray.map((city) => ({ label: city.name, value: city }));
     const [districtsArray, setDistrictsArray] = useState([]);
@@ -88,22 +91,49 @@ function CreateJob({ className }) {
     };
 
     const handleSubmit = async () => {
-        console.log(job);
-        const res = await jobService.addJob({
-            ...job,
-            recruiterId: user?.userId,
-            ageStart: Number.parseFloat(job.ageStart),
-            ageEnd: Number.parseFloat(job.ageEnd),
-            numberYearExperienceStart: Number.parseFloat(job.numberYearExperienceStart),
-            numberYearExperienceEnd: Number.parseFloat(job.numberYearExperienceEnd),
-            salaryFrom: Number.parseFloat(job.salaryFrom),
-            salaryTo: Number.parseFloat(job.salaryTo),
-        });
-        console.log(res);
-        if (res?.success) {
-            alert('Tạo công việc mới thành công');
-        } else {
-            alert('Tạo công việc mới thất bại');
+        const recruiterLocalStorage = JSON.parse(localStorage.getItem('user'));
+        const resJob = await jobService.viewJobByRecruiterId(recruiterLocalStorage.userId);
+        if (resJob?.success) {
+            if (resJob.data.length >= 3) {
+                const resUsedPackage = await usedPackageService.checkUsedPackage();
+                if (resUsedPackage?.success) {
+                    const res = await jobService.addJob({
+                        ...job,
+                        recruiterId: recruiter?.userId,
+                        ageStart: Number.parseFloat(job.ageStart),
+                        ageEnd: Number.parseFloat(job.ageEnd),
+                        numberYearExperienceStart: Number.parseFloat(job.numberYearExperienceStart),
+                        numberYearExperienceEnd: Number.parseFloat(job.numberYearExperienceEnd),
+                        salaryFrom: Number.parseFloat(job.salaryFrom),
+                        salaryTo: Number.parseFloat(job.salaryTo),
+                    });
+                    if (res?.success) {
+                        alert('Tạo công việc mới thành công');
+                    } else {
+                        alert('Tạo công việc mới thất bại');
+                    }
+                } else {
+                    alert('Bạn cần mua gói để tạo công việc');
+                    navigate('/recruiter/buyPackage');
+                }
+            } else {
+                const res = await jobService.addJob({
+                    ...job,
+                    recruiterId: recruiter?.userId,
+                    ageStart: Number.parseFloat(job.ageStart),
+                    ageEnd: Number.parseFloat(job.ageEnd),
+                    numberYearExperienceStart: Number.parseFloat(job.numberYearExperienceStart),
+                    numberYearExperienceEnd: Number.parseFloat(job.numberYearExperienceEnd),
+                    salaryFrom: Number.parseFloat(job.salaryFrom),
+                    salaryTo: Number.parseFloat(job.salaryTo),
+                });
+                console.log(res);
+                if (res?.success) {
+                    alert('Tạo công việc mới thành công');
+                } else {
+                    alert('Tạo công việc mới thất bại');
+                }
+            }
         }
     };
 

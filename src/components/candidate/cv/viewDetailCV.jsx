@@ -61,7 +61,7 @@ function ViewDetailCV() {
                             <div className="flex justify-start items-center">
                                 <div className="py-16 px-12">
                                     <div className="border-2 border-[#000] overflow-hidden rounded-lg w-[120px] h-[120px]">
-                                        <img src={AvatarMale} alt="avatar" />
+                                        <img src={resume?.image || AvatarMale} alt="avatar" />
                                     </div>
                                 </div>
                                 <div>

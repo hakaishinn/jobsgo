@@ -32,6 +32,12 @@ import UpdateJobPage from './pages/Recruiter/Job/UpdateJob';
 import ListApplyPage from './pages/Candidate/listJobApply';
 import JobByCareer from './pages/Candidate/JobByCareer';
 import JobNoExp from './pages/Candidate/JobNoExp';
+import BuyPackage from './pages/Recruiter/BuyPackage';
+import ChangePasswordCandidate from './pages/Candidate/changePassword';
+import Sidebar from './components/admin/Sidebar';
+import CreatePack from './pages/Admin/package/CreatePack';
+import JobDenied from './pages/Recruiter/Job/JobDenied';
+import LoginAdmin from './components/auth/loginAdmin';
 
 function App() {
     return (
@@ -53,6 +59,7 @@ function App() {
                     <Route path="/cv/view" element={<ViewAllCV />}></Route>
                     <Route path="/cv/view/:id" element={<ViewDetailCVPage />}></Route>
                     <Route path="/cv/update/:id" element={<UpdateCV />}></Route>
+                    <Route path="/candidate/changePassword" element={<ChangePasswordCandidate />}></Route>
 
                     <Route path="/recruiter/login" element={<LoginRecruiter />}></Route>
                     <Route path="/recruiter/register" element={<RegisterRecruiter />}></Route>
@@ -60,6 +67,7 @@ function App() {
                     <Route path="/recruiter/managerJobs/pause" element={<JobPause />}></Route>
                     <Route path="/recruiter/managerJobs/expired" element={<JobExpired />}></Route>
                     <Route path="/recruiter/managerJobs/pending" element={<JobPending />}></Route>
+                    <Route path="/recruiter/managerJobs/denied" element={<JobDenied />}></Route>
                     <Route path="/recruiter/jobs/:id" element={<JobDetailPage />}></Route>
                     <Route path="/recruiter/managerCandidate/apply" element={<CandidateApply />}></Route>
                     <Route path="/recruiter/managerCandidate/selected" element={<CandidateSelected />}></Route>
@@ -71,6 +79,14 @@ function App() {
                     <Route path="/recruiter/jobs/update/:id" element={<UpdateJobPage />}></Route>
                     <Route path="/recruiter/info" element={<InfoPage />}></Route>
                     <Route path="/recruiter/changePassword" element={<ChangePasswordPage />}></Route>
+                    <Route path="/recruiter/buyPackage" element={<BuyPackage />}></Route>
+
+                    <Route path="/admin" element={<Sidebar />}></Route>
+                    <Route path="/admin/login" element={<LoginAdmin />}></Route>
+                    <Route path="/admin/create_package" element={<CreatePack />}></Route>
+                    <Route path="/admin/manage/:id" element={<Sidebar />}></Route>
+                    <Route path="/admin/changePassword" element={<Sidebar />}></Route>
+                    <Route path="/admin/info" element={<Sidebar />}></Route>
                 </Routes>
             </div>
         </Router>

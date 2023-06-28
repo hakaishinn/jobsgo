@@ -5,17 +5,25 @@ import { LocationOnOutlined } from '@mui/icons-material';
 import { Button } from '@mui/material';
 import JobItem from '../slider/jobItem';
 import Search from '../search';
-import { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import { useContext, useEffect, useState } from 'react';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 
 import * as jobService from '~/service/jobService';
 import * as applyService from '~/service/applyService';
 import * as handleDate from '~/utils/handleDate';
 import ModalSelectResumeApply from '~/components/modal/modalSelectResumeApply';
+import AvatarRecruiter from '~/assets/images/recruiter/avatar-recruiter.png';
+
+import { AppContext } from '~/context/AppProvider';
+
 function DetailJob() {
+    const { user } = useContext(AppContext);
+    const navigate = useNavigate();
     const [isApply, setIsApply] = useState(false);
     const { id } = useParams();
     const [job, setJob] = useState();
+    const [jobAnother, setJobAnother] = useState([]);
+
     const [showModalSelectCV, setShowModalSelectCV] = useState(false);
 
     useEffect(() => {
@@ -23,6 +31,12 @@ function DetailJob() {
             const res = await jobService.getJobById(id);
             if (res?.success) {
                 setJob(res.data);
+
+                const resAllJobByRecruiter = await jobService.viewJobByRecruiterId(res?.data?.recruiter?.id);
+
+                if (resAllJobByRecruiter?.success) {
+                    setJobAnother(resAllJobByRecruiter.data.filter((job) => job.id.toString() !== id));
+                }
             }
             const user = JSON.parse(localStorage.getItem('user'));
             if (user) {
@@ -38,7 +52,12 @@ function DetailJob() {
     return (
         <div className="grid grid-cols-3 mt-[90px] container mx-auto">
             {showModalSelectCV && (
-                <ModalSelectResumeApply title={job?.title} setShowModalSelectCV={setShowModalSelectCV} />
+                <ModalSelectResumeApply
+                    setIsApply={setIsApply}
+                    job={job}
+                    title={job?.title}
+                    setShowModalSelectCV={setShowModalSelectCV}
+                />
             )}
 
             <div className="col-span-2 border p-2">
@@ -70,13 +89,7 @@ function DetailJob() {
                     </div>
                 </div>
                 {isApply ? (
-                    <Button
-                        disabled={true}
-                        size="medium"
-                        startIcon={<SendIcon />}
-                        variant="contained"
-                        onClick={() => setShowModalSelectCV(true)}
-                    >
+                    <Button disabled={true} size="medium" startIcon={<SendIcon />} variant="contained">
                         Đã ứng tuyển
                     </Button>
                 ) : (
@@ -84,7 +97,15 @@ function DetailJob() {
                         size="medium"
                         startIcon={<SendIcon />}
                         variant="contained"
-                        onClick={() => setShowModalSelectCV(true)}
+                        onClick={() => {
+                            if (user) {
+                                setShowModalSelectCV(true);
+                            } else {
+                                if (window.confirm('Bạn cần đăng nhập để ứng tuyển')) {
+                                    navigate('/login');
+                                }
+                            }
+                        }}
                     >
                         Ứng tuyển ngay
                     </Button>
@@ -148,18 +169,16 @@ function DetailJob() {
 
             <div className="flex flex-col border p-2">
                 <div className="w-full flex justify-center items-center">
-                    <img src={job?.recruiter?.image} alt="avatar" />
+                    <img src={job?.recruiter?.image || AvatarRecruiter} alt="avatar" />
                 </div>
 
-                <h2 className="font-bold">
+                <Link to={`/company/${job?.recruiter?.id}`} className="font-bold">
                     Chào mừng đến với: <span>{job?.recruiter?.name}</span>
-                </h2>
+                </Link>
                 {job?.recruiter && (
                     <>
                         <h2 className="font-bold underline">Địa chỉ: </h2>
-                        <p className="text-sm">
-                            {`${job?.recruiter?.specificAddress}, ${job?.recruiter?.wards}, ${job?.recruiter?.districts}, ${job?.recruiter?.city}`}
-                        </p>
+                        <p className="text-sm">{`${job?.recruiter?.specificAddress}`}</p>
                     </>
                 )}
                 {job?.description && (
@@ -172,9 +191,9 @@ function DetailJob() {
                 <h3 className="font-bold uppercase bg-slate-200 py-2 pl-2 my-2">Việc làm khác của công ty:</h3>
 
                 <div>
-                    <JobItem job={job}></JobItem>
-                    <JobItem job={job}></JobItem>
-                    <JobItem job={job}></JobItem>
+                    {jobAnother?.map((job) => (
+                        <JobItem key={job.id} job={job}></JobItem>
+                    ))}
                 </div>
             </div>
         </div>

@@ -74,3 +74,19 @@ export const deleteById = async (id) => {
         console.log(error);
     }
 };
+
+export const searchCandidate = async (position = null, specialized = null, language = null, degree = null) => {
+    try {
+        const res = await request.get(`/public/resumes/search`, {
+            params: {
+                position: position,
+                specialized: specialized,
+                language: language,
+                degree: degree,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

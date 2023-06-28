@@ -1,4 +1,4 @@
-import { Add } from '@mui/icons-material';
+import { Add, CameraAlt } from '@mui/icons-material';
 import { useContext, useEffect, useState } from 'react';
 import ModalEducation from '~/components/modal/modalEducation';
 import ModalExp from '~/components/modal/modalExp';
@@ -11,11 +11,15 @@ import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
 import { Autocomplete, Button, Slider, TextField } from '@mui/material';
 import { typePositions } from '~/data/constants';
 import * as format from '~/utils/handleDate';
-
 import * as resumeService from '~/service/resumeService';
 
 import { AppContext } from '~/context/AppProvider';
 import { useParams } from 'react-router-dom';
+
+import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
+
+import { v4 } from 'uuid';
+import { storage } from '~/firebase';
 
 function FormCV({ tab, type }) {
     const { user } = useContext(AppContext);
@@ -31,6 +35,7 @@ function FormCV({ tab, type }) {
     const [keyModal, setKeyModal] = useState(null);
 
     const [resume, setResume] = useState({
+        file: null,
         name: '',
         image: '',
         birthday: '',
@@ -53,8 +58,36 @@ function FormCV({ tab, type }) {
         listResumeHobby: [],
     });
 
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        let flag = true;
+        if (!file) {
+            flag = false;
+            setResume({ ...resume, image: null, file: null });
+        } else {
+            let img = ['png', 'jpg', 'jpeg', 'PNG', 'JPG'];
+            if (file.size > 1024 * 1024) {
+                flag = false;
+                alert('Kích thước file quá lớn');
+                return;
+            } else if (!img.includes(file.name.split('.').pop())) {
+                flag = false;
+                setResume({ ...resume, image: null, file: null });
+                alert('File phải thuộc định dạng png, jpg, jpeg');
+                return;
+            }
+        }
+        if (flag) {
+            const reader = new FileReader();
+            reader.onload = () => {
+                setResume({ ...resume, image: reader.result, file: file });
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
     const handleSubmit = async (resume, id) => {
-        const dataCreate = {
+        let dataCreate = {
             ...resume,
             candidateId: user?.userId,
             birthday: new Date(resume.birthday).toISOString().split('T')[0],
@@ -76,6 +109,13 @@ function FormCV({ tab, type }) {
                 statusWork: workExperience?.statusWork ? true : false,
             })),
         };
+
+        if (resume?.file) {
+            const imageRef = ref(storage, `images/${resume?.file.name + v4()}`);
+            const snapshot = await uploadBytes(imageRef, resume?.file);
+            const url = await getDownloadURL(snapshot.ref);
+            dataCreate = { ...dataCreate, image: url };
+        }
 
         if (type === 'create') {
             const res = await resumeService.create(dataCreate);
@@ -152,8 +192,15 @@ function FormCV({ tab, type }) {
 
                 <div className="col-span-2">
                     <div className="flex justify-start items-center border p-4">
-                        <div className="w-[170px] h-[170px]">
-                            <img src={AvatarMale} alt="avatar" />
+                        <div className="w-[170px] h-[170px] relative group">
+                            <img src={resume?.image || AvatarMale} alt="avatar" />
+                            <label
+                                className="cursor-pointer absolute bottom-0 left-[50%] translate-x-[-50%] bg-white w-[50px] h-[50px] rounded-full justify-center items-center border hidden group-hover:flex"
+                                htmlFor="avatar"
+                            >
+                                <CameraAlt />
+                            </label>
+                            <input id="avatar" type="file" className="hidden" onChange={handleImageUpload} />
                         </div>
                         <div className="ml-4 text-[#333] flex-1">
                             <div className="flex">
@@ -632,7 +679,10 @@ function FormCV({ tab, type }) {
                             <h3 className="uppercase text-lg text-sky-600 font-semibold">Sở thích</h3>
                             <button
                                 className="flex justify-center items-center px-1 py-2 border border-sky-400 text-sky-700"
-                                onClick={() => setShowModalHobby(true)}
+                                onClick={() => {
+                                    setKeyModal(null);
+                                    setShowModalHobby(true);
+                                }}
                             >
                                 <Add fontSize="small" />
                                 Thêm mới sở thích

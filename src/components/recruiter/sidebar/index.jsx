@@ -1,6 +1,7 @@
 import {
     CalendarMonthOutlined,
-    GroupOutlined,
+    CancelOutlined,
+    // GroupOutlined,
     HowToRegOutlined,
     LockOutlined,
     LockPersonOutlined,
@@ -24,28 +25,35 @@ function Sidebar({ className, tab }) {
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'open' ? classActive : ''}`}
                     >
                         <TaskOutlined className="mr-1" /> Việc làm đang tuyển{' '}
-                        <strong className="text-red-500">(0)</strong>
+                        {/* <strong className="text-red-500">(0)</strong> */}
                     </Link>
                     <Link
                         to={'/recruiter/managerJobs/pause'}
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'pause' ? classActive : ''}`}
                     >
                         <RemoveCircleOutline className="mr-1" /> Việc làm đã tạm dừng{' '}
-                        <strong className="text-red-500">(0)</strong>
+                        {/* <strong className="text-red-500">(0)</strong> */}
                     </Link>
                     <Link
                         to={'/recruiter/managerJobs/expired'}
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'expired' ? classActive : ''}`}
                     >
                         <CalendarMonthOutlined className="mr-1" /> Việc làm đã hết hạn{' '}
-                        <strong className="text-red-500">(0)</strong>
+                        {/* <strong className="text-red-500">(0)</strong> */}
                     </Link>
                     <Link
                         to={'/recruiter/managerJobs/pending'}
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'pending' ? classActive : ''}`}
                     >
                         <LockOutlined className="mr-1" /> Việc làm đang chờ duyệt{' '}
-                        <strong className="text-red-500">(0)</strong>
+                        {/* <strong className="text-red-500">(0)</strong> */}
+                    </Link>
+                    <Link
+                        to={'/recruiter/managerJobs/denied'}
+                        className={`flex items-center p-1 hover:text-sky-500 ${tab === 'denied' ? classActive : ''}`}
+                    >
+                        <CancelOutlined className="mr-1" /> Việc làm bị từ chối{' '}
+                        {/* <strong className="text-red-500">(0)</strong> */}
                     </Link>
                 </div>
                 <div className="flex flex-col mt-4">
@@ -55,28 +63,28 @@ function Sidebar({ className, tab }) {
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'apply' ? classActive : ''}`}
                     >
                         <PersonAddAlt1Outlined className="mr-1" /> Hồ sơ mới ứng tuyển{' '}
-                        <strong className="text-red-500">(0)</strong>
+                        {/* <strong className="text-red-500">(0)</strong> */}
                     </Link>
                     <Link
                         to={'/recruiter/managerCandidate/selected'}
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'selected' ? classActive : ''}`}
                     >
                         <HowToRegOutlined className="mr-1" /> Hồ sơ đã được chọn{' '}
-                        <strong className="text-red-500">(0)</strong>
+                        {/* <strong className="text-red-500">(0)</strong> */}
                     </Link>
                     <Link
                         to={'/recruiter/managerCandidate/consider'}
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'consider' ? classActive : ''}`}
                     >
                         <LockPersonOutlined className="mr-1" /> Hồ sơ đang xem xét{' '}
-                        <strong className="text-red-500">(0)</strong>
+                        {/* <strong className="text-red-500">(0)</strong> */}
                     </Link>
                     <Link
                         to={'/recruiter/managerCandidate/denied'}
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'denied' ? classActive : ''}`}
                     >
                         <PersonOffOutlined className="mr-1" /> Hồ sơ bị từ chối{' '}
-                        <strong className="text-red-500">(0)</strong>
+                        {/* <strong className="text-red-500">(0)</strong> */}
                     </Link>
                 </div>
 
@@ -88,12 +96,12 @@ function Sidebar({ className, tab }) {
                     >
                         <PersonSearchOutlined className="mr-1" /> Tìm kiếm ứng viên{' '}
                     </Link>
-                    <Link
+                    {/* <Link
                         to={'/recruiter/fit'}
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'fit' ? classActive : ''}`}
                     >
                         <GroupOutlined className="mr-1" /> Xem ứng viên phù hợp{' '}
-                    </Link>
+                    </Link> */}
                     {/* <Link
                         to={'/recruiter/infoCompany'}
                         className={`flex items-center p-1 hover:text-sky-500 ${

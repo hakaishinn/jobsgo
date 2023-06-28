@@ -18,7 +18,7 @@ function ModalCVDetail({ resume, setShowModalDetailCV }) {
                             <div className="flex justify-start items-center">
                                 <div className="p-16">
                                     <div className="border-4 border-[#000] overflow-hidden rounded-lg w-[200px] h-[200px]">
-                                        <img src={AvatarMale} alt="avatar" />
+                                        <img src={resume?.image || AvatarMale} alt="avatar" />
                                     </div>
                                 </div>
                                 <div>

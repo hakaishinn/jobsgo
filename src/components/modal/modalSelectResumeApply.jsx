@@ -4,19 +4,34 @@ import { useEffect, useState } from 'react';
 import * as resumeService from '~/service/resumeService';
 import * as applyService from '~/service/applyService';
 import { useParams } from 'react-router-dom';
+import * as emailService from '~/service/emailService';
+import Loading from '../loading';
 
-function ModalSelectResumeApply({ title, setShowModalSelectCV }) {
+function ModalSelectResumeApply({ title, setShowModalSelectCV, job, setIsApply }) {
     const { id } = useParams();
     const [listResume, setListResume] = useState([]);
     const [resumeId, setResumeId] = useState();
+    const [loading, setLoading] = useState(false);
 
     const handleApply = async () => {
+        setLoading(true);
         const res = await applyService.apply(id, resumeId);
         if (res?.success) {
             alert('Bạn đã ứng tuyển thành công');
+            setLoading(false);
+            const resResume = await resumeService.getResumeById(resumeId);
+            if (resResume?.success) {
+                emailService.sendEmail(
+                    job?.recruiter.emailCompany,
+                    `[JobsGO] Thông báo ứng tuyển`,
+                    `${resResume.data.name} đã ứng tuyển vào công việc ${job?.title}`,
+                );
+            }
+            setIsApply(true);
             setShowModalSelectCV(false);
         } else {
             alert('Bạn ứng tuyển thất bại');
+            setLoading(false);
         }
     };
 
@@ -35,6 +50,7 @@ function ModalSelectResumeApply({ title, setShowModalSelectCV }) {
             className="flex justify-center items-center fixed top-0 right-0 left-0 bottom-0 bg-black/20 z-10"
             onClick={() => setShowModalSelectCV(false)}
         >
+            {loading && <Loading />}
             <div className="min-w-[50vw] bg-white" onClick={(e) => e.stopPropagation()}>
                 <h2 className="p-4 bg-sky-700 text-lg text-white">Chọn hồ sơ ứng tuyển: {title}</h2>
                 <div className="p-4">

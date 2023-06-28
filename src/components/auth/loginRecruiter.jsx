@@ -5,7 +5,7 @@ import * as authService from '~/service/auth/authService';
 import Loading from '../loading';
 
 function LoginRecruiter() {
-    const { setUser } = useContext(AppContext);
+    const { setRecruiter } = useContext(AppContext);
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -16,7 +16,7 @@ function LoginRecruiter() {
         const res = await authService.login(email, password);
         if (res?.success && res?.data?.roles.includes('RECRUITER')) {
             localStorage.setItem('user', JSON.stringify(res?.data));
-            setUser(res?.data);
+            setRecruiter(res?.data);
             navigate('/recruiter/managerJobs/open');
         }
         setIsLoading(false);

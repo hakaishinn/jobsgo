@@ -4,15 +4,27 @@ import { useEffect, useState } from 'react';
 import * as handleDate from '~/utils/handleDate';
 import * as jobService from '~/service/jobService';
 import * as applyService from '~/service/applyService';
+import * as emailService from '~/service/emailService';
+
+import AvatarRecruiter from '~/assets/images/recruiter/avatar-recruiter.png';
+
 import { Link } from 'react-router-dom';
 
 function ListJobApply() {
     const [listJob, setListJob] = useState();
 
-    const handleDelete = async (id) => {
-        const res = await applyService.deleteById(id);
-        if (res?.success) {
-            setListJob(listJob.filter((job) => job?.applyId !== id));
+    const handleDelete = async (job) => {
+        if (window.confirm(`Bạn có chắc muốn hủy ứng tuyển công việc ${job.title}?`)) {
+            const res = await applyService.deleteById(job?.applyId);
+            if (res?.success) {
+                setListJob(listJob.filter((jobItem) => jobItem?.applyId !== job?.applyId));
+                emailService.sendEmail(
+                    job?.emailCompany,
+                    `[JobsGO] Thông báo hủy ứng tuyển`,
+                    `${job?.nameCandidate} đã hủy ứng tuyển công việc ${job?.title}`,
+                );
+                alert('Hủy ứng tuyển thành công');
+            }
         }
     };
     useEffect(() => {
@@ -31,9 +43,9 @@ function ListJobApply() {
             </div>
             <div className="container bg-white m-auto border pt-8 min-h-[100vh]">
                 {listJob?.map((job) => (
-                    <div key={job?.id} className="grid grid-cols-8">
-                        <div className="col-span-1">
-                            <img src={job?.image} alt="avatar" />
+                    <div key={job?.id} className="grid grid-cols-8 gap-2">
+                        <div className="w-[120px] h-[120px] col-span-1 m-2 rounded-full overflow-hidden object-contain">
+                            <img src={job?.image || AvatarRecruiter} alt="avatar" />
                         </div>
 
                         <div className="col-span-6">
@@ -94,7 +106,7 @@ function ListJobApply() {
                                 variant="contained"
                                 color="error"
                                 startIcon={<DeleteOutline />}
-                                onClick={() => handleDelete(job?.applyId)}
+                                onClick={() => handleDelete(job)}
                             >
                                 Hủy bỏ
                             </Button>

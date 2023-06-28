@@ -78,6 +78,19 @@ export const viewJobExpired = async () => {
         console.log(error);
     }
 };
+export const viewJobDenied = async () => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.get('/jobs/denied', {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 export const getJobById = async (id) => {
     try {
@@ -105,6 +118,19 @@ export const changeStatusApply = async (id) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
         const res = await request.put(`/jobs/changeStatusApply/${id}`, null, {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const changeStatusPending = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.put(`/jobs/changeStatusPending/${id}`, null, {
             headers: {
                 Authorization: 'Bearer ' + user.accessToken,
             },
@@ -153,6 +179,42 @@ export const viewJobByCareerId = async (id) => {
 export const viewJobNoExp = async () => {
     try {
         const res = await request.get(`/public/jobs/noExp`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const viewSuitableJob = async () => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            const res = await request.get(`/public/jobs/suitableJob/candidate/${user.userId}`);
+            return res.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const viewJobByRecruiterId = async (id) => {
+    try {
+        const res = await request.get(`/public/jobs/recruiter/${id}`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const viewJobFeatured = async () => {
+    try {
+        const res = await request.get(`/public/jobs/featured`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const viewJobNew = async () => {
+    try {
+        const res = await request.get(`/public/jobs/new`);
         return res.data;
     } catch (error) {
         console.log(error);

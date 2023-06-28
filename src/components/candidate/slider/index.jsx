@@ -33,26 +33,26 @@ function SamplePrevArrow(props) {
         </div>
     );
 }
-function CustomSlider({ type, title }) {
+function CustomSlider({ type, title, option = 'job' }) {
     const [data, setData] = useState([]);
     let settings = {
-        dots: true,
         infinite: false,
+        slidesToShow: 3,
         speed: 500,
-        slidesToShow: 8,
-        slidesToScroll: 3,
+        rows: 2,
+        slidesPerRow: 1,
+        slidesToScroll: 2,
+        dots: true,
         nextArrow: <SampleNextArrow />,
         prevArrow: <SamplePrevArrow />,
     };
-    if (type === 'job') {
+    if (option === 'company') {
         settings = {
-            infinite: false,
-            centerPadding: '60px',
-            slidesToShow: 3,
-            speed: 500,
-            rows: 2,
-            slidesPerRow: 1,
             dots: true,
+            infinite: false,
+            speed: 500,
+            slidesToShow: 7,
+            slidesToScroll: 3,
             nextArrow: <SampleNextArrow />,
             prevArrow: <SamplePrevArrow />,
         };
@@ -60,8 +60,23 @@ function CustomSlider({ type, title }) {
 
     useEffect(() => {
         const getData = async () => {
-            if (type === 'job') {
-                const res = await jobService.viewJobOpen();
+            if (type === 'job-featured') {
+                const res = await jobService.viewJobFeatured();
+                if (res?.success) {
+                    setData(res.data);
+                }
+            } else if (type === 'company-featured') {
+                const res = await userService.getAllRecruiterFeatured();
+                if (res?.success) {
+                    setData(res.data);
+                }
+            } else if (type === 'job-for-you') {
+                const res = await jobService.viewSuitableJob();
+                if (res?.success) {
+                    setData(res.data);
+                }
+            } else if (type === 'job-new') {
+                const res = await jobService.viewJobNew();
                 if (res?.success) {
                     setData(res.data);
                 }
@@ -75,11 +90,11 @@ function CustomSlider({ type, title }) {
         getData();
     }, [type]);
     return (
-        <div className={`${type === 'company' ? 'bg-white' : ' bg-slate-100'} mt-16 pb-8`}>
+        <div className={`${option === 'company' ? 'bg-white' : ' bg-slate-100'} mt-16 pb-8`}>
             <div className="container m-auto ">
                 <h2 className="text-xl font-bold py-3">{title}</h2>
                 <div>
-                    {type === 'job' ? (
+                    {option === 'job' ? (
                         <Slider {...settings}>
                             {data?.map((job) => (
                                 <div key={job?.id}>
