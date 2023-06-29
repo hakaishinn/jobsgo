@@ -113,6 +113,9 @@ function ModalLanguage({ setShowModalLanguage, setResume, resume, keyModal }) {
                             onChange={(e, value) => setProwess(value)}
                             value={prowess ? prowess : 0}
                             valueLabelDisplay="auto"
+                            min={0}
+                            max={100}
+                            step={10}
                         />
                     </div>
                 </div>

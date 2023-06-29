@@ -114,6 +114,9 @@ function ModalSoftSkill({ setShowModalSoftSkill, setResume, resume, keyModal }) 
                             valueLabelDisplay="auto"
                             value={prowess ? prowess : 0}
                             onChange={(e, value) => setProwess(value)}
+                            min={0}
+                            max={100}
+                            step={10}
                         />
                     </div>
                 </div>

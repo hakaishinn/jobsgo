@@ -121,7 +121,6 @@ function ModalProSkill({ setShowModalProSkill, setResume, resume, keyModal }) {
                 <button
                     className="flex justify-center items-center px-4 py-2 bg-sky-600 text-white my-4 rounded-lg"
                     onClick={() => {
-                        console.log(value);
                         if (keyModal !== null && keyModal !== undefined) {
                             setResume((resumePrev) => ({
                                 ...resumePrev,

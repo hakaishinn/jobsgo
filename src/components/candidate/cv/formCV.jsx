@@ -1,4 +1,4 @@
-import { Add, CameraAlt } from '@mui/icons-material';
+import { Add, AttachFileOutlined, CameraAlt } from '@mui/icons-material';
 import { useContext, useEffect, useState } from 'react';
 import ModalEducation from '~/components/modal/modalEducation';
 import ModalExp from '~/components/modal/modalExp';
@@ -8,18 +8,20 @@ import ModalLanguage from '~/components/modal/modalLanguage';
 import ModalSoftSkill from '~/components/modal/modalSoftSkill';
 import ModalHobby from '~/components/modal/modalHobby';
 import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
-import { Autocomplete, Button, Slider, TextField } from '@mui/material';
+import { Autocomplete, Button, TextField } from '@mui/material';
 import { typePositions } from '~/data/constants';
 import * as format from '~/utils/handleDate';
 import * as resumeService from '~/service/resumeService';
 
 import { AppContext } from '~/context/AppProvider';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 
 import { v4 } from 'uuid';
 import { storage } from '~/firebase';
+import ModalAttachments from '~/components/modal/modalAttachments';
+import SliderLine from '../slider/line';
 
 function FormCV({ tab, type }) {
     const { user } = useContext(AppContext);
@@ -31,6 +33,7 @@ function FormCV({ tab, type }) {
     const [showModalLanguage, setShowModalLanguage] = useState(false);
     const [showModalSoftSkill, setShowModalSoftSkill] = useState(false);
     const [showModalHobby, setShowModalHobby] = useState(false);
+    const [showModalAttachments, setShowModalAttachments] = useState(false);
 
     const [keyModal, setKeyModal] = useState(null);
 
@@ -56,6 +59,7 @@ function FormCV({ tab, type }) {
         listResumeLanguage: [],
         listResumeSoftSkill: [],
         listResumeHobby: [],
+        listAttachments: [],
     });
 
     const handleImageUpload = (e) => {
@@ -109,6 +113,7 @@ function FormCV({ tab, type }) {
                 statusWork: workExperience?.statusWork ? true : false,
             })),
         };
+        console.log(dataCreate);
 
         if (resume?.file) {
             const imageRef = ref(storage, `images/${resume?.file.name + v4()}`);
@@ -164,6 +169,10 @@ function FormCV({ tab, type }) {
                         ...hobby,
                         keyHobby: index,
                     })),
+                    listAttachments: res.data?.listAttachments?.map((attachment, index) => ({
+                        ...attachment,
+                        keyAttachment: index,
+                    })),
                 });
             }
         };
@@ -174,6 +183,7 @@ function FormCV({ tab, type }) {
     return (
         <div className="container mx-auto mt-[100px]">
             <MenuCV tab={tab}></MenuCV>
+
             <div className="grid grid-cols-3 gap-4 mt-8">
                 <div className="border rounded p-2">
                     <div className="px-2 py-1 border mt-1">
@@ -553,15 +563,9 @@ function FormCV({ tab, type }) {
                                 {resume.listResumeLanguage.map((language, index) => (
                                     <div key={index} className="group relative mt-2">
                                         <div className="flex justify-start items-center">
-                                            <p className="text-lg font-bold">{language.languageName}</p>
-                                            <span className="ml-2">({language.prowess}%)</span>
+                                            <p className="text-base font-semibold my-1">{language.languageName}</p>
                                         </div>
-                                        <Slider
-                                            key={index}
-                                            size="medium"
-                                            disabled
-                                            value={language?.prowess ? language?.prowess : 0}
-                                        />
+                                        <SliderLine value={language?.prowess || 0} />
                                         <div className="hidden absolute gap-2 bg-white top-0 right-0 group-hover:flex">
                                             <Button
                                                 className="p-2"
@@ -623,15 +627,10 @@ function FormCV({ tab, type }) {
                             {resume.listResumeSoftSkill.map((softSkill, index) => (
                                 <div key={index} className="group relative mt-2">
                                     <div className="flex justify-start items-center">
-                                        <p className="text-lg font-bold">{softSkill.softSkillName}</p>
-                                        <span className="ml-2">({softSkill.prowess}%)</span>
+                                        <p className="text-base font-semibold my-1">{softSkill.softSkillName}</p>
                                     </div>
-                                    <Slider
-                                        key={index}
-                                        size="medium"
-                                        disabled
-                                        value={softSkill?.prowess ? softSkill?.prowess : 0}
-                                    />
+
+                                    <SliderLine value={softSkill?.prowess || 0} />
                                     <div className="hidden absolute gap-2 bg-white top-0 right-0 group-hover:flex">
                                         <Button
                                             className="p-2"
@@ -736,8 +735,78 @@ function FormCV({ tab, type }) {
                             </ul>
                         </div>
                     </div>
+                    <div className="border p-4 text-[#333] mt-4">
+                        <div className="flex justify-between items-center">
+                            <h3 className="uppercase text-lg text-sky-600 font-semibold">File đính kèm</h3>
+                            <button
+                                className="flex justify-center items-center px-1 py-2 border border-sky-400 text-sky-700"
+                                onClick={() => {
+                                    setKeyModal(null);
+                                    setShowModalAttachments(true);
+                                }}
+                            >
+                                <Add fontSize="small" />
+                                Thêm file đính kèm
+                            </button>
+                        </div>
+                        <div>
+                            <ul className="pl-2">
+                                {resume.listAttachments?.map((attachment, index) => (
+                                    <div key={index} className="group relative mt-2">
+                                        <Link
+                                            to={attachment?.url}
+                                            className="border-b py-2 flex justify-start items-center gap-4"
+                                        >
+                                            <AttachFileOutlined />
+                                            {attachment.name}
+                                        </Link>
+                                        <div className="hidden absolute gap-2 bg-white top-0 right-0 group-hover:flex">
+                                            <Button
+                                                className="p-2"
+                                                size="small"
+                                                variant="outlined"
+                                                color="success"
+                                                onClick={() => {
+                                                    setKeyModal(index);
+                                                    setShowModalAttachments(true);
+                                                }}
+                                            >
+                                                Chỉnh sửa
+                                            </Button>
+
+                                            <Button
+                                                variant="outlined"
+                                                color="error"
+                                                size="small"
+                                                onClick={() => {
+                                                    setResume({
+                                                        ...resume,
+                                                        listAttachments: resume.listAttachments
+                                                            .filter((attachment) => attachment.keyAttachments !== index)
+                                                            .map((attachment) => {
+                                                                if (attachment.keyAttachments > index) {
+                                                                    return {
+                                                                        ...attachment,
+                                                                        keyProSkill: attachment.keyAttachments - 1,
+                                                                    };
+                                                                }
+                                                                return attachment;
+                                                            }),
+                                                    });
+                                                }}
+                                            >
+                                                Xóa
+                                            </Button>
+                                        </div>
+                                    </div>
+                                ))}
+                            </ul>
+                        </div>
+                    </div>
                 </div>
             </div>
+
+            {/* Button Create/Update */}
             <div className="py-4 flex justify-center">
                 {type === 'create' ? (
                     <Button size="large" variant="contained" onClick={() => handleSubmit(resume, -1)}>
@@ -787,6 +856,14 @@ function FormCV({ tab, type }) {
             {showModalHobby && (
                 <ModalHobby
                     setShowModalHobby={setShowModalHobby}
+                    keyModal={keyModal}
+                    setResume={setResume}
+                    resume={resume}
+                />
+            )}
+            {showModalAttachments && (
+                <ModalAttachments
+                    setShowModalAttachments={setShowModalAttachments}
                     keyModal={keyModal}
                     setResume={setResume}
                     resume={resume}

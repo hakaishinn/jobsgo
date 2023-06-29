@@ -1,15 +1,15 @@
-import { Slider } from '@mui/material';
 import MenuCV from './menuCV';
 import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
 import BackGroundTemplate1 from '~/assets/images/candidate/background-template-1-cv.jpg';
-import { useParams } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { useEffect, useRef, useState } from 'react';
 
 import * as resumeService from '~/service/resumeService';
 import * as format from '~/utils/handleDate';
-import { FileDownloadOutlined } from '@mui/icons-material';
+import { AttachFileOutlined, FileDownloadOutlined } from '@mui/icons-material';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
+import SliderLine from '../slider/line';
 
 function ViewDetailCV() {
     const { id } = useParams();
@@ -119,13 +119,7 @@ function ViewDetailCV() {
                                             <div key={softSkill.id}>
                                                 <p className="text-lg">{softSkill?.softSkillName}</p>
                                                 <div className="flex justify-center items-center">
-                                                    <Slider
-                                                        size="medium"
-                                                        disabled
-                                                        value={softSkill?.prowess}
-                                                        aria-label="Disabled slider"
-                                                    />
-                                                    <span className="ml-2">({softSkill?.prowess}%)</span>
+                                                    <SliderLine color="orange" value={softSkill?.prowess || 0} />
                                                 </div>
                                             </div>
                                         ))}
@@ -175,6 +169,20 @@ function ViewDetailCV() {
                                             <p>Vị trí: {workExp?.position}</p>
                                             <p>{workExp?.description}</p>
                                         </div>
+                                    ))}
+                                </div>
+                                <div className="mb-12">
+                                    <h2 className="text-xl uppercase font-bold mb-4">File đính kèm</h2>
+
+                                    {resume?.listAttachments?.map((attachment) => (
+                                        <Link
+                                            to={attachment?.url}
+                                            key={attachment.id}
+                                            className="mb-4 text-lg flex justify-start items-center"
+                                        >
+                                            <AttachFileOutlined />
+                                            <p>{attachment?.name}</p>
+                                        </Link>
                                     ))}
                                 </div>
                                 {/* <div className="mb-12">
