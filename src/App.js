@@ -38,6 +38,7 @@ import Sidebar from './components/admin/Sidebar';
 import CreatePack from './pages/Admin/package/CreatePack';
 import JobDenied from './pages/Recruiter/Job/JobDenied';
 import LoginAdmin from './components/auth/loginAdmin';
+import ForgotPassword from './components/auth/forgotPassword';
 
 function App() {
     return (
@@ -45,6 +46,7 @@ function App() {
             <div className="App">
                 <Routes>
                     <Route path="/" element={<Home />}></Route>
+                    <Route path="/forgotPassword" element={<ForgotPassword />}></Route>
                     <Route path="/login" element={<Login />}></Route>
                     <Route path="/register" element={<Register />}></Route>
                     <Route path="/company" element={<Company />}></Route>

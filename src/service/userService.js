@@ -79,3 +79,12 @@ export const changePassword = async (oldPassword, newPassword) => {
         console.log(error);
     }
 };
+
+export const forgotPassword = async (email) => {
+    try {
+        const res = await request.get(`/public/users/forgotPassword/email/${email}`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
