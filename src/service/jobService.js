@@ -42,9 +42,51 @@ export const viewJobPending = async () => {
     }
 };
 
+export const viewJobPendingByRecruiterId = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.get(`/jobs/pending/recruiter/${id}`, {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const viewJobOpen = async () => {
     try {
         const res = await request.get('/public/jobs/open');
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const viewJobOpenByRecruiterId = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.get(`/jobs/open/recruiter/${id}`, {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const viewJobPauseByRecruiterId = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.get(`/jobs/pause/recruiter/${id}`, {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
         return res.data;
     } catch (error) {
         console.log(error);
@@ -78,10 +120,37 @@ export const viewJobExpired = async () => {
         console.log(error);
     }
 };
+export const viewJobExpiredByRecruiterId = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.get(`/jobs/expired/recruiter/${id}`, {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const viewJobDenied = async () => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));
         const res = await request.get('/jobs/denied', {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const viewJobDeniedByRecruiterId = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.get(`/jobs/denied/recruiter/${id}`, {
             headers: {
                 Authorization: 'Bearer ' + user.accessToken,
             },

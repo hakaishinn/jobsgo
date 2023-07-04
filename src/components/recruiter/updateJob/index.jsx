@@ -103,7 +103,6 @@ function UpdateJob({ className }) {
             },
             Number.parseInt(id),
         );
-        console.log(job);
         if (res?.success) {
             alert('Cập nhật công việc thành công');
         } else {

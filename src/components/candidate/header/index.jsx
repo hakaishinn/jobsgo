@@ -191,10 +191,32 @@ function Header() {
                             <CustomTooltip
                                 title={
                                     <div className="flex flex-col">
-                                        <Link to={'/cv/create'} className="p-1 hover:text-[#1772bd]">
+                                        <Link
+                                            to={'/cv/create'}
+                                            className="p-1 hover:text-[#1772bd]"
+                                            onClick={(e) => {
+                                                if (!user) {
+                                                    e.preventDefault();
+                                                    if (window.confirm('Bạn cần đăng nhập để tạo CV')) {
+                                                        navigate('/login');
+                                                    }
+                                                }
+                                            }}
+                                        >
                                             Tạo CV
                                         </Link>
-                                        <Link to={'/cv/upload'} className="p-1 hover:text-[#1772bd]">
+                                        <Link
+                                            to={'/cv/upload'}
+                                            className="p-1 hover:text-[#1772bd]"
+                                            onClick={(e) => {
+                                                if (!user) {
+                                                    e.preventDefault();
+                                                    if (window.confirm('Bạn cần đăng nhập để tải lên CV')) {
+                                                        navigate('/login');
+                                                    }
+                                                }
+                                            }}
+                                        >
                                             Tải lên CV
                                         </Link>
                                     </div>

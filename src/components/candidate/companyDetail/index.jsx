@@ -13,9 +13,19 @@ function CompanyDetail() {
     const [company, setCompany] = useState();
     const [jobs, setJobs] = useState([]);
 
+    const getAddress = (specificAddress, ward, district, city) => {
+        let result = [];
+        if (specificAddress) result.push(specificAddress);
+        if (ward) result.push(ward);
+        if (district) result.push(district);
+        if (city) result.push(city);
+
+        return result.join(', ');
+    };
+
     useEffect(() => {
         const getData = async () => {
-            const res = await jobService.viewJobByRecruiterId(id);
+            const res = await jobService.viewJobOpenByRecruiterId(id);
             if (res?.success) {
                 setJobs(res.data);
             }
@@ -76,12 +86,20 @@ function CompanyDetail() {
                         <h2 className="text-xl font-bold">Thông tin</h2>
                         <div>
                             <div className="flex items-center gap py-4 text-[#666]">
-                                {company?.specificAddress && (
+                                {company?.city && (
                                     <>
                                         <div className="flex justify-center items-center w-[30px] h-[30px] rounded-full text-sky-600 bg-sky-100 mr-2">
                                             <LocationOnOutlined fontSize="small" />
                                         </div>
-                                        <span>{`${company?.specificAddress}`}</span>
+                                        {/* <span>{`${company?.specificAddress} ${company?.wards} ${company?.districts} ${company?.city}`}</span> */}
+                                        <span>
+                                            {getAddress(
+                                                company?.specificAddress,
+                                                company?.wards,
+                                                company?.districts,
+                                                company?.city,
+                                            )}
+                                        </span>
                                     </>
                                 )}
                             </div>

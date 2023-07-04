@@ -3,24 +3,35 @@ import ListCandidate from '../listCandidate';
 import BtnCreateJob from '../btnCreateJob';
 import { useParams } from 'react-router-dom';
 import * as jobService from '~/service/jobService';
+import * as applyService from '~/service/applyService';
 import * as handleDate from '~/utils/handleDate';
 
 function JobDetail({ className }) {
     const { id } = useParams();
     const [tab, setTab] = useState(1);
     const [job, setJob] = useState({});
+    const [listResume, setListResume] = useState([]);
+
+    const classActive = 'border-b border-red-700 text-[#000]';
+
     useEffect(() => {
         const getData = async () => {
             if (id) {
-                const res = await jobService.getJobById(id);
-                if (res?.success) {
-                    setJob(res.data);
+                //Job
+                const resJob = await jobService.getJobById(id);
+                if (resJob?.success) {
+                    setJob(resJob.data);
+                }
+
+                //list resume
+                const resListResume = await applyService.getAllResumeApplyByJobId(id);
+                if (resListResume?.success) {
+                    setListResume(resListResume.data);
                 }
             }
         };
         getData();
     }, [id]);
-    const classActive = 'border-b border-red-700 text-[#000]';
     return (
         <div className={className}>
             <BtnCreateJob />
@@ -36,7 +47,7 @@ function JobDetail({ className }) {
                     className={`p-2 text-gray-500 font-semibold hover:text-black ${tab === 2 ? classActive : ''}`}
                     onClick={() => setTab(2)}
                 >
-                    Hồ sơ đã nộp đơn <span className="text-red-500">(1)</span>
+                    Hồ sơ đã nộp đơn <span className="text-red-500">({listResume.length})</span>
                 </button>
             </div>
 
@@ -125,9 +136,21 @@ function JobDetail({ className }) {
                     </div>
                 </div>
             ) : (
-                <div className="p-2">
-                    <ListCandidate type={'detailJob'} />
-                </div>
+                <>
+                    {listResume.length > 0 ? (
+                        <>
+                            <div className="p-2">
+                                <ListCandidate
+                                    setListResume={setListResume}
+                                    listResume={listResume}
+                                    type={'detailJob'}
+                                />
+                            </div>
+                        </>
+                    ) : (
+                        <h2 className="text-xl p-4">Không có ứng viên</h2>
+                    )}
+                </>
             )}
         </div>
     );

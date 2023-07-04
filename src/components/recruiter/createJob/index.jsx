@@ -97,7 +97,7 @@ function CreateJob({ className }) {
             if (resJob.data.length >= 3) {
                 const resUsedPackage = await usedPackageService.checkUsedPackage();
                 if (resUsedPackage?.success) {
-                    const res = await jobService.addJob({
+                    const dataCreate = {
                         ...job,
                         recruiterId: recruiter?.userId,
                         ageStart: Number.parseFloat(job.ageStart),
@@ -106,7 +106,9 @@ function CreateJob({ className }) {
                         numberYearExperienceEnd: Number.parseFloat(job.numberYearExperienceEnd),
                         salaryFrom: Number.parseFloat(job.salaryFrom),
                         salaryTo: Number.parseFloat(job.salaryTo),
-                    });
+                    };
+                    const res = await jobService.addJob(dataCreate);
+                    console.log(dataCreate);
                     if (res?.success) {
                         alert('Tạo công việc mới thành công');
                     } else {

@@ -41,14 +41,16 @@ function ListPackage() {
             <div className="px-4">
                 <table className="w-full text-center">
                     <thead>
-                        <th>ID</th>
-                        <th>Tên gói</th>
-                        <th>Mô tả</th>
-                        <th>Thời hạn</th>
-                        <th>Đơn giá (VNĐ)</th>
-                        <th>Số lượng</th>
-                        <th>Tổng tiền (VNĐ)</th>
-                        <th>Thao tác</th>
+                        <tr>
+                            <th>ID</th>
+                            <th>Tên gói</th>
+                            <th>Mô tả</th>
+                            <th>Thời hạn</th>
+                            <th>Đơn giá (VNĐ)</th>
+                            <th>Số lượng</th>
+                            <th>Tổng tiền (VNĐ)</th>
+                            <th>Thao tác</th>
+                        </tr>
                     </thead>
                     <tbody>
                         {listPackage?.map((packageItem) => (

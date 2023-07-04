@@ -10,10 +10,12 @@ function CompanyItem({ company }) {
                     <img src={company?.image || AvatarRecruiter} alt="avatar"></img>
                 </div>
                 <p className="p-1 font-semibold text-center line-clamp-2">{company?.name}</p>
-                <div className="flex justify-end items-center">
-                    <LocationOnOutlined fontSize="small"></LocationOnOutlined>
-                    <p className="text-sm line-clamp-1">{company.specificAddress || 'Không xác định'}</p>
-                </div>
+                {company?.city && (
+                    <div className="flex justify-end items-center">
+                        <LocationOnOutlined fontSize="small"></LocationOnOutlined>
+                        <p className="text-sm line-clamp-1">{company.city || 'Không xác định'}</p>
+                    </div>
+                )}
             </div>
         </Link>
     );

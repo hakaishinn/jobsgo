@@ -6,7 +6,7 @@ import { useEffect, useRef, useState } from 'react';
 
 import * as resumeService from '~/service/resumeService';
 import * as format from '~/utils/handleDate';
-import { AttachFileOutlined, FileDownloadOutlined } from '@mui/icons-material';
+import { AttachFileOutlined, Cake, FileDownloadOutlined, LocalPhone, LocationOn, Mail } from '@mui/icons-material';
 import jsPDF from 'jspdf';
 import html2canvas from 'html2canvas';
 import SliderLine from '../slider/line';
@@ -20,13 +20,12 @@ function ViewDetailCV() {
         html2canvas(CVRef.current, {}).then((canvas) => {
             const imgData = canvas.toDataURL('image/png');
             const pageWidth = 210;
-            console.log(imgData);
-            // const pageHeight = 297;
-            const height = (canvas.height * pageWidth) / canvas.width;
+            const pageHeight = 297;
+            // const height = (canvas.height * pageWidth) / canvas.width;
 
             const pdf = new jsPDF('p', 'mm', 'a4');
-            pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, height);
-            pdf.save(`${resume?.positionApply}.pdf`);
+            pdf.addImage(imgData, 'PNG', 0, 0, pageWidth, pageHeight);
+            pdf.save(`${resume?.name}-${resume?.positionApply}.pdf`);
         });
     };
 
@@ -76,20 +75,20 @@ function ViewDetailCV() {
                                 <div>
                                     <div className="mb-12">
                                         <h2 className="text-xl uppercase font-bold mb-4">Thông tin liên hệ</h2>
-                                        <div className="mb-4">
-                                            <p className="font-semibold mb-2 text-lg">Số điện thoại</p>
+                                        <div className="mb-4 flex justify-start items-center gap-2">
+                                            <LocalPhone />
                                             <p className="text-lg">{resume?.phone}</p>
                                         </div>
-                                        <div className="mb-4">
-                                            <p className="font-semibold mb-2 text-lg">Email</p>
+                                        <div className="mb-4 flex justify-start items-center gap-2">
+                                            <Mail />
                                             <p className="text-lg">{resume?.email}</p>
                                         </div>
-                                        <div className="mb-4">
-                                            <p className="font-semibold mb-2 text-lg">Ngày sinh</p>
+                                        <div className="mb-4 flex justify-start items-center gap-2">
+                                            <Cake />
                                             <p className="text-lg">{format.formatDate(resume?.birthday)}</p>
                                         </div>
-                                        <div className="mb-4">
-                                            <p className="font-semibold mb-2 text-lg">Địa chỉ</p>
+                                        <div className="mb-4 flex justify-start items-center gap-2">
+                                            <LocationOn />
                                             <p className="text-lg">{resume?.address}</p>
                                         </div>
                                     </div>
@@ -120,6 +119,17 @@ function ViewDetailCV() {
                                                 <p className="text-lg">{softSkill?.softSkillName}</p>
                                                 <div className="flex justify-center items-center">
                                                     <SliderLine color="orange" value={softSkill?.prowess || 0} />
+                                                </div>
+                                            </div>
+                                        ))}
+                                    </div>
+                                    <div className="mb-12">
+                                        <h2 className="text-xl uppercase font-bold mb-4">Ngôn ngữ</h2>
+                                        {resume?.listResumeLanguage?.map((language) => (
+                                            <div key={language.id}>
+                                                <p className="text-lg">{language?.languageName}</p>
+                                                <div className="flex justify-center items-center">
+                                                    <SliderLine color="orange" value={language?.prowess || 0} />
                                                 </div>
                                             </div>
                                         ))}

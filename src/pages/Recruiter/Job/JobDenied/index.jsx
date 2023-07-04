@@ -3,8 +3,8 @@ import RecruiterLayout from '~/layout/recruiterLayout';
 
 function JobDenied() {
     return (
-        <RecruiterLayout tab={'denied'}>
-            <FormManagerJob tab={'denied'} title={'Việc làm bị từ chối'}></FormManagerJob>
+        <RecruiterLayout tab={'jobDenied'}>
+            <FormManagerJob tab={'jobDenied'} title={'Việc làm bị từ chối'}></FormManagerJob>
         </RecruiterLayout>
     );
 }

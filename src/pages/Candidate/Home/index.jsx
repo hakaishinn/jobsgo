@@ -32,8 +32,15 @@ function Home() {
                             <Button
                                 variant="contained"
                                 startIcon={<FileUploadOutlined />}
-                                onClick={() => {
-                                    navigate('/cv/upload');
+                                onClick={(e) => {
+                                    if (!user) {
+                                        e.preventDefault();
+                                        if (window.confirm('Bạn cần đăng nhập để tải CV')) {
+                                            navigate('/login');
+                                        }
+                                    } else {
+                                        navigate('/cv/upload');
+                                    }
                                 }}
                             >
                                 Tải lên CV
@@ -52,8 +59,15 @@ function Home() {
                             <Button
                                 variant="contained"
                                 startIcon={<Add />}
-                                onClick={() => {
-                                    navigate('/cv/create');
+                                onClick={(e) => {
+                                    if (!user) {
+                                        e.preventDefault();
+                                        if (window.confirm('Bạn cần đăng nhập để tạo CV')) {
+                                            navigate('/login');
+                                        }
+                                    } else {
+                                        navigate('/cv/create');
+                                    }
                                 }}
                             >
                                 Tạo CV ngay

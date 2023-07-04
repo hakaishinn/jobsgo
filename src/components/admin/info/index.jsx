@@ -1,5 +1,5 @@
 import { CameraAlt, SaveOutlined } from '@mui/icons-material';
-import { Button } from '@mui/material';
+import { Autocomplete, Button, TextField } from '@mui/material';
 import { useContext, useEffect, useState } from 'react';
 import * as userService from '~/service/userService';
 import AvatarRecruiter from '~/assets/images/recruiter/avatar-recruiter.png';
@@ -9,9 +9,47 @@ import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 import { storage } from '~/firebase';
 import { AppContext } from '~/context/AppProvider';
+import addressArray from '~/data/address.json';
 
 function Info({ className, title }) {
     const { setRecruiter } = useContext(AppContext);
+
+    const cityArray = addressArray.map((city) => ({ label: city.name, value: city }));
+    const [districtsArray, setDistrictsArray] = useState([]);
+    const [wardsArray, setWardsArray] = useState([]);
+
+    const [city, setCity] = useState();
+    const [district, setDistrict] = useState();
+    const [ward, setWard] = useState();
+
+    const handleChangeCity = (e, value) => {
+        setCity(value);
+        setRecruiterInfo({ ...recruiterInfo, city: value.label });
+        setDistrict(null);
+        setWard(null);
+        setWardsArray([]);
+        if (value) {
+            setDistrictsArray(value?.value?.districts.map((district) => ({ label: district.name, value: district })));
+        } else {
+            setDistrictsArray([]);
+        }
+    };
+
+    const handleChangeDistrict = (e, value) => {
+        setDistrict(value);
+        setRecruiterInfo({ ...recruiterInfo, district: value.label });
+        setWard(null);
+        if (value) {
+            setWardsArray(value?.value?.wards.map((ward) => ({ label: ward.name, value: ward })));
+        } else {
+            setWardsArray([]);
+        }
+    };
+
+    const handleChangeWard = (e, value) => {
+        setWard(value);
+        setRecruiterInfo({ ...recruiterInfo, ward: value.label });
+    };
 
     const [recruiterInfo, setRecruiterInfo] = useState({
         image: null,
@@ -22,6 +60,9 @@ function Info({ className, title }) {
         shortName: '',
         phone: '',
         specificAddress: '',
+        ward: '',
+        district: '',
+        city: '',
         website: '',
         facebook: '',
         twitter: '',
@@ -101,9 +142,27 @@ function Info({ className, title }) {
                     linkedin: res.data?.linkedin,
                     description: res.data?.description,
                 });
+                const currentCity = cityArray.find((city) => city.label === res?.data?.city);
+                setDistrictsArray(
+                    currentCity?.value?.districts.map((district) => ({ label: district.name, value: district })),
+                );
+
+                const currentDistrict = currentCity?.value?.districts
+                    ?.map((district) => ({ label: district.name, value: district }))
+                    ?.find((district) => district.label === res?.data?.districts);
+
+                setWardsArray(currentDistrict?.value?.wards.map((ward) => ({ label: ward.name, value: ward })));
+                const currentWard = currentDistrict?.value?.wards
+                    ?.map((ward) => ({ label: ward.name, value: ward }))
+                    ?.find((ward) => ward.label === res?.data?.wards);
+
+                setCity(currentCity);
+                setDistrict(currentDistrict);
+                setWard(currentWard);
             }
         };
         getData();
+        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, []);
     return (
         <div className={className}>
@@ -128,7 +187,7 @@ function Info({ className, title }) {
                         type="text"
                         disabled
                         className="col-span-3 outline-none p-2 w-max cursor-not-allowed"
-                        value={recruiterInfo?.email}
+                        value={recruiterInfo?.email || ''}
                     />
                 </div>
                 <div className="grid grid-cols-4 m-auto items-center">
@@ -137,7 +196,7 @@ function Info({ className, title }) {
                         type="text"
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.emailCompany}
+                        value={recruiterInfo?.emailCompany || ''}
                         onChange={(e) => setRecruiterInfo({ ...recruiterInfo, emailCompany: e.target.value })}
                     />
                 </div>
@@ -147,7 +206,7 @@ function Info({ className, title }) {
                         type="text"
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.nameCompany}
+                        value={recruiterInfo?.nameCompany || ''}
                         onChange={(e) => setRecruiterInfo({ ...recruiterInfo, nameCompany: e.target.value })}
                     />
                 </div>
@@ -157,7 +216,7 @@ function Info({ className, title }) {
                         type="text"
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.shortName}
+                        value={recruiterInfo?.shortName || ''}
                         onChange={(e) => setRecruiterInfo({ ...recruiterInfo, shortName: e.target.value })}
                     />
                 </div>
@@ -167,7 +226,7 @@ function Info({ className, title }) {
                         type="text"
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.phone}
+                        value={recruiterInfo?.phone || ''}
                         onChange={(e) => setRecruiterInfo({ ...recruiterInfo, phone: e.target.value })}
                     />
                 </div>
@@ -177,13 +236,51 @@ function Info({ className, title }) {
 
                 <div className="grid grid-cols-4 m-auto items-center">
                     <span className="col-span-1">Địa chỉ</span>
-                    <input
-                        type="text"
-                        placeholder="(Chưa có dữ liệu)"
-                        className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.specificAddress}
-                        onChange={(e) => setRecruiterInfo({ ...recruiterInfo, specificAddress: e.target.value })}
-                    />
+                    <div className="col-span-3 w-full">
+                        <div className="grid grid-cols-4 gap-2">
+                            <input
+                                value={recruiterInfo?.specificAddress || ''}
+                                type="text"
+                                placeholder="Số nhà"
+                                className="outline-none border p-2 flex-1 rounded-md text-base text-black"
+                                onChange={(e) =>
+                                    setRecruiterInfo({ ...recruiterInfo, specificAddress: e.target.value })
+                                }
+                            />
+                            <Autocomplete
+                                value={city || null}
+                                className="bg-white rounded-md w-full"
+                                disablePortal
+                                options={cityArray}
+                                size="small"
+                                renderInput={(params) => <TextField {...params} placeholder="Chọn tỉnh, thành phố" />}
+                                onChange={handleChangeCity}
+                                isOptionEqualToValue={(option, value) => option.label === value.label || !value}
+                            />
+                            <Autocomplete
+                                value={district || null}
+                                className="bg-white rounded-md w-full"
+                                disablePortal
+                                options={districtsArray}
+                                size="small"
+                                renderInput={(params) => <TextField {...params} placeholder="Chọn quận, huyện" />}
+                                onChange={handleChangeDistrict}
+                                isOptionEqualToValue={(option, value) => option.label === value.label || !value}
+                            />
+                            <Autocomplete
+                                value={ward || null}
+                                className="bg-white rounded-md w-full"
+                                disablePortal
+                                options={wardsArray}
+                                size="small"
+                                renderInput={(params) => (
+                                    <TextField value={ward?.label} {...params} placeholder="Chọn xã, phường" />
+                                )}
+                                onChange={handleChangeWard}
+                                isOptionEqualToValue={(option, value) => option.label === value.label || !value}
+                            />
+                        </div>
+                    </div>
                 </div>
                 <div className="grid grid-cols-4 m-auto items-center">
                     <span className="col-span-1">Website</span>
@@ -191,7 +288,7 @@ function Info({ className, title }) {
                         type="text"
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.website}
+                        value={recruiterInfo?.website || ''}
                         onChange={(e) => setRecruiterInfo({ ...recruiterInfo, website: e.target.value })}
                     />
                 </div>
@@ -201,7 +298,7 @@ function Info({ className, title }) {
                         type="text"
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.facebook}
+                        value={recruiterInfo?.facebook || ''}
                         onChange={(e) => setRecruiterInfo({ ...recruiterInfo, facebook: e.target.value })}
                     />
                 </div>
@@ -211,7 +308,7 @@ function Info({ className, title }) {
                         type="text"
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.twitter}
+                        value={recruiterInfo?.twitter || ''}
                         onChange={(e) => setRecruiterInfo({ ...recruiterInfo, twitter: e.target.value })}
                     />
                 </div>
@@ -221,7 +318,7 @@ function Info({ className, title }) {
                         type="text"
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.linkedin}
+                        value={recruiterInfo?.linkedin || ''}
                         onChange={(e) => setRecruiterInfo({ ...recruiterInfo, linkedin: e.target.value })}
                     />
                 </div>
@@ -230,7 +327,7 @@ function Info({ className, title }) {
                     <textarea
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 p-2 outline-none border min-h-[100px] w-full"
-                        value={recruiterInfo?.description}
+                        value={recruiterInfo?.description || ''}
                         onChange={(e) => setRecruiterInfo({ ...recruiterInfo, description: e.target.value })}
                     ></textarea>
                 </div>

@@ -26,13 +26,23 @@ function DetailJob() {
 
     const [showModalSelectCV, setShowModalSelectCV] = useState(false);
 
+    const getAddress = (specificAddress, ward, district, city) => {
+        let result = [];
+        if (specificAddress) result.push(specificAddress);
+        if (ward) result.push(ward);
+        if (district) result.push(district);
+        if (city) result.push(city);
+
+        return result.join(', ');
+    };
+
     useEffect(() => {
         const getData = async () => {
             const res = await jobService.getJobById(id);
             if (res?.success) {
                 setJob(res.data);
 
-                const resAllJobByRecruiter = await jobService.viewJobByRecruiterId(res?.data?.recruiter?.id);
+                const resAllJobByRecruiter = await jobService.viewJobOpenByRecruiterId(res?.data?.recruiter?.id);
 
                 if (resAllJobByRecruiter?.success) {
                     setJobAnother(resAllJobByRecruiter.data.filter((job) => job.id.toString() !== id));
@@ -178,7 +188,14 @@ function DetailJob() {
                 {job?.recruiter && (
                     <>
                         <h2 className="font-bold underline">Địa chỉ: </h2>
-                        <p className="text-sm">{`${job?.recruiter?.specificAddress}`}</p>
+                        <p className="text-sm">
+                            {getAddress(
+                                job?.recruiter?.specificAddress,
+                                job?.recruiter?.wards,
+                                job?.recruiter?.districts,
+                                job?.recruiter?.city,
+                            )}
+                        </p>
                     </>
                 )}
                 {job?.description && (

@@ -55,34 +55,34 @@ function FormManagerJob({ className, title, tab }) {
         const getData = async () => {
             const recruiterLocalStorage = JSON.parse(localStorage.getItem('user'));
             if (tab === 'pending') {
-                const res = await jobService.viewJobPending();
+                const res = await jobService.viewJobPendingByRecruiterId(recruiterLocalStorage.userId);
                 if (res?.success && res?.data?.length > 0) {
                     setListJob(res.data);
                     setListJobFilter(res.data);
                 }
             } else if (tab === 'open') {
-                const res = await jobService.viewJobOpen();
+                const res = await jobService.viewJobOpenByRecruiterId(recruiterLocalStorage.userId);
                 if (res?.success && res?.data?.length > 0) {
-                    setListJob(res.data.filter((job) => job.recruiter.id === recruiterLocalStorage.userId));
-                    setListJobFilter(res.data.filter((job) => job.recruiter.id === recruiterLocalStorage.userId));
+                    setListJob(res.data);
+                    setListJobFilter(res.data);
                 }
             } else if (tab === 'pause') {
-                const res = await jobService.viewJobPause();
+                const res = await jobService.viewJobPauseByRecruiterId(recruiterLocalStorage.userId);
                 if (res?.success && res?.data?.length > 0) {
-                    setListJob(res.data.filter((job) => job.recruiter.id === recruiterLocalStorage.userId));
-                    setListJobFilter(res.data.filter((job) => job.recruiter.id === recruiterLocalStorage.userId));
+                    setListJob(res.data);
+                    setListJobFilter(res.data);
                 }
             } else if (tab === 'expired') {
-                const res = await jobService.viewJobExpired();
+                const res = await jobService.viewJobExpiredByRecruiterId(recruiterLocalStorage.userId);
                 if (res?.success && res?.data?.length > 0) {
-                    setListJob(res.data.filter((job) => job.recruiter.id === recruiterLocalStorage.userId));
-                    setListJobFilter(res.data.filter((job) => job.recruiter.id === recruiterLocalStorage.userId));
+                    setListJob(res.data);
+                    setListJobFilter(res.data);
                 }
-            } else if (tab === 'denied') {
-                const res = await jobService.viewJobDenied();
+            } else if (tab === 'jobDenied') {
+                const res = await jobService.viewJobDeniedByRecruiterId(recruiterLocalStorage.userId);
                 if (res?.success && res?.data?.length > 0) {
-                    setListJob(res.data.filter((job) => job.recruiter.id === recruiterLocalStorage.userId));
-                    setListJobFilter(res.data.filter((job) => job.recruiter.id === recruiterLocalStorage.userId));
+                    setListJob(res.data);
+                    setListJobFilter(res.data);
                 }
             }
         };

@@ -51,6 +51,20 @@ export const getAllResumeApply = async (recruiterId) => {
         console.log(error);
     }
 };
+export const getAllResumeApplyByJobId = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
+        const res = await request.get(`/apply/resumes/jobs/${id}`, config);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 export const getAllResumeConsider = async (recruiterId) => {
     try {

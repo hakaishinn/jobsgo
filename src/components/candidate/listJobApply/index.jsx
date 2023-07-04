@@ -80,7 +80,10 @@ function ListJobApply() {
                                     </div>
                                 </div>
                             </div>
-                            <div className="pl-4 text-sm" dangerouslySetInnerHTML={{ __html: job?.description }}></div>
+                            <div
+                                className="pl-6 text-sm line-clamp-5 overflow-hidden"
+                                dangerouslySetInnerHTML={{ __html: job?.description }}
+                            ></div>
                         </div>
                         <div className="col-span-1 flex flex-col gap-2 p-2">
                             {job?.statusApply === 0 ? (

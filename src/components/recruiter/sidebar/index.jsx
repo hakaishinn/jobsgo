@@ -50,7 +50,7 @@ function Sidebar({ className, tab }) {
                     </Link>
                     <Link
                         to={'/recruiter/managerJobs/denied'}
-                        className={`flex items-center p-1 hover:text-sky-500 ${tab === 'denied' ? classActive : ''}`}
+                        className={`flex items-center p-1 hover:text-sky-500 ${tab === 'jobDenied' ? classActive : ''}`}
                     >
                         <CancelOutlined className="mr-1" /> Việc làm bị từ chối{' '}
                         {/* <strong className="text-red-500">(0)</strong> */}
