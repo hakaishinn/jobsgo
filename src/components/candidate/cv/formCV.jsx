@@ -1,4 +1,4 @@
-import { Add, AttachFileOutlined, CameraAlt } from '@mui/icons-material';
+import { Add, AttachFileOutlined } from '@mui/icons-material';
 import { useContext, useEffect, useState } from 'react';
 import ModalEducation from '~/components/modal/modalEducation';
 import ModalExp from '~/components/modal/modalExp';
@@ -88,6 +88,10 @@ function FormCV({ tab, type }) {
             };
             reader.readAsDataURL(file);
         }
+    };
+
+    const handleDeleteImage = () => {
+        setResume({ ...resume, image: null, file: null });
     };
 
     const handleSubmit = async (resume, id) => {
@@ -202,14 +206,23 @@ function FormCV({ tab, type }) {
 
                 <div className="col-span-2">
                     <div className="flex justify-start items-center border p-4">
-                        <div className="w-[170px] h-[170px] relative group">
-                            <img src={resume?.image || AvatarMale} alt="avatar" />
-                            <label
-                                className="cursor-pointer absolute bottom-0 left-[50%] translate-x-[-50%] bg-white w-[50px] h-[50px] rounded-full justify-center items-center border hidden group-hover:flex"
-                                htmlFor="avatar"
-                            >
-                                <CameraAlt />
-                            </label>
+                        <div className="w-[170px] h-[170px] relative group overflow-hidden object-contain">
+                            <img
+                                className="w-full h-full object-contain"
+                                src={resume?.image || AvatarMale}
+                                alt="avatar"
+                            />
+                            <div className="text-sm bg-black/50 w-full h-full justify-center items-center gap-2 cursor-pointer top-0 absolute hidden group-hover:flex">
+                                <button className="border-none p-2 bg-red-700 text-white" onClick={handleDeleteImage}>
+                                    Xóa ảnh
+                                </button>
+                                <label
+                                    className="cursor-pointer justify-center items-center border border-none p-2 bg-green-700 text-white"
+                                    htmlFor="avatar"
+                                >
+                                    Thêm ảnh
+                                </label>
+                            </div>
                             <input id="avatar" type="file" className="hidden" onChange={handleImageUpload} />
                         </div>
                         <div className="ml-4 text-[#333] flex-1">

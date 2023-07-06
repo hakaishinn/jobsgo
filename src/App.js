@@ -39,6 +39,11 @@ import CreatePack from './pages/Admin/package/CreatePack';
 import JobDenied from './pages/Recruiter/Job/JobDenied';
 import LoginAdmin from './components/auth/loginAdmin';
 import ForgotPassword from './components/auth/forgotPassword';
+import JobFeatured from './pages/Candidate/JobFeatured';
+import CompanyFeatured from './pages/Candidate/Company/companyFeatured';
+import JobByNatureOfWork from './pages/Candidate/JobByNatureOfWork';
+import JobNew from './pages/Candidate/JobNew';
+import JobForYou from './pages/Candidate/JobForYou';
 
 function App() {
     return (
@@ -50,9 +55,14 @@ function App() {
                     <Route path="/login" element={<Login />}></Route>
                     <Route path="/register" element={<Register />}></Route>
                     <Route path="/company" element={<Company />}></Route>
+                    <Route path="/company/featured" element={<CompanyFeatured />}></Route>
                     <Route path="/company/:id" element={<CompanyDetailPage />}></Route>
                     <Route path="/jobs" element={<SearchJob />}></Route>
                     <Route path="/jobs/noExp" element={<JobNoExp />}></Route>
+                    <Route path="/jobs/new" element={<JobNew />}></Route>
+                    <Route path="/jobs/for-you" element={<JobForYou />}></Route>
+                    <Route path="/jobs/featured" element={<JobFeatured />}></Route>
+                    <Route path="/jobs/natureOfWork" element={<JobByNatureOfWork />}></Route>
                     <Route path="/jobs/careers/:id" element={<JobByCareer />}></Route>
                     <Route path="/jobs/:id" element={<DetailJobPage />}></Route>
                     <Route path="/jobs/job-applied" element={<ListApplyPage />}></Route>

@@ -1,16 +1,14 @@
 import ListJobSearch from '~/components/candidate/listJobSearch';
 // import Search from '~/components/candidate/search';
-// import ItemSearchJob from '~/components/candidate/search/itemSearchJob';
 import CandidateLayout from '~/layout/candidateLayout';
 
-function SearchJob() {
+function JobNew() {
     return (
         <CandidateLayout>
             {/* <Search className={'container mt-[85px] mx-auto border-2 border-sky-700 rounded-full'}></Search> */}
-            {/* <ItemSearchJob></ItemSearchJob> */}
-            <ListJobSearch></ListJobSearch>
+            <ListJobSearch type="jobs-new"></ListJobSearch>
         </CandidateLayout>
     );
 }
 
-export default SearchJob;
+export default JobNew;

@@ -88,3 +88,15 @@ export const forgotPassword = async (email) => {
         console.log(error);
     }
 };
+export const searchRecruiter = async (keyword) => {
+    try {
+        const res = await request.get(`/public/searchRecruiter`, {
+            params: {
+                keyword,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

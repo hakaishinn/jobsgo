@@ -79,10 +79,10 @@ function Home() {
                     </div>
                 </div>
             </div>
-            <CustomSlider type={'job-featured'} title={'Việc làm nổi bật'}></CustomSlider>
+            <CustomSlider type={'jobs-featured'} title={'Việc làm nổi bật'}></CustomSlider>
             <CustomSlider option={'company'} type={'company-featured'} title={'Công ty nổi bật'}></CustomSlider>
-            {user && <CustomSlider type={'job-for-you'} title={'Việc dành cho bạn'}></CustomSlider>}
-            <CustomSlider type={'job-new'} title={'Việc làm mới nhất'}></CustomSlider>
+            {user && <CustomSlider type={'jobs-for-you'} title={'Việc dành cho bạn'}></CustomSlider>}
+            <CustomSlider type={'jobs-new'} title={'Việc làm mới nhất'}></CustomSlider>
         </CandidateLayout>
     );
 }

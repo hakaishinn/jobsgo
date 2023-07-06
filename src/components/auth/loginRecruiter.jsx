@@ -1,29 +1,82 @@
-import { useContext, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import { AppContext } from '~/context/AppProvider';
 import * as authService from '~/service/auth/authService';
 import Loading from '../loading';
 
+import { addValidatorOnBlur, removeValidatorOnInput, validatorMultiple, errorClass } from '~/utils/validator';
+
 function LoginRecruiter() {
     const { setRecruiter } = useContext(AppContext);
+
+    const inputsRef = useRef([]);
+    const messageErrorRef = useRef([]);
+
     const navigate = useNavigate();
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
     const [isLoading, setIsLoading] = useState(false);
 
     const handleLogin = async () => {
-        setIsLoading(true);
-        const res = await authService.login(email, password);
-        if (res?.success && res?.data?.roles.includes('RECRUITER')) {
-            localStorage.setItem('user', JSON.stringify(res?.data));
-            setRecruiter(res?.data);
-            navigate('/recruiter/managerJobs/open');
+        if (
+            validatorMultiple([
+                {
+                    inputRef: inputsRef.current[0],
+                    messageErrorRef: messageErrorRef.current[0],
+                    rules: ['required', 'email'],
+                },
+                {
+                    inputRef: inputsRef.current[1],
+                    messageErrorRef: messageErrorRef.current[1],
+                    rules: ['required'],
+                },
+            ])
+        ) {
+            setIsLoading(true);
+            const res = await authService.login(email, password);
+            if (res?.success && res?.data?.roles.includes('RECRUITER')) {
+                localStorage.setItem('user', JSON.stringify(res?.data));
+                setRecruiter(res?.data);
+                navigate('/recruiter/managerJobs/open');
+            } else if (res?.success && !res?.data?.roles.includes('RECRUITER')) {
+                inputsRef.current[0].classList.add(...errorClass);
+                messageErrorRef.current[0].innerHTML = 'Tài khoản không phải nhà tuyển dụng';
+                messageErrorRef.current[0].style.opacity = 1;
+            } else if (res?.success === false) {
+                if (res.message === 'Email không tồn tại') {
+                    inputsRef.current[0].classList.add(...errorClass);
+                    messageErrorRef.current[0].innerHTML = res.message;
+                    messageErrorRef.current[0].style.opacity = 1;
+                } else if (res.message === 'Mật khẩu không chính xác') {
+                    inputsRef.current[1].classList.add(...errorClass);
+                    messageErrorRef.current[1].innerHTML = res.message;
+                    messageErrorRef.current[1].style.opacity = 1;
+                }
+            }
+            setIsLoading(false);
         }
-        setIsLoading(false);
     };
+
+    useEffect(() => {
+        addValidatorOnBlur([
+            {
+                inputRef: inputsRef.current[0],
+                messageErrorRef: messageErrorRef.current[0],
+                rules: ['required', 'email'],
+            },
+            {
+                inputRef: inputsRef.current[1],
+                messageErrorRef: messageErrorRef.current[1],
+                rules: ['required'],
+            },
+        ]);
+        removeValidatorOnInput(inputsRef.current, messageErrorRef.current);
+
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [inputsRef.current.length, messageErrorRef.current.length]);
     return (
         <div
-            className="bg-cover bg-center bg-no-repeat bg-fixed min-h-screen flex justify-center items-center text-sm"
+            className="bg-cover bg-center bg-no-repeat bg-fixed min-h-screen flex justify-center items-center"
             style={{ backgroundImage: 'url("https://jobsgo.vn/bolt/assets/images/backgrounds/bg-9.jpg")' }}
         >
             {isLoading && <Loading />}
@@ -31,11 +84,12 @@ function LoginRecruiter() {
                 <h2 className="text-3xl font-semibold text-center text-gray-700 pb-2 border-b">
                     Đăng nhập dành cho nhà tuyển dụng
                 </h2>
-                <div className="my-4">
+                <div className="mt-4">
                     <label htmlFor="email" className="text-sky-500 font-semibold">
                         Email <span className="text-red-700">*</span>
                     </label>
                     <input
+                        ref={(el) => (inputsRef.current[0] = el)}
                         name="email"
                         id="email"
                         type="email"
@@ -43,13 +97,19 @@ function LoginRecruiter() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                    {/* <span className="text-sm text-red-600">abc</span> */}
+                    <span
+                        className="text-sm text-red-600 font-semibold opacity-0"
+                        ref={(el) => (messageErrorRef.current[0] = el)}
+                    >
+                        error
+                    </span>
                 </div>
-                <div className="mb-4">
+                <div>
                     <label htmlFor="password" className="text-sky-500 font-semibold">
                         Mật khẩu <span className="text-red-700">*</span>
                     </label>
                     <input
+                        ref={(el) => (inputsRef.current[1] = el)}
                         name="password"
                         id="password"
                         type="password"
@@ -57,10 +117,17 @@ function LoginRecruiter() {
                         value={password}
                         onChange={(e) => setPassword(e.target.value)}
                     />
-                    {/* {false && <span className="text-sm text-red-600">abc</span>} */}
+                    <span
+                        className="text-sm text-red-600 font-semibold opacity-0"
+                        ref={(el) => (messageErrorRef.current[1] = el)}
+                    >
+                        error
+                    </span>
                 </div>
                 <div className="text-right my-2">
-                    <Link className="text-sky-600 hover:text-red-600">Quên mật khẩu?</Link>
+                    <Link to={`/forgotPassword`} className="text-sky-600 hover:text-red-600">
+                        Quên mật khẩu?
+                    </Link>
                 </div>
 
                 <div>

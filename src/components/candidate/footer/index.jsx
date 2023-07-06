@@ -137,8 +137,36 @@ function Footer() {
                 <div className="flex flex-col">
                     <p className="font-bold mb-3">Việc làm theo loại hình</p>
 
-                    <Link className="hover:text-[#1772bd] pb-1">Full time</Link>
-                    <Link className="hover:text-[#1772bd] pb-1">Part time</Link>
+                    <Link
+                        to={'/jobs/natureOfWork'}
+                        className="hover:text-[#1772bd] pb-1"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate({
+                                pathname: '/jobs/natureOfWork',
+                                search: createSearchParams({
+                                    natureOfWork: 'Full-time',
+                                }).toString(),
+                            });
+                        }}
+                    >
+                        Full time
+                    </Link>
+                    <Link
+                        to={'/jobs/natureOfWork'}
+                        className="hover:text-[#1772bd] pb-1"
+                        onClick={(e) => {
+                            e.preventDefault();
+                            navigate({
+                                pathname: '/jobs/natureOfWork',
+                                search: createSearchParams({
+                                    natureOfWork: 'Part-time',
+                                }).toString(),
+                            });
+                        }}
+                    >
+                        Part time
+                    </Link>
                 </div>
                 <div className="flex flex-col">
                     <p className="font-bold mb-3">Mạng xã hội</p>

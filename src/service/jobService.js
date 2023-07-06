@@ -67,12 +67,7 @@ export const viewJobOpen = async () => {
 
 export const viewJobOpenByRecruiterId = async (id) => {
     try {
-        const user = JSON.parse(localStorage.getItem('user'));
-        const res = await request.get(`/jobs/open/recruiter/${id}`, {
-            headers: {
-                Authorization: 'Bearer ' + user.accessToken,
-            },
-        });
+        const res = await request.get(`/public/jobs/open/recruiter/${id}`);
         return res.data;
     } catch (error) {
         console.log(error);
@@ -284,6 +279,19 @@ export const viewJobFeatured = async () => {
 export const viewJobNew = async () => {
     try {
         const res = await request.get(`/public/jobs/new`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
+export const viewJobByNaturedOfWork = async (natureOfWork = '') => {
+    try {
+        const res = await request.get(`/public/jobs/natureOfWork`, {
+            params: {
+                natureOfWork,
+            },
+        });
         return res.data;
     } catch (error) {
         console.log(error);

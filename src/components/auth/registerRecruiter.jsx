@@ -1,12 +1,17 @@
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
 import * as authService from '~/service/auth/authService';
 import Loading from '../loading';
 
-import { createUserWithEmailAndPassword } from 'firebase/auth';
-import { auth } from '~/firebase';
+// import { createUserWithEmailAndPassword } from 'firebase/auth';
+// import { auth } from '~/firebase';
+
+import { addValidatorOnBlur, removeValidatorOnInput, validatorMultiple, errorClass } from '~/utils/validator';
 
 function RegisterRecruiter() {
+    const inputsRef = useRef([]);
+    const messageErrorRef = useRef([]);
+
     const navigate = useNavigate();
     const [recruiter, setRecruiter] = useState({
         name: '',
@@ -17,27 +22,108 @@ function RegisterRecruiter() {
     const [isLoading, setIsLoading] = useState(false);
 
     const handleRegister = async () => {
-        setIsLoading(true);
-        await createUserWithEmailAndPassword(auth, recruiter.email, recruiter.password)
-            .then(async () => {
-                const res = await authService.register(
-                    recruiter.email,
-                    recruiter.password,
-                    recruiter.name,
-                    'RECRUITER',
-                );
-                if (res?.success) {
-                    navigate('/recruiter/login');
+        if (
+            validatorMultiple([
+                {
+                    //Tên công ty
+                    inputRef: inputsRef.current[0],
+                    messageErrorRef: messageErrorRef.current[0],
+                    rules: ['required'],
+                },
+                {
+                    //email
+                    inputRef: inputsRef.current[1],
+                    messageErrorRef: messageErrorRef.current[1],
+                    rules: ['required', 'email'],
+                },
+                {
+                    //password
+                    inputRef: inputsRef.current[2],
+                    messageErrorRef: messageErrorRef.current[2],
+                    rules: ['required'],
+                },
+                {
+                    //rePassword
+                    inputRef: inputsRef.current[3],
+                    messageErrorRef: messageErrorRef.current[3],
+                    rules: ['required'],
+                },
+            ])
+        ) {
+            if (inputsRef.current[2].value !== inputsRef.current[3].value) {
+                inputsRef.current[3].classList.add(...errorClass);
+                messageErrorRef.current[3].innerHTML = 'Nhập lại mật khẩu không chính xác';
+                messageErrorRef.current[3].style.opacity = 1;
+                return;
+            }
+            setIsLoading(true);
+            const res = await authService.register(recruiter.email, recruiter.password, recruiter.name, 'RECRUITER');
+            if (res?.success) {
+                navigate('/recruiter/login');
+            } else if (res?.success === false) {
+                if (res.message === 'Email đã tồn tại') {
+                    inputsRef.current[1].classList.add(...errorClass);
+                    messageErrorRef.current[1].innerHTML = res.message;
+                    messageErrorRef.current[1].style.opacity = 1;
                 }
-            })
-            .catch((error) => {
-                alert(error.code);
-            });
-        setIsLoading(false);
+            }
+            // await createUserWithEmailAndPassword(auth, recruiter.email, recruiter.password)
+            //     .then(async () => {
+            //         const res = await authService.register(
+            //             recruiter.email,
+            //             recruiter.password,
+            //             recruiter.name,
+            //             'RECRUITER',
+            //         );
+            //         if (res?.success) {
+            //             navigate('/recruiter/login');
+            //         } else if (res?.success === false) {
+            //             if (res.message === 'Email đã tồn tại') {
+            //                 inputsRef.current[1].classList.add(...errorClass);
+            //                 messageErrorRef.current[1].innerHTML = res.message;
+            //                 messageErrorRef.current[1].style.opacity = 1;
+            //             }
+            //         }
+            //     })
+            //     .catch((error) => {
+            //         alert(error.code);
+            //     });
+            setIsLoading(false);
+        }
     };
+
+    useEffect(() => {
+        addValidatorOnBlur([
+            {
+                //Tên công ty
+                inputRef: inputsRef.current[0],
+                messageErrorRef: messageErrorRef.current[0],
+                rules: ['required'],
+            },
+            {
+                //email
+                inputRef: inputsRef.current[1],
+                messageErrorRef: messageErrorRef.current[1],
+                rules: ['required', 'email'],
+            },
+            {
+                //password
+                inputRef: inputsRef.current[2],
+                messageErrorRef: messageErrorRef.current[2],
+                rules: ['required'],
+            },
+            {
+                //rePassword
+                inputRef: inputsRef.current[3],
+                messageErrorRef: messageErrorRef.current[3],
+                rules: ['required'],
+            },
+        ]);
+        removeValidatorOnInput(inputsRef.current, messageErrorRef.current);
+    }, [inputsRef.current.length, messageErrorRef.current.length]);
     return (
         <div
-            className="bg-cover bg-center bg-no-repeat bg-fixed min-h-screen flex justify-center items-center text-sm"
+            className="bg-cover bg-center bg-no-repeat bg-fixed min-h-screen flex justify-center items-center"
             style={{ backgroundImage: 'url("https://jobsgo.vn/bolt/assets/images/backgrounds/bg-9.jpg")' }}
         >
             {isLoading && <Loading />}
@@ -45,11 +131,12 @@ function RegisterRecruiter() {
                 <h2 className="text-3xl font-semibold text-center text-gray-700 pb-2 border-b">
                     Đăng ký dành cho nhà tuyển dụng
                 </h2>
-                <div className="my-4">
+                <div className="mt-4">
                     <label htmlFor="name" className="text-sky-500 font-semibold">
                         Tên công ty <span className="text-red-700">*</span>
                     </label>
                     <input
+                        ref={(el) => (inputsRef.current[0] = el)}
                         name="name"
                         id="name"
                         type="text"
@@ -57,12 +144,19 @@ function RegisterRecruiter() {
                         value={recruiter?.name}
                         onChange={(e) => setRecruiter({ ...recruiter, name: e.target.value })}
                     />
+                    <span
+                        className="text-sm text-red-600 font-semibold opacity-0"
+                        ref={(el) => (messageErrorRef.current[0] = el)}
+                    >
+                        error
+                    </span>
                 </div>
-                <div className="mb-4">
+                <div>
                     <label htmlFor="email" className="text-sky-500 font-semibold">
                         Email <span className="text-red-700">*</span>
                     </label>
                     <input
+                        ref={(el) => (inputsRef.current[1] = el)}
                         name="email"
                         id="email"
                         type="email"
@@ -70,23 +164,19 @@ function RegisterRecruiter() {
                         value={recruiter?.email}
                         onChange={(e) => setRecruiter({ ...recruiter, email: e.target.value })}
                     />
+                    <span
+                        className="text-sm text-red-600 font-semibold opacity-0"
+                        ref={(el) => (messageErrorRef.current[1] = el)}
+                    >
+                        error
+                    </span>
                 </div>
-                {/* <div className="mb-4">
-                    <label htmlFor="name" className="text-sky-500 font-semibold">
-                        Số điện thoại <span className="text-red-700">*</span>
-                    </label>
-                    <input
-                        name="phone"
-                        id="name"
-                        type="text"
-                        className="w-full border py-1 px-2 outline-none focus:border-sky-500 focus:shadow-ssm shadow-sky-500"
-                    />
-                </div> */}
-                <div className="mb-4">
+                <div>
                     <label htmlFor="password" className="text-sky-500 font-semibold">
                         Mật khẩu <span className="text-red-700">*</span>
                     </label>
                     <input
+                        ref={(el) => (inputsRef.current[2] = el)}
                         name="password"
                         id="password"
                         type="password"
@@ -94,12 +184,19 @@ function RegisterRecruiter() {
                         value={recruiter?.password}
                         onChange={(e) => setRecruiter({ ...recruiter, password: e.target.value })}
                     />
+                    <span
+                        className="text-sm text-red-600 font-semibold opacity-0"
+                        ref={(el) => (messageErrorRef.current[2] = el)}
+                    >
+                        error
+                    </span>
                 </div>
-                <div className="mb-4">
+                <div>
                     <label htmlFor="confirm-password" className="text-sky-500 font-semibold">
                         Nhập lại mật khẩu <span className="text-red-700">*</span>
                     </label>
                     <input
+                        ref={(el) => (inputsRef.current[3] = el)}
                         name="rePassword"
                         id="confirm-password"
                         type="password"
@@ -107,6 +204,12 @@ function RegisterRecruiter() {
                         value={recruiter?.rePassWord}
                         onChange={(e) => setRecruiter({ ...recruiter, rePassWord: e.target.value })}
                     />
+                    <span
+                        className="text-sm text-red-600 font-semibold opacity-0"
+                        ref={(el) => (messageErrorRef.current[3] = el)}
+                    >
+                        error
+                    </span>
                 </div>
 
                 <div>

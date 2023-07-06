@@ -154,7 +154,9 @@ function Header() {
                                         <div className="flex flex-col p-3">
                                             <h2 className="font-semibold pb-2">Việc theo nhu cầu</h2>
                                             {/* <Link className="hover:text-[#1772bd] p-1">Việc làm tuyển gấp</Link> */}
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm nổi bật</Link>
+                                            <Link to={`/jobs/featured`} className="hover:text-[#1772bd] p-1">
+                                                Việc làm nổi bật
+                                            </Link>
                                             <Link to={`/jobs/noExp`} className="hover:text-[#1772bd] p-1">
                                                 Việc làm không kinh nghiệm
                                             </Link>
@@ -172,7 +174,7 @@ function Header() {
                             <CustomTooltip
                                 title={
                                     <div className="flex flex-col">
-                                        <Link to={'/company'} className="p-1 hover:text-[#1772bd]">
+                                        <Link to={'/company/featured'} className="p-1 hover:text-[#1772bd]">
                                             Công ty tiêu biểu
                                         </Link>
                                         <Link to={'/company'} className="p-1 hover:text-[#1772bd]">

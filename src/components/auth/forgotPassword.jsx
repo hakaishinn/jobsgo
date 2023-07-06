@@ -1,9 +1,14 @@
 import BackGroundAuth from '~/assets/images/background-auth.jpg';
 import Loading from '../loading';
-import { useState } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import * as userService from '~/service/userService';
 
+import { addValidatorOnBlur, removeValidatorOnInput } from '~/utils/validator';
+
 function ForgotPassword() {
+    const inputsRef = useRef([]);
+    const messageErrorRef = useRef([]);
+
     const [isLoading, setIsLoading] = useState(false);
     const [email, setEmail] = useState('');
 
@@ -17,6 +22,17 @@ function ForgotPassword() {
             alert('Email không tồn tại trên hệ thống');
         }
     };
+
+    useEffect(() => {
+        addValidatorOnBlur([
+            {
+                inputRef: inputsRef.current[0],
+                messageErrorRef: messageErrorRef.current[0],
+                rules: ['required', 'email'],
+            },
+        ]);
+        removeValidatorOnInput(inputsRef.current, messageErrorRef.current);
+    }, [inputsRef.current.length, messageErrorRef.current.length]);
 
     return (
         <div
@@ -32,11 +48,12 @@ function ForgotPassword() {
                     <p className="text-sm text-gray-700">Vui lòng nhập email của bạn</p>
                     <p className="text-sm text-gray-700">Mật khẩu mới sẽ được gửi đến email của bạn</p>
                 </div>
-                <div className="my-4">
+                <div className="mt-4">
                     <label htmlFor="email" className="text-sky-500 font-semibold">
                         Email <span className="text-red-700">*</span>
                     </label>
                     <input
+                        ref={(el) => (inputsRef.current[0] = el)}
                         name="email"
                         id="email"
                         type="email"
@@ -44,7 +61,12 @@ function ForgotPassword() {
                         value={email}
                         onChange={(e) => setEmail(e.target.value)}
                     />
-                    {/* <span className="text-sm text-red-600">abc</span> */}
+                    <span
+                        className="text-sm text-red-600 font-semibold opacity-0"
+                        ref={(el) => (messageErrorRef.current[0] = el)}
+                    >
+                        error
+                    </span>
                 </div>
                 <div>
                     <button

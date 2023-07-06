@@ -1,12 +1,12 @@
 import ListJobSearch from '~/components/candidate/listJobSearch';
 import CandidateLayout from '~/layout/candidateLayout';
 
-function JobByCareer() {
+function JobByNatureOfWork() {
     return (
         <CandidateLayout>
-            <ListJobSearch type="jobs-career"></ListJobSearch>
+            <ListJobSearch type="jobs-natureOfWork"></ListJobSearch>
         </CandidateLayout>
     );
 }
 
-export default JobByCareer;
+export default JobByNatureOfWork;
