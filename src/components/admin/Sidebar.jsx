@@ -29,14 +29,17 @@ import { useContext } from 'react';
 import { AppContext } from '~/context/AppProvider';
 import AdminLayout from '~/layout/adminLayout';
 import { AccountCircleOutlined, KeyOutlined } from '@mui/icons-material';
+import StackedLineChartIcon from '@mui/icons-material/StackedLineChart';
 import ChangePasswordAdmin from '~/pages/Admin/changePassword';
 import Info from './info';
-
+import SettingsIcon from '@mui/icons-material/Settings';
+import ChangSetting from '~/pages/Admin/changeSetting';
+import Statisfical from '~/pages/Admin/statisfical/Statisfical';
 const drawerWidth = 240;
 
 const Main = styled('main', { shouldForwardProp: (prop) => prop !== 'open' })(({ theme, open }) => ({
     flexGrow: 1,
-    padding: theme.spacing(3),
+    padding: theme.spacing(0),
     transition: theme.transitions.create('margin', {
         easing: theme.transitions.easing.sharp,
         duration: theme.transitions.duration.leavingScreen,
@@ -125,6 +128,10 @@ export default function Sidebar() {
             return <ChangePasswordAdmin />;
         } else if (location.pathname.includes('/admin/info')) {
             return <Info />;
+        } else if (location.pathname.includes('/admin/changeSetting')) {
+            return <ChangSetting />;
+        } else if (location.pathname.includes('/admin/statistical')) {
+            return <Statisfical />;
         }
     };
     return (
@@ -198,6 +205,15 @@ export default function Sidebar() {
                         Đổi mật khẩu
                     </Link>
 
+                    <Link className="text-gray-500 px-4 py-2 hover:bg-gray-100" to={'/admin/statistical'}>
+                        <StackedLineChartIcon style={{ marginRight: 20 }} />
+                        Thống kê
+                    </Link>
+
+                    <Link className="text-gray-500 px-4 py-2 hover:bg-gray-100" to={'/admin/changeSetting'}>
+                        <SettingsIcon style={{ marginRight: 20 }} />
+                        Cài đặt
+                    </Link>
                     <Divider />
                     <button
                         style={boxStyle}

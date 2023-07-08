@@ -33,6 +33,14 @@ export const getAllRecruiter = async () => {
         console.log(error);
     }
 };
+export const getAllCandidate = async () => {
+    try {
+        const res = await request.get(`/public/candidates`);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
 export const getAllRecruiterFeatured = async () => {
     try {
         const res = await request.get(`/public/recruiters/featured`);

@@ -24,3 +24,18 @@ export const getUrlVnPay = async (data) => {
         console.log(error);
     }
 };
+
+export const getAllPayment = async () => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
+        const res = await request.get(`/payments`, config);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

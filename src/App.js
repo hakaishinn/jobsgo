@@ -104,6 +104,8 @@ function App() {
                     <Route path="/admin/manage/:id" element={<Sidebar />}></Route>
                     <Route path="/admin/changePassword" element={<Sidebar />}></Route>
                     <Route path="/admin/info" element={<Sidebar />}></Route>
+                    <Route path="/admin/changeSetting" element={<Sidebar />}></Route>
+                    <Route path="/admin/statistical" element={<Sidebar />}></Route>
                 </Routes>
             </div>
         </Router>

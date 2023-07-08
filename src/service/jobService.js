@@ -42,6 +42,20 @@ export const viewJobPending = async () => {
     }
 };
 
+export const viewAllJob = async () => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.get('/jobs', {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+
 export const viewJobPendingByRecruiterId = async (id) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));

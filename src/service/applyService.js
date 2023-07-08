@@ -168,3 +168,18 @@ export const deleteById = async (id) => {
         console.log(error);
     }
 };
+
+export const getAllApplied = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
+        const res = await request.get(`/admin/approve/${id}`, config);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
