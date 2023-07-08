@@ -1,7 +1,7 @@
 //Trong tường hợp này ref chính là element
 //rules = [required, email, phone]
 
-const errorClass = ['border-red-500', 'focus:shadow-sm', 'focus:shadow-red-100'];
+const errorClass = ['!border-red-500', '!focus:shadow-sm', '!focus:shadow-red-100'];
 const validator = (inputRef, messageErrorRef, rules) => {
     for (var rule of rules) {
         if (rule === 'required') {
@@ -72,12 +72,13 @@ const addValidatorOnBlur = (arrayValidate) => {
 };
 
 const validatorMultiple = (arrayValidate) => {
+    let flag = true;
     for (let item of arrayValidate) {
         if (!validator(item.inputRef, item.messageErrorRef, item.rules)) {
-            return false;
+            flag = false;
         }
     }
-    return true;
+    return flag;
 };
 
 export { validator, removeValidatorOnInput, addValidatorOnBlur, validatorMultiple, errorClass };

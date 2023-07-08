@@ -59,6 +59,34 @@ export const update = async (resume, id) => {
         console.log(error);
     }
 };
+export const changeTemplate = async (id, template) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
+        const res = await request.put(`/resumes/${id}/template/${template}`, null, config);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const changeIsPublic = async (id, status) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
+        const res = await request.put(`/resumes/${id}/public/${status}`, null, config);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
 
 export const deleteById = async (id) => {
     try {

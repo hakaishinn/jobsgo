@@ -67,7 +67,7 @@ function Info({ className, title }) {
         website: '',
         facebook: '',
         twitter: '',
-        linkedin: '',
+        linkedIn: '',
         description: '',
     });
 
@@ -143,7 +143,7 @@ function Info({ className, title }) {
                     website: res.data?.website,
                     facebook: res.data?.facebook,
                     twitter: res.data?.twitter,
-                    linkedin: res.data?.linkedin,
+                    linkedIn: res.data?.linkedIn,
                     description: res.data?.description,
                 });
             }
@@ -323,13 +323,13 @@ function Info({ className, title }) {
                     />
                 </div>
                 <div className="grid grid-cols-4 m-auto items-center">
-                    <span className="col-span-1">Linkedin</span>
+                    <span className="col-span-1">LinkedIn</span>
                     <input
                         type="text"
                         placeholder="(Chưa có dữ liệu)"
                         className="col-span-3 outline-none p-2 w-full"
-                        value={recruiterInfo?.linkedin || ''}
-                        onChange={(e) => setRecruiterInfo({ ...recruiterInfo, linkedin: e.target.value })}
+                        value={recruiterInfo?.linkedIn || ''}
+                        onChange={(e) => setRecruiterInfo({ ...recruiterInfo, linkedIn: e.target.value })}
                     />
                 </div>
                 <div className="grid grid-cols-4 m-auto items-center">

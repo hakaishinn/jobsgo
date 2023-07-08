@@ -25,9 +25,9 @@ function Home() {
                 <div className="flex justify-center items-center gap-4 p-4 w-[60%]">
                     <div className="flex justify-center items-center gap-2 p-4 border border-[blue] w-[50%] rounded-lg">
                         <div>
-                            <strong>Tải lên CV</strong>
+                            <strong>Tải lên chứng chỉ</strong>
                             <p className="text-xs text-[#666] py-3">
-                                Bạn đã có sẵn CV chưa, Tải CV lên để ứng tuyển với hàng ngàn công việc hot
+                                Càng nhiều chứng chỉ trình độ càng cao!!! Tải ngay
                             </p>
                             <Button
                                 variant="contained"
@@ -35,7 +35,7 @@ function Home() {
                                 onClick={(e) => {
                                     if (!user) {
                                         e.preventDefault();
-                                        if (window.confirm('Bạn cần đăng nhập để tải CV')) {
+                                        if (window.confirm('Bạn cần đăng nhập để tải chứng chỉ')) {
                                             navigate('/login');
                                         }
                                     } else {
@@ -43,7 +43,7 @@ function Home() {
                                     }
                                 }}
                             >
-                                Tải lên CV
+                                Tải lên chứng chỉ
                             </Button>
                         </div>
                         <div className="w-[50%]">

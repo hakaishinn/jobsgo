@@ -2,9 +2,14 @@ import { DeleteOutline, EditOutlined } from '@mui/icons-material';
 import MenuCV from './menuCV';
 import { Link } from 'react-router-dom';
 import Template1CV from '~/assets/images/candidate/template-1-cv.png';
+import Template2CV from '~/assets/images/candidate/template2.png';
 
 import * as resumeService from '~/service/resumeService';
 import { useEffect, useState } from 'react';
+
+const handleChangePublic = async (id, value) => {
+    await resumeService.changeIsPublic(id, value);
+};
 
 function ListCV() {
     const [listResume, setListResume] = useState([]);
@@ -23,6 +28,7 @@ function ListCV() {
         const getListResume = async () => {
             const res = await resumeService.getAllByCandidateID();
             if (res?.success) {
+                console.log(res.data);
                 setListResume(res.data);
             }
         };
@@ -38,8 +44,14 @@ function ListCV() {
                 <div className="grid grid-cols-2 gap-4">
                     {listResume?.map((resume) => (
                         <div key={resume.resumeId} className="p-2 border rounded-lg flex justify-start items-center">
-                            <Link to={`/cv/view/${resume.resumeId}`} className="max-w-[100px] mr-4">
-                                <img src={Template1CV} alt="cv1" />
+                            <Link
+                                to={`/cv/view/${resume.resumeId}/template/${resume.template}`}
+                                className="max-w-[100px] mr-4"
+                            >
+                                <img
+                                    src={resume.template === 1 ? Template1CV : resume.template === 2 ? Template2CV : ''}
+                                    alt="cv"
+                                />
                             </Link>
                             <div>
                                 <p className="font-bold">{resume.positionApply}</p>
@@ -59,6 +71,16 @@ function ListCV() {
                                         <DeleteOutline className="mr-1" />
                                         Xóa
                                     </button>
+                                    <select
+                                        onChange={(e) => {
+                                            handleChangePublic(resume?.resumeId, e.target.value);
+                                        }}
+                                        defaultValue={resume?.public}
+                                        className="border outline-none p-1 rounded-lg"
+                                    >
+                                        <option value={true}>Public</option>
+                                        <option value={false}>Private</option>
+                                    </select>
                                 </div>
                             </div>
                         </div>

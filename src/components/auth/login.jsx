@@ -120,8 +120,6 @@ function Login() {
             },
         ]);
         removeValidatorOnInput(inputsRef.current, messageErrorRef.current);
-
-        // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [inputsRef.current.length, messageErrorRef.current.length]);
 
     return (

@@ -219,13 +219,13 @@ function Header() {
                                                 }
                                             }}
                                         >
-                                            Tải lên CV
+                                            Tải lên chứng chỉ
                                         </Link>
                                     </div>
                                 }
                             >
                                 <div className="cursor-pointer flex items-center">
-                                    <Link to={'/cv/view'}>CV/Hồ sơ</Link>
+                                    <Link to={'/cv/view'}>CV/Chứng chỉ</Link>
                                     <ArrowDropDownIcon></ArrowDropDownIcon>
                                 </div>
                             </CustomTooltip>
@@ -254,6 +254,12 @@ function Header() {
                                     <Link to={'/jobs/job-applied'} className="p-1 hover:text-[#1772bd]">
                                         Việc làm đã ứng tuyển
                                     </Link>
+                                    <Link to={'/candidate/attachments'} className="p-1 hover:text-[#1772bd]">
+                                        Chứng chỉ của bạn
+                                    </Link>
+                                    <Link to={'/candidate/info'} className="p-1 hover:text-[#1772bd]">
+                                        Thông tin cá nhân
+                                    </Link>
                                     <Link to={'/candidate/changePassword'} className="p-1 hover:text-[#1772bd]">
                                         Đổi mật khẩu
                                     </Link>
@@ -276,8 +282,12 @@ function Header() {
                             }
                         >
                             <div className="flex items-center  cursor-pointer">
-                                <div className="w-[36px] h-[36px] object-cover">
-                                    <img src={AvatarMale} alt="avatar"></img>
+                                <div className="w-[45px] h-[45px] rounded-full overflow-hidden">
+                                    <img
+                                        className="w-full h-full object-contain"
+                                        src={user?.image || AvatarMale}
+                                        alt="avatar"
+                                    ></img>
                                 </div>
                                 <span className="pl-2 font-semibold">{user?.name || user?.email}</span>
                                 <ArrowDropDownIcon></ArrowDropDownIcon>

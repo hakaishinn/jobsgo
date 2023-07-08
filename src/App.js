@@ -24,7 +24,6 @@ import LoginRecruiter from './components/auth/loginRecruiter';
 import RegisterRecruiter from './components/auth/registerRecruiter';
 import ViewAllCV from './pages/Candidate/CV/ViewAllCV';
 import ViewDetailCVPage from './pages/Candidate/CV/ViewDetailCV';
-import UploadCVPage from './pages/Candidate/CV/UpLoadCV';
 import InfoPage from './pages/Recruiter/Info';
 import ChangePasswordPage from './pages/Recruiter/changePassword';
 import UpdateCV from './pages/Candidate/CV/UpdateCV';
@@ -44,6 +43,10 @@ import CompanyFeatured from './pages/Candidate/Company/companyFeatured';
 import JobByNatureOfWork from './pages/Candidate/JobByNatureOfWork';
 import JobNew from './pages/Candidate/JobNew';
 import JobForYou from './pages/Candidate/JobForYou';
+import CandidateInfo from './pages/Candidate/CandidateInfo';
+import UploadAttachmentsPage from './pages/Candidate/CV/UpLoadAttachments';
+import ListAttachmentsPage from './pages/Candidate/listAttachments';
+// import Template2Page from './pages/Candidate/CV/Template2';
 
 function App() {
     return (
@@ -67,11 +70,13 @@ function App() {
                     <Route path="/jobs/:id" element={<DetailJobPage />}></Route>
                     <Route path="/jobs/job-applied" element={<ListApplyPage />}></Route>
                     <Route path="/cv/create" element={<CreateCV />}></Route>
-                    <Route path="/cv/upload" element={<UploadCVPage />}></Route>
+                    <Route path="/cv/upload" element={<UploadAttachmentsPage />}></Route>
                     <Route path="/cv/view" element={<ViewAllCV />}></Route>
-                    <Route path="/cv/view/:id" element={<ViewDetailCVPage />}></Route>
+                    <Route path="/cv/view/:id/template/:template" element={<ViewDetailCVPage />}></Route>
                     <Route path="/cv/update/:id" element={<UpdateCV />}></Route>
                     <Route path="/candidate/changePassword" element={<ChangePasswordCandidate />}></Route>
+                    <Route path="/candidate/info" element={<CandidateInfo />}></Route>
+                    <Route path="/candidate/attachments" element={<ListAttachmentsPage />}></Route>
 
                     <Route path="/recruiter/login" element={<LoginRecruiter />}></Route>
                     <Route path="/recruiter/register" element={<RegisterRecruiter />}></Route>

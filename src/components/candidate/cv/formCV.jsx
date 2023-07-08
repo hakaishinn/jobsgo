@@ -1,5 +1,5 @@
 import { Add, AttachFileOutlined } from '@mui/icons-material';
-import { useContext, useEffect, useState } from 'react';
+import { useContext, useEffect, useRef, useState } from 'react';
 import ModalEducation from '~/components/modal/modalEducation';
 import ModalExp from '~/components/modal/modalExp';
 import ModalProSkill from '~/components/modal/modalProSkill';
@@ -12,6 +12,8 @@ import { Autocomplete, Button, TextField } from '@mui/material';
 import { typePositions } from '~/data/constants';
 import * as format from '~/utils/handleDate';
 import * as resumeService from '~/service/resumeService';
+import * as userService from '~/service/userService';
+import * as attachmentsService from '~/service/attachmentsService';
 
 import { AppContext } from '~/context/AppProvider';
 import { Link, useParams } from 'react-router-dom';
@@ -22,10 +24,30 @@ import { v4 } from 'uuid';
 import { storage } from '~/firebase';
 import ModalAttachments from '~/components/modal/modalAttachments';
 import SliderLine from '../slider/line';
+import Loading from '~/components/loading';
+
+import { addValidatorOnBlur, removeValidatorOnInput, validatorMultiple, errorClass } from '~/utils/validator';
 
 function FormCV({ tab, type }) {
+    const inputsRef = useRef([]);
+    const messageErrorRef = useRef([]);
     const { user } = useContext(AppContext);
     const { id } = useParams();
+
+    const [isLoading, setIsLoading] = useState(false);
+    const [userInfo, setUserInfo] = useState({
+        image: null,
+        file: null,
+        email: '',
+        birthDay: '',
+        fullName: '',
+        phone: '',
+        address: '',
+        facebook: '',
+        twitter: '',
+        linkedIn: '',
+        github: '',
+    });
 
     const [showModalProSkill, setShowModalProSkill] = useState(false);
     const [showModalExp, setShowModalExp] = useState(false);
@@ -46,6 +68,10 @@ function FormCV({ tab, type }) {
         positionApply: '',
         phone: '',
         email: '',
+        facebook: '',
+        twitter: '',
+        linkedIn: '',
+        github: '',
         address: '',
         currentSalary: '',
         desiredSalary: '',
@@ -92,54 +118,166 @@ function FormCV({ tab, type }) {
 
     const handleDeleteImage = () => {
         setResume({ ...resume, image: null, file: null });
+        setUserInfo({ ...userInfo, image: null, file: null });
     };
 
     const handleSubmit = async (resume, id) => {
-        let dataCreate = {
-            ...resume,
-            candidateId: user?.userId,
-            birthday: new Date(resume.birthday).toISOString().split('T')[0],
-            currentSalary: Number.parseFloat(resume.currentSalary),
-            desiredSalary: Number.parseFloat(resume.desiredSalary),
-            listResumeEducation: resume.listResumeEducation.map((education) => ({
-                ...education,
-                graduationYear: Number.parseInt(education.graduationYear),
-                statusEducation: education?.statusEducation ? true : false,
-            })),
-            listResumeProSkill: resume.listResumeProSkill.map((proSkill) => ({
-                ...proSkill,
-                yearExperience: Number.parseInt(proSkill.yearExperience),
-            })),
-            listWorkExperience: resume.listWorkExperience.map((workExperience) => ({
-                ...workExperience,
-                startDay: new Date(workExperience.startDay).toISOString().split('T')[0],
-                endDay: new Date(workExperience.endDay).toISOString().split('T')[0],
-                statusWork: workExperience?.statusWork ? true : false,
-            })),
-        };
-        console.log(dataCreate);
+        if (
+            validatorMultiple([
+                {
+                    inputRef: inputsRef.current[0],
+                    messageErrorRef: messageErrorRef.current[0],
+                    rules: ['required'],
+                },
+                {
+                    inputRef: inputsRef.current[1],
+                    messageErrorRef: messageErrorRef.current[1],
+                    rules: ['required'],
+                },
+                {
+                    inputRef: inputsRef.current[2],
+                    messageErrorRef: messageErrorRef.current[2],
+                    rules: ['required'],
+                },
+                {
+                    inputRef: inputsRef.current[3],
+                    messageErrorRef: messageErrorRef.current[3],
+                    rules: ['required', 'phone'],
+                },
+                {
+                    inputRef: inputsRef.current[4],
+                    messageErrorRef: messageErrorRef.current[4],
+                    rules: ['required', 'email'],
+                },
+                {
+                    inputRef: inputsRef.current[5],
+                    messageErrorRef: messageErrorRef.current[5],
+                    rules: ['required'],
+                },
+                {
+                    inputRef: inputsRef.current[6],
+                    messageErrorRef: messageErrorRef.current[6],
+                    rules: ['required'],
+                },
+            ])
+        ) {
+            if (!resume?.typePosition) {
+                // e.target.classList.add(...errorClass);
+                document.getElementById('errorTyPositionCV').innerHTML = 'Không được để trống trường này';
+                document.getElementById('errorTyPositionCV').style.opacity = 1;
+                return;
+            }
+            if (resume.listResumeProSkill.length > 0) {
+                setIsLoading(true);
+                let dataCreate = {
+                    ...resume,
+                    image: resume.image || userInfo.image || null,
+                    name: resume.name || userInfo.fullName || null,
+                    phone: resume.phone || userInfo.phone || null,
+                    email: resume.email || userInfo.email || null,
+                    facebook: resume.facebook || userInfo.facebook || null,
+                    twitter: resume.twitter || userInfo.twitter || null,
+                    linkedIn: resume.linkedIn || userInfo.linkedIn || null,
+                    github: resume.github || userInfo.github || null,
+                    address: resume.address || userInfo.address || null,
+                    candidateId: user?.userId,
+                    birthday: resume?.birthday
+                        ? new Date(resume.birthday).toISOString().split('T')[0]
+                        : userInfo.birthDay
+                        ? new Date(userInfo.birthDay).toISOString().split('T')[0]
+                        : null,
+                    currentSalary: Number.parseFloat(resume.currentSalary),
+                    desiredSalary: Number.parseFloat(resume.desiredSalary),
+                    listResumeEducation: resume.listResumeEducation.map((education) => ({
+                        ...education,
+                        graduationYear: Number.parseInt(education.graduationYear),
+                        statusEducation: education?.statusEducation ? true : false,
+                    })),
+                    listResumeProSkill: resume.listResumeProSkill.map((proSkill) => ({
+                        ...proSkill,
+                        yearExperience: Number.parseInt(proSkill.yearExperience),
+                    })),
+                    listWorkExperience: resume.listWorkExperience.map((workExperience) => ({
+                        ...workExperience,
+                        startDay: new Date(workExperience.startDay).toISOString().split('T')[0],
+                        endDay: new Date(workExperience.endDay).toISOString().split('T')[0],
+                        statusWork: workExperience?.statusWork ? true : false,
+                    })),
+                };
 
-        if (resume?.file) {
-            const imageRef = ref(storage, `images/${resume?.file.name + v4()}`);
-            const snapshot = await uploadBytes(imageRef, resume?.file);
-            const url = await getDownloadURL(snapshot.ref);
-            dataCreate = { ...dataCreate, image: url };
-        }
+                let dataUpdate = {
+                    ...resume,
+                    // image: resume.image || userInfo.image || null,
+                    // name: resume.name || userInfo.fullName || null,
+                    // phone: resume.phone || userInfo.phone || null,
+                    // email: resume.email || userInfo.email || null,
+                    // facebook: resume.facebook || userInfo.facebook || null,
+                    // twitter: resume.twitter || userInfo.twitter || null,
+                    // linkedIn: resume.linkedIn || userInfo.linkedIn || null,
+                    // github: resume.github || userInfo.github || null,
+                    // address: resume.address || userInfo.address || null,
+                    candidateId: user?.userId,
+                    birthday: resume?.birthday
+                        ? new Date(resume.birthday).toISOString().split('T')[0]
+                        : userInfo.birthDay
+                        ? new Date(userInfo.birthDay).toISOString().split('T')[0]
+                        : null,
+                    currentSalary: Number.parseFloat(resume.currentSalary),
+                    desiredSalary: Number.parseFloat(resume.desiredSalary),
+                    listResumeEducation: resume.listResumeEducation.map((education) => ({
+                        ...education,
+                        graduationYear: Number.parseInt(education.graduationYear),
+                        statusEducation: education?.statusEducation ? true : false,
+                    })),
+                    listResumeProSkill: resume.listResumeProSkill.map((proSkill) => ({
+                        ...proSkill,
+                        yearExperience: Number.parseInt(proSkill.yearExperience),
+                    })),
+                    listWorkExperience: resume.listWorkExperience.map((workExperience) => ({
+                        ...workExperience,
+                        startDay: new Date(workExperience.startDay).toISOString().split('T')[0],
+                        endDay: new Date(workExperience.endDay).toISOString().split('T')[0],
+                        statusWork: workExperience?.statusWork ? true : false,
+                    })),
+                };
+                console.log(dataCreate);
 
-        if (type === 'create') {
-            const res = await resumeService.create(dataCreate);
-            if (res?.success) {
-                alert('Tạo CV thành công');
+                if (resume?.file) {
+                    const imageRef = ref(storage, `images/${resume?.file.name + v4()}`);
+                    const snapshot = await uploadBytes(imageRef, resume?.file);
+                    const url = await getDownloadURL(snapshot.ref);
+                    dataCreate = { ...dataCreate, image: url };
+                    dataUpdate = { ...dataUpdate, image: url };
+                }
+
+                if (type === 'create') {
+                    const res = await resumeService.create(dataCreate);
+                    if (res?.success) {
+                        alert('Tạo CV thành công');
+                    } else {
+                        alert('Tạo CV thất bại');
+                    }
+                } else {
+                    const res = await resumeService.update(dataUpdate, id);
+                    if (res?.success) {
+                        alert('Cập nhật CV thành công');
+                    } else {
+                        alert('Cập nhật CV thất bại');
+                    }
+                }
+                setIsLoading(false);
             } else {
-                alert('Tạo CV thất bại');
+                alert('Vui lòng nhập đầy thông tin bắt buộc');
             }
         } else {
-            const res = await resumeService.update(dataCreate, id);
-            if (res?.success) {
-                alert('Cập nhật CV thành công');
-            } else {
-                alert('Cập nhật CV thất bại');
+            document.getElementById('errorProSkillCV').innerHTML = 'Không được để trống mục này';
+            document.getElementById('errorProSkillCV').style.opacity = 1;
+            if (!resume?.typePosition) {
+                // e.target.classList.add(...errorClass);
+                document.getElementById('errorTyPositionCV').innerHTML = 'Không được để trống trường này';
+                document.getElementById('errorTyPositionCV').style.opacity = 1;
             }
+            alert('Vui lòng nhập đầy thông tin bắt buộc');
         }
     };
 
@@ -147,8 +285,10 @@ function FormCV({ tab, type }) {
         const getResume = async () => {
             const res = await resumeService.getResumeById(id);
             if (res?.success) {
+                console.log(res.data.birthday);
                 setResume({
                     ...res.data,
+                    birthday: new Date(res.data.birthday).toISOString().split('T')[0],
                     listResumeProSkill: res.data.listResumeProSkill.map((proSkill, index) => ({
                         ...proSkill,
                         keyProSkill: index,
@@ -180,12 +320,91 @@ function FormCV({ tab, type }) {
                 });
             }
         };
+        const getCandidate = async () => {
+            const user = JSON.parse(localStorage.getItem('user'));
+            const res = await userService.getUserById(user.userId);
+            if (res?.success) {
+                setUserInfo((userPrev) => ({
+                    ...userPrev,
+                    image: res.data.image,
+                    email: res.data?.email,
+                    birthDay: new Date(res.data?.birthDay).toISOString().split('T')[0],
+                    fullName: res.data?.name,
+                    phone: res.data?.phone,
+                    address: res.data?.specificAddress,
+                    facebook: res.data?.facebook,
+                    twitter: res.data?.twitter,
+                    linkedIn: res.data?.linkedIn,
+                    github: res.data?.github,
+                }));
+            }
+        };
+        const getAttachmentsByCandidateId = async () => {
+            const candidate = JSON.parse(localStorage.getItem('user'));
+            const res = await attachmentsService.getAttachmentsByCandidateId(candidate.userId);
+            if (res?.success) {
+                setResume((prev) => ({
+                    ...prev,
+                    listAttachments: res.data.map((attachment, index) => ({
+                        ...attachment,
+                        keyAttachment: index,
+                    })),
+                }));
+            }
+        };
+        if (type === 'create') {
+            getAttachmentsByCandidateId();
+            getCandidate();
+        }
         if (type === 'update') {
             getResume();
         }
     }, [id, type]);
+
+    //validate
+    useEffect(() => {
+        addValidatorOnBlur([
+            {
+                inputRef: inputsRef.current[0],
+                messageErrorRef: messageErrorRef.current[0],
+                rules: ['required'],
+            },
+            {
+                inputRef: inputsRef.current[1],
+                messageErrorRef: messageErrorRef.current[1],
+                rules: ['required'],
+            },
+            {
+                inputRef: inputsRef.current[2],
+                messageErrorRef: messageErrorRef.current[2],
+                rules: ['required'],
+            },
+            {
+                inputRef: inputsRef.current[3],
+                messageErrorRef: messageErrorRef.current[3],
+                rules: ['required', 'phone'],
+            },
+            {
+                inputRef: inputsRef.current[4],
+                messageErrorRef: messageErrorRef.current[4],
+                rules: ['required', 'email'],
+            },
+            {
+                inputRef: inputsRef.current[5],
+                messageErrorRef: messageErrorRef.current[5],
+                rules: ['required'],
+            },
+            {
+                inputRef: inputsRef.current[6],
+                messageErrorRef: messageErrorRef.current[6],
+                rules: ['required'],
+            },
+        ]);
+        removeValidatorOnInput(inputsRef.current, messageErrorRef.current);
+    }, [inputsRef.current.length, messageErrorRef.current.length]);
     return (
         <div className="container mx-auto mt-[100px]">
+            {isLoading && <Loading />}
             <MenuCV tab={tab}></MenuCV>
 
             <div className="grid grid-cols-3 gap-4 mt-8">
@@ -209,10 +428,10 @@ function FormCV({ tab, type }) {
                         <div className="w-[170px] h-[170px] relative group overflow-hidden object-contain">
                             <img
                                 className="w-full h-full object-contain"
-                                src={resume?.image || AvatarMale}
+                                src={resume?.image || userInfo?.image || AvatarMale}
                                 alt="avatar"
                             />
-                            <div className="text-sm bg-black/50 w-full h-full justify-center items-center gap-2 cursor-pointer top-0 absolute hidden group-hover:flex">
+                            <div className="text-sm bg-black/50 w-full h-full justify-center items-center gap-2 top-0 absolute hidden group-hover:flex">
                                 <button className="border-none p-2 bg-red-700 text-white" onClick={handleDeleteImage}>
                                     Xóa ảnh
                                 </button>
@@ -227,26 +446,56 @@ function FormCV({ tab, type }) {
                         </div>
                         <div className="ml-4 text-[#333] flex-1">
                             <div className="flex">
-                                <strong className="w-max mr-2">Họ tên: </strong>
+                                <strong className="w-max mr-2">
+                                    Họ tên <span className="text-red-500">*</span> :
+                                </strong>
                                 <input
+                                    ref={(el) => (inputsRef.current[0] = el)}
                                     type="text"
                                     placeholder="(Chưa có dữ liệu)"
                                     className="outline-none flex-1"
-                                    value={resume?.name}
-                                    onChange={(e) => setResume({ ...resume, name: e.target.value })}
+                                    value={resume?.name || userInfo?.fullName || ''}
+                                    onChange={(e) => {
+                                        setResume({ ...resume, name: e.target.value });
+                                        if (userInfo.fullName) {
+                                            setUserInfo({ ...userInfo, fullName: null });
+                                        }
+                                    }}
                                 />
+                                <span
+                                    className="text-sm text-red-600 font-semibold opacity-0"
+                                    ref={(el) => (messageErrorRef.current[0] = el)}
+                                >
+                                    error
+                                </span>
                             </div>
                             <div>
-                                <strong>Ngày sinh: </strong>
+                                <strong>
+                                    Ngày sinh <span className="text-red-500">*</span> :{' '}
+                                </strong>
                                 <input
+                                    ref={(el) => (inputsRef.current[1] = el)}
                                     type="date"
                                     className="outline-none p-2"
-                                    value={resume?.birthday ? format.formatDate(resume?.birthday, 'yyyy-mm-dd') : ''}
-                                    onChange={(e) => setResume({ ...resume, birthday: e.target.value })}
+                                    value={resume?.birthday || userInfo?.birthDay || ''}
+                                    onChange={(e) => {
+                                        setResume({ ...resume, birthday: e.target.value });
+                                        if (userInfo.birthDay) {
+                                            setUserInfo({ ...userInfo, birthDay: null });
+                                        }
+                                    }}
                                 />
+                                <span
+                                    className="text-sm text-red-600 font-semibold opacity-0"
+                                    ref={(el) => (messageErrorRef.current[1] = el)}
+                                >
+                                    error
+                                </span>
                             </div>
                             <div className="flex gap-2 items-center">
-                                <strong>Loại vị trí: </strong>
+                                <strong>
+                                    Loại vị trí <span className="text-red-500">*</span> :{' '}
+                                </strong>
                                 <Autocomplete
                                     sx={{
                                         '& .MuiOutlinedInput-root': {
@@ -255,6 +504,7 @@ function FormCV({ tab, type }) {
                                         },
                                         '& .MuiOutlinedInput-root .MuiOutlinedInput-notchedOutline': {
                                             border: 'none',
+                                            // borderColor: 'transparent',
                                         },
                                     }}
                                     className="bg-white rounded-md flex-1"
@@ -272,41 +522,156 @@ function FormCV({ tab, type }) {
                                         />
                                     )}
                                     value={resume?.typePosition ? resume?.typePosition : null}
-                                    onChange={(e, value) => setResume({ ...resume, typePosition: value })}
+                                    onChange={(e, value) => {
+                                        setResume({ ...resume, typePosition: value });
+                                        e.target.classList.remove(...errorClass);
+                                        document.getElementById('errorTyPositionCV').style.opacity = 0;
+                                    }}
+                                    onInput={(e) => {
+                                        e.target.classList.remove(...errorClass);
+                                        document.getElementById('errorTyPositionCV').style.opacity = 0;
+                                    }}
+                                    onBlur={(e) => {
+                                        console.log(e.target.value);
+                                        if (!e.target.value || e.target.value.trim().length === 0) {
+                                            e.target.classList.add(...errorClass);
+                                            document.getElementById('errorTyPositionCV').innerHTML =
+                                                'Không được để trống trường này';
+                                            document.getElementById('errorTyPositionCV').style.opacity = 1;
+                                        }
+                                    }}
                                 />
+                                <span id="errorTyPositionCV" className="text-sm text-red-600 font-semibold opacity-0">
+                                    error
+                                </span>
                             </div>
                             <div className="flex">
-                                <strong className="w-max mr-2">Vị trí ứng tuyển: </strong>
+                                <strong className="w-max mr-2">
+                                    Vị trí ứng tuyển <span className="text-red-500">*</span> :{' '}
+                                </strong>
                                 <input
+                                    ref={(el) => (inputsRef.current[2] = el)}
                                     type="text"
                                     placeholder="(Chưa có dữ liệu)"
                                     className="outline-none flex-1"
                                     value={resume?.positionApply}
                                     onChange={(e) => setResume({ ...resume, positionApply: e.target.value })}
                                 />
+                                <span
+                                    className="text-sm text-red-600 font-semibold opacity-0"
+                                    ref={(el) => (messageErrorRef.current[2] = el)}
+                                >
+                                    error
+                                </span>
                             </div>
                         </div>
                     </div>
                     <div className="border p-4 text-[#333] mt-4">
                         <h3 className="uppercase text-lg text-sky-600 font-semibold">thông tin cơ bản</h3>
                         <div className="my-2 flex gap-2">
-                            <strong className="w-max">Số điện thoại: </strong>
+                            <strong className="w-max">
+                                Số điện thoại <span className="text-red-500">*</span> :{' '}
+                            </strong>
+                            <input
+                                ref={(el) => (inputsRef.current[3] = el)}
+                                type="text"
+                                placeholder="(Chưa có dữ liệu)"
+                                className="outline-none flex-1"
+                                value={resume?.phone || userInfo?.phone || ''}
+                                onChange={(e) => {
+                                    setResume({ ...resume, phone: e.target.value });
+                                    if (userInfo.phone) {
+                                        setUserInfo({ ...userInfo, phone: null });
+                                    }
+                                }}
+                            />
+                            <span
+                                className="text-sm text-red-600 font-semibold opacity-0"
+                                ref={(el) => (messageErrorRef.current[3] = el)}
+                            >
+                                error
+                            </span>
+                        </div>
+                        <div className="my-2 flex gap-2">
+                            <strong className="w-max">
+                                Email <span className="text-red-500">*</span> :{' '}
+                            </strong>
+                            <input
+                                ref={(el) => (inputsRef.current[4] = el)}
+                                type="text"
+                                placeholder="(Chưa có dữ liệu)"
+                                className="outline-none flex-1"
+                                value={resume?.email || userInfo?.email || ''}
+                                onChange={(e) => {
+                                    setResume({ ...resume, email: e.target.value });
+                                    if (userInfo.email) {
+                                        setUserInfo({ ...userInfo, email: null });
+                                    }
+                                }}
+                            />
+                            <span
+                                className="text-sm text-red-600 font-semibold opacity-0"
+                                ref={(el) => (messageErrorRef.current[4] = el)}
+                            >
+                                error
+                            </span>
+                        </div>
+                        <div className="my-2 flex gap-2">
+                            <strong className="w-max">Facebook: </strong>
                             <input
                                 type="text"
                                 placeholder="(Chưa có dữ liệu)"
                                 className="outline-none flex-1"
-                                value={resume?.phone}
-                                onChange={(e) => setResume({ ...resume, phone: e.target.value })}
+                                value={resume?.facebook || userInfo?.facebook || ''}
+                                onChange={(e) => {
+                                    setResume({ ...resume, facebook: e.target.value });
+                                    if (userInfo.facebook) {
+                                        setUserInfo({ ...userInfo, facebook: null });
+                                    }
+                                }}
                             />
                         </div>
                         <div className="my-2 flex gap-2">
-                            <strong className="w-max">Email: </strong>
+                            <strong className="w-max">LinkedIn: </strong>
                             <input
                                 type="text"
                                 placeholder="(Chưa có dữ liệu)"
                                 className="outline-none flex-1"
-                                value={resume?.email}
-                                onChange={(e) => setResume({ ...resume, email: e.target.value })}
+                                value={resume?.linkedIn || userInfo?.linkedIn || ''}
+                                onChange={(e) => {
+                                    setResume({ ...resume, linkedIn: e.target.value });
+                                    if (userInfo.linkedIn) {
+                                        setUserInfo({ ...userInfo, linkedIn: null });
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div className="my-2 flex gap-2">
+                            <strong className="w-max">Twitter: </strong>
+                            <input
+                                type="text"
+                                placeholder="(Chưa có dữ liệu)"
+                                className="outline-none flex-1"
+                                value={resume?.twitter || userInfo?.twitter || ''}
+                                onChange={(e) => {
+                                    setResume({ ...resume, twitter: e.target.value });
+                                    if (userInfo.twitter) {
+                                        setUserInfo({ ...userInfo, twitter: null });
+                                    }
+                                }}
+                            />
+                        </div>
+                        <div className="my-2 flex gap-2">
+                            <strong className="w-max">Github: </strong>
+                            <input
+                                type="text"
+                                placeholder="(Chưa có dữ liệu)"
+                                className="outline-none flex-1"
+                                value={resume?.github || userInfo?.github || ''}
+                                onChange={(e) => {
+                                    setResume({ ...resume, github: e.target.value });
+                                    setUserInfo({ ...userInfo, github: null });
+                                }}
                             />
                         </div>
                         <div className="my-2 flex gap-2">
@@ -315,8 +680,11 @@ function FormCV({ tab, type }) {
                                 type="text"
                                 placeholder="(Chưa có dữ liệu)"
                                 className="outline-none flex-1"
-                                value={resume?.address}
-                                onChange={(e) => setResume({ ...resume, address: e.target.value })}
+                                value={resume?.address || userInfo?.address || ''}
+                                onChange={(e) => {
+                                    setResume({ ...resume, address: e.target.value });
+                                    setUserInfo({ ...userInfo, address: null });
+                                }}
                             />
                         </div>
                         <div className="my-2 flex justify-start items-center gap-2">
@@ -343,26 +711,51 @@ function FormCV({ tab, type }) {
                         </div>
                     </div>
                     <div className="border p-4 text-[#333] mt-4">
-                        <h3 className="uppercase text-lg text-sky-600 font-semibold">Giới thiệu bản thân</h3>
+                        <h3 className="uppercase text-lg text-sky-600 font-semibold">
+                            Giới thiệu bản thân <span className="text-red-500">*</span>
+                        </h3>
                         <textarea
+                            ref={(el) => (inputsRef.current[5] = el)}
                             placeholder="(Chưa có dữ liệu)"
                             className="w-full outline-none border p-2 mt-4 min-h-[100px]"
                             value={resume?.introduce}
                             onChange={(e) => setResume({ ...resume, introduce: e.target.value })}
                         ></textarea>
+                        <span
+                            className="text-sm text-red-600 font-semibold opacity-0"
+                            ref={(el) => (messageErrorRef.current[5] = el)}
+                        >
+                            error
+                        </span>
                     </div>
                     <div className="border p-4 text-[#333] mt-4">
-                        <h3 className="uppercase text-lg text-sky-600 font-semibold">Mục tiêu nghề nghiệp</h3>
+                        <h3 className="uppercase text-lg text-sky-600 font-semibold">
+                            Mục tiêu nghề nghiệp <span className="text-red-500">*</span>
+                        </h3>
                         <textarea
+                            ref={(el) => (inputsRef.current[6] = el)}
                             placeholder="(Chưa có dữ liệu)"
                             className="w-full outline-none border p-2 mt-4 min-h-[100px]"
                             value={resume?.careerGoals}
                             onChange={(e) => setResume({ ...resume, careerGoals: e.target.value })}
                         ></textarea>
+                        <span
+                            className="text-sm text-red-600 font-semibold opacity-0"
+                            ref={(el) => (messageErrorRef.current[6] = el)}
+                        >
+                            error
+                        </span>
                     </div>
                     <div className="border p-4 text-[#333] mt-4">
                         <div className="flex justify-between items-center">
-                            <h3 className="uppercase text-lg text-sky-600 font-semibold">Kĩ năng chuyên môn</h3>
+                            <div>
+                                <h3 className="uppercase text-lg text-sky-600 font-semibold">
+                                    Kĩ năng chuyên môn <span className="text-red-500">*</span>
+                                </h3>
+                                <span id="errorProSkillCV" className="text-sm text-red-600 font-semibold opacity-0">
+                                    error
+                                </span>
+                            </div>
                             <button
                                 className="flex justify-center items-center px-1 py-2 border border-sky-400 text-sky-700"
                                 onClick={() => {

@@ -57,6 +57,21 @@ export const updateRecruiter = async (recruiter) => {
         console.log(error);
     }
 };
+export const updateCandidate = async (candidate) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        if (user) {
+            const res = await request.put(`/users/candidate/${user.userId}`, candidate, {
+                headers: {
+                    Authorization: 'Bearer ' + user.accessToken,
+                },
+            });
+            return res.data;
+        }
+    } catch (error) {
+        console.log(error);
+    }
+};
 export const changePassword = async (oldPassword, newPassword) => {
     try {
         const user = JSON.parse(localStorage.getItem('user'));

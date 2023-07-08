@@ -1,10 +1,17 @@
-import { Create, FileUpload, Update, Visibility } from '@mui/icons-material';
+import { AutoAwesomeMotionOutlined, Create, FileUpload, Update, Visibility } from '@mui/icons-material';
+import { useState } from 'react';
 import { Link } from 'react-router-dom';
+import ModalTemplate from '~/components/modal/modalTemplate';
 
-function MenuCV({ tab, id }) {
+function MenuCV({ tab, id, template }) {
     const classActive = 'bg-sky-700 text-white';
+    const [isShowTemplate, setIsShowTemplate] = useState(false);
+    const handleShowTemplate = () => {
+        setIsShowTemplate(true);
+    };
     return (
         <div className="flex gap-4">
+            {isShowTemplate && <ModalTemplate template={template} setIsShowTemplate={setIsShowTemplate} />}
             <Link
                 to={'/cv/create'}
                 className={`flex items-center px-4 py-1 border border-sky-500 rounded-md uppercase font-semibold hover:bg-sky-700 hover:text-white ${
@@ -21,7 +28,7 @@ function MenuCV({ tab, id }) {
                 }`}
             >
                 <FileUpload className="mr-1" fontSize="small" />
-                Tải lên CV
+                Tải lên chứng chỉ
             </Link>
             <Link
                 to={'/cv/view'}
@@ -40,6 +47,15 @@ function MenuCV({ tab, id }) {
                     <Update className="mr-1" fontSize="small" />
                     Chỉnh sửa CV
                 </Link>
+            )}
+            {tab === 'viewDetailCV' && (
+                <button
+                    className={`outline-none flex items-center px-4 py-1 border border-sky-500 rounded-md uppercase font-semibold hover:bg-sky-700 hover:text-white`}
+                    onClick={handleShowTemplate}
+                >
+                    <AutoAwesomeMotionOutlined className="mr-1" fontSize="small" />
+                    Mẫu CV
+                </button>
             )}
 
             {/* <Link
