@@ -12,6 +12,7 @@ import * as languageService from '~/service/languageService';
 import { degrees, typePositions } from '~/data/constants';
 
 function FormManagerCandidate({ className, title, tab }) {
+    console.log(tab);
     const [listProSkill, setListProSkill] = useState([]);
     const [listLanguage, setListLanguage] = useState([]);
 
@@ -46,11 +47,44 @@ function FormManagerCandidate({ className, title, tab }) {
 
     const [listJob, setListJob] = useState([]);
 
-    const getAllResumeApplyByJobId = (id) => {
+    const getAllResumeApplyByJobId = async (id) => {
         if (id) {
+            setListResume(listResume.filter((resume) => resume.jobId === id));
             setListResumeFilter(listResume.filter((resume) => resume.jobId === id));
         } else {
-            setListResumeFilter(listResume);
+            const user = JSON.parse(localStorage.getItem('user'));
+            switch (tab) {
+                case 'apply':
+                    const resApply = await applyService.getAllResumeApply(user.userId);
+                    if (resApply?.success) {
+                        setListResume(resApply.data);
+                        setListResumeFilter(resApply.data);
+                    }
+                    break;
+                case 'selected':
+                    const resSelected = await applyService.getAllResumeApprove(user.userId);
+                    if (resSelected?.success) {
+                        setListResume(resSelected.data);
+                        setListResumeFilter(resSelected.data);
+                    }
+                    break;
+                case 'consider':
+                    const resConsider = await applyService.getAllResumeConsider(user.userId);
+                    if (resConsider?.success) {
+                        setListResume(resConsider.data);
+                        setListResumeFilter(resConsider.data);
+                    }
+                    break;
+                case 'denied':
+                    const resDenied = await applyService.getAllResumeDenied(user.userId);
+                    if (resDenied?.success) {
+                        setListResume(resDenied.data);
+                        setListResumeFilter(resDenied.data);
+                    }
+                    break;
+                default:
+                    break;
+            }
         }
     };
 

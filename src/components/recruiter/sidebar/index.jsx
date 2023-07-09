@@ -5,6 +5,7 @@ import {
     HowToRegOutlined,
     LockOutlined,
     LockPersonOutlined,
+    MailOutline,
     PersonAddAlt1Outlined,
     PersonOffOutlined,
     PersonSearchOutlined,
@@ -95,6 +96,13 @@ function Sidebar({ className, tab }) {
                         className={`flex items-center p-1 hover:text-sky-500 ${tab === 'search' ? classActive : ''}`}
                     >
                         <PersonSearchOutlined className="mr-1" /> Tìm kiếm ứng viên{' '}
+                    </Link>
+                    <Link
+                        to={'/recruiter/email'}
+                        className={`flex items-center p-1 hover:text-sky-500 ${tab === 'mail' ? classActive : ''}`}
+                    >
+                        <MailOutline className="mr-1" />
+                        Cấu hình email{' '}
                     </Link>
                     {/* <Link
                         to={'/recruiter/fit'}

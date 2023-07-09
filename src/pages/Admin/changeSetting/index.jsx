@@ -1,4 +1,3 @@
-import { People } from '@mui/icons-material';
 import { Autocomplete, Button, TextField } from '@mui/material';
 // import ListCandidate from '../listCandidate';
 import { useEffect, useState } from 'react';
@@ -7,13 +6,14 @@ import * as languageService from '~/service/languageService';
 import * as proSkillService from '~/service/proSkillService';
 import * as softSkillService from '~/service/softSkillService';
 import ModalChange from '../modalChange';
+const selects = ['Ngôn ngữ', 'Chuyên ngành', 'Kĩ năng', 'Kĩ năng mềm'];
 function ChangeSetting({ className, title, tab }) {
     const [updateModal, setUpdateModal] = useState(false);
     const [language, setLanguage] = useState([]);
     const [career, setCareer] = useState([]);
     const [proSkill, setProSkill] = useState([]);
     const [softSkill, setSoftSkill] = useState([]);
-    const [selects, setSelects] = useState(['Ngôn ngữ', 'Chuyên ngành', 'Kĩ năng', 'Kĩ năng mềm']);
+    // const [selects, setSelects] = useState(['Ngôn ngữ', 'Chuyên ngành', 'Kĩ năng', 'Kĩ năng mềm']);
     const [search, setSearch] = useState({
         selects: 'Ngôn ngữ',
     });
@@ -194,7 +194,7 @@ function ChangeSetting({ className, title, tab }) {
                                 </tbody>
                             </table>
                         </>
-                    ) : search.selects == 'Kĩ năng' ? (
+                    ) : search.selects === 'Kĩ năng' ? (
                         <>
                             <table className="w-[60%] text-center mt-6">
                                 <thead>
@@ -235,7 +235,7 @@ function ChangeSetting({ className, title, tab }) {
                                 </tbody>
                             </table>
                         </>
-                    ) : search.selects == 'Kĩ năng mềm' ? (
+                    ) : search.selects === 'Kĩ năng mềm' ? (
                         <>
                             <table className="w-[60%] text-center mt-6">
                                 <thead>

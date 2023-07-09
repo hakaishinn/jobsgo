@@ -1,7 +1,7 @@
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
 
-function CustomQuill({ value, setJob, type }) {
+function CustomQuill({ value, setJob, type, setMail }) {
     const modules = {
         toolbar: [
             [{ header: [1, 2, 3, 4, 5, 6, false] }],
@@ -35,6 +35,15 @@ function CustomQuill({ value, setJob, type }) {
                 break;
             case 'benefit':
                 setJob((prev) => ({ ...prev, benefit: newValue }));
+                break;
+            case 'acceptMail':
+                setMail((prev) => ({ ...prev, acceptMail: newValue }));
+                break;
+            case 'refuseMail':
+                setMail((prev) => ({ ...prev, refuseMail: newValue }));
+                break;
+            case 'signature':
+                setMail((prev) => ({ ...prev, signature: newValue }));
                 break;
             default:
                 return;

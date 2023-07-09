@@ -1,10 +1,11 @@
 import { HowToRegOutlined, LockPersonOutlined, PersonOffOutlined } from '@mui/icons-material';
-import { useMemo, useState } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import ModalCVDetail from '~/components/modal/modalCVDetail';
 import * as handleDate from '~/utils/handleDate';
 import * as applyService from '~/service/applyService';
 import * as emailService from '~/service/emailService';
+import * as jobService from '~/service/jobService';
 
 import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
 
@@ -14,14 +15,34 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
     const [resumeCurrent, setResumeCurrent] = useState();
     const [showModalDetailCV, setShowModalDetailCV] = useState(false);
     const [listResumeFilter, setListResumeFilter] = useState(listResume);
-
+    const [mail, setMail] = useState({});
+    const handleEmailAccept = (resume) => {
+        let mail1 = mail.contentEmailAccept
+            ?.replaceAll('[Tên ứng viên]', resume.name)
+            ?.replaceAll('[Tên công việc]', resume.nameJobApply)
+            ?.replaceAll('[Tên công ty]', mail.name)
+            ?.replaceAll('[Ngày nhận hồ sơ]', handleDate.formatDate(resume.applyAt))
+            ?.replaceAll('[Địa chỉ email của công ty]', mail.emailCompany)
+            ?.replaceAll('[Số điện thoại của công ty]', mail.phone);
+        return mail1;
+    };
+    const handleEmailDenied = (resume) => {
+        let mail1 = mail.contentEmailDenied
+            ?.replaceAll('[Tên ứng viên]', resume.name)
+            ?.replaceAll('[Tên công việc]', resume.nameJobApply)
+            ?.replaceAll('[Tên công ty]', mail.name)
+            ?.replaceAll('[Ngày nhận hồ sơ]', handleDate.formatDate(resume.applyAt))
+            ?.replaceAll('[Địa chỉ email của công ty]', mail.emailCompany)
+            ?.replaceAll('[Số điện thoại của công ty]', mail.phone);
+        return mail1;
+    };
     const handleApprove = async (resume) => {
         const res = await applyService.approve(resume.applyId);
         if (res?.success) {
             emailService.sendEmail(
                 resume?.email,
                 `[JobsGO] Thông báo ứng tuyển`,
-                `CV của bạn đã được nhà tuyển dụng chọn trong công việc ${resume?.nameJobApply}`,
+                mail.contentEmailAccept == null ? <p>Bạn chưa có mail xác nhận</p> : handleEmailAccept(resume),
             );
             setListResumeFilter(listResume.filter((resumeItem) => resumeItem.applyId !== resume.applyId));
             setListResume(
@@ -61,8 +82,8 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
         if (res?.success) {
             emailService.sendEmail(
                 resume?.email,
-                `[JobsGO] Thông báo ứng tuyển`,
-                `CV của bạn đã bị nhà tuyển dụng từ chối trong công việc ${resume?.nameJobApply}`,
+                `[JobsGO] Thông báo từ chối ứng tuyển`,
+                mail.contentEmailDenied == null ? <p>Bạn chưa có mail từ chối</p> : handleEmailDenied(resume),
             );
             setListResumeFilter(listResume.filter((resumeItem) => resumeItem.applyId !== resume.applyId));
             setListResume(
@@ -102,6 +123,19 @@ function ListCandidate({ type, tab, listResume, setListResume }) {
         }
         // eslint-disable-next-line react-hooks/exhaustive-deps
     }, [typeCandidate]);
+
+    useMemo(() => {
+        setListResumeFilter(listResume);
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, [listResume.length]);
+
+    useEffect(() => {
+        const getData = async () => {
+            const res = await jobService.getContentEmail();
+            setMail(res.data);
+        };
+        getData();
+    }, []);
 
     return (
         <div>

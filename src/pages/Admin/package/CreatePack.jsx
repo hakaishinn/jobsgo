@@ -5,7 +5,7 @@ import MenuItem from '@mui/material/MenuItem';
 import { useState } from 'react';
 import * as adminService from '~/service/admin/adminService';
 import AdminLayout from '~/layout/adminLayout';
-function CreatePack({ onModal, offModal }) {
+function CreatePack({ onModal, onCloseModal }) {
     const [inputs, setInputs] = useState('');
     if (onModal === false) {
         return null;
@@ -30,9 +30,9 @@ function CreatePack({ onModal, offModal }) {
         <AdminLayout>
             <>
                 <div className="fixed inset-0 flex items-center justify-center z-50">
-                    <div className="bg-gray-800 bg-opacity-75 absolute inset-0" onClick={() => offModal()}></div>
+                    <div className="bg-gray-800 bg-opacity-75 absolute inset-0" onClick={() => onCloseModal()}></div>
                     <div className="bg-white rounded-lg z-10">
-                        <h1 className="text-2xl" style={{ marginLeft: 30, marginTop: 30 }}>
+                        <h1 className="text-xl" style={{ marginLeft: 30, marginTop: 30 }}>
                             Tạo gói người dùng
                         </h1>
                         <div className="p-4">

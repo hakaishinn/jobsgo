@@ -41,7 +41,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
         }
     };
     const handleSubmit = async () => {
-        if (select == 'Ngôn ngữ' && type == 2) {
+        if (select === 'Ngôn ngữ' && type === 2) {
             const res = await languageService.updateLanguage(updateId, inputs);
             if (res.data?.success) {
                 alert('Thay đổi gói thành công');
@@ -49,7 +49,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
             } else {
                 alert('Tạo gói thất bại');
             }
-        } else if (select == 'Chuyên ngành' && type == 2) {
+        } else if (select === 'Chuyên ngành' && type === 2) {
             const res = await careerService.updateCareer(updateId, inputs);
             if (res?.success) {
                 alert('Thay đổi gói thành công');
@@ -57,7 +57,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
             } else {
                 alert('Tạo gói thất bại');
             }
-        } else if (select == 'Kĩ năng mềm' && type == 2) {
+        } else if (select === 'Kĩ năng mềm' && type === 2) {
             const res = await softSkillService.updateSoftSkill(updateId, inputs);
             if (res?.success) {
                 alert('Thay đổi gói thành công');
@@ -65,7 +65,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
             } else {
                 alert('Tạo gói thất bại');
             }
-        } else if (select == 'Kĩ năng' && type == 2) {
+        } else if (select === 'Kĩ năng' && type === 2) {
             const res = await proSkillService.updateProSkill(updateId, inputs);
             console.log(res);
             if (res?.success) {
@@ -74,7 +74,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
             } else {
                 alert('Tạo gói thất bại');
             }
-        } else if (select == 'Ngôn ngữ' && type == 1) {
+        } else if (select === 'Ngôn ngữ' && type === 1) {
             const res = await languageService.createLanguage(inputs);
             if (res.data?.success) {
                 alert('Thay đổi gói thành công');
@@ -83,7 +83,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
             } else {
                 alert('Tạo gói thất bại');
             }
-        } else if (select == 'Chuyên ngành' && type == 1) {
+        } else if (select === 'Chuyên ngành' && type === 1) {
             const res = await careerService.createCareer(inputs);
             if (res?.success) {
                 alert('Thay đổi gói thành công');
@@ -92,7 +92,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
             } else {
                 alert('Tạo gói thất bại');
             }
-        } else if (select == 'Kĩ năng mềm' && type == 1) {
+        } else if (select === 'Kĩ năng mềm' && type === 1) {
             const res = await softSkillService.createSoftSkill(inputs);
             if (res?.success) {
                 alert('Thay đổi gói thành công');
@@ -101,7 +101,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
             } else {
                 alert('Tạo gói thất bại');
             }
-        } else if (select == 'Kĩ năng' && type == 1) {
+        } else if (select === 'Kĩ năng' && type === 1) {
             const res = await proSkillService.createProSkill(inputs);
             if (res?.success) {
                 alert('Thay đổi gói thành công');
@@ -128,7 +128,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
                                     value={inputs.name}
                                     onChange={handleInput}
                                 />
-                                {select === 'Kĩ năng' && type == 1 ? (
+                                {select === 'Kĩ năng' && type === 1 ? (
                                     <select className="p-2 border outline-none" name="careerId" onChange={handleInput}>
                                         <option disabled value={0}>
                                             Chọn chuyên ngành
@@ -139,7 +139,7 @@ function ModalChange({ type, updateId, onModal, onCloseModal, data, select, care
                                             </option>
                                         ))}
                                     </select>
-                                ) : select === 'Kĩ năng' && type == 2 ? (
+                                ) : select === 'Kĩ năng' && type === 2 ? (
                                     <select className="p-2 border outline-none" name="careerId" onChange={handleInput}>
                                         <option value={careerId?.career_id}>{careerId?.career_name}</option>
                                         {career.map((value) => (

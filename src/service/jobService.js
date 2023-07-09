@@ -311,3 +311,31 @@ export const viewJobByNaturedOfWork = async (natureOfWork = '') => {
         console.log(error);
     }
 };
+
+export const updateEmail = async (data) => {
+    try {
+        console.log(data);
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.put(`/recruiter/acceptMail/${user.userId}`, data, {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};
+export const getContentEmail = async () => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const res = await request.get(`/recruiter/mail/${user.userId}`, {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

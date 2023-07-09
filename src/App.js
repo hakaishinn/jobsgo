@@ -46,6 +46,7 @@ import JobForYou from './pages/Candidate/JobForYou';
 import CandidateInfo from './pages/Candidate/CandidateInfo';
 import UploadAttachmentsPage from './pages/Candidate/CV/UpLoadAttachments';
 import ListAttachmentsPage from './pages/Candidate/listAttachments';
+import MailPage from './pages/Recruiter/Mail';
 // import Template2Page from './pages/Candidate/CV/Template2';
 
 function App() {
@@ -97,6 +98,7 @@ function App() {
                     <Route path="/recruiter/info" element={<InfoPage />}></Route>
                     <Route path="/recruiter/changePassword" element={<ChangePasswordPage />}></Route>
                     <Route path="/recruiter/buyPackage" element={<BuyPackage />}></Route>
+                    <Route path="/recruiter/email" element={<MailPage />}></Route>
 
                     <Route path="/admin" element={<Sidebar />}></Route>
                     <Route path="/admin/login" element={<LoginAdmin />}></Route>

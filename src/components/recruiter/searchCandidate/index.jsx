@@ -17,10 +17,11 @@ function SearchCandidate({ className, title, tab }) {
         setSearch((state) => ({ ...state, [name]: value }));
     };
     const resultSearch = async () => {
+        console.log(search);
         let data = await resumeService.searchCandidate(
             search.position,
-            search.specialized,
-            search.language,
+            search.specialized?.label,
+            search.language?.label,
             search.degree,
         );
         setDataSearch(data.data);
@@ -30,12 +31,22 @@ function SearchCandidate({ className, title, tab }) {
         const getData = async () => {
             const resCareer = await careerService.getAllCareer();
             if (resCareer?.success) {
-                setListCareer(resCareer.data);
+                setListCareer(
+                    resCareer.data.map((career) => ({
+                        label: career.name,
+                        id: career.id,
+                    })),
+                );
             }
 
             const resLanguage = await languageService.getAllLanguage();
             if (resLanguage?.success) {
-                setListLanguage(resLanguage.data);
+                setListLanguage(
+                    resLanguage.data.map((language) => ({
+                        label: language.name,
+                        id: language.id,
+                    })),
+                );
             }
         };
         getData();
