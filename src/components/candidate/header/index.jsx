@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, createSearchParams, useNavigate } from 'react-router-dom';
 import { Tooltip, tooltipClasses } from '@mui/material';
 import { signOut } from 'firebase/auth';
 import { auth } from '~/firebase';
@@ -10,9 +10,13 @@ import { AppContext } from '~/context/AppProvider';
 import Logo from '~/assets/images/candidate/candidate-logo.png';
 import AvatarMale from '~/assets/images/candidate/avatar-candidate-male.jpg';
 
+import * as careerService from '~/service/careerService';
+
 function Header() {
+    const navigate = useNavigate();
     const { user, setUser } = useContext(AppContext);
     const [isLogin, setIsLogin] = useState(false);
+    const [listCareer, setListCareer] = useState([]);
 
     const CustomTooltip = styled(({ className, ...props }) => (
         <Tooltip placement="top-start" {...props} classes={{ popper: className }} />
@@ -32,13 +36,22 @@ function Header() {
         } else {
             setIsLogin(false);
         }
-        // eslint-disable-next-line react-hooks/exhaustive-deps
-    }, [JSON.stringify(user)]);
+    }, [user]);
+
+    useEffect(() => {
+        const getListCareer = async () => {
+            const res = await careerService.getAllCareer(7);
+            if (res?.data) {
+                setListCareer(res.data);
+            }
+        };
+        getListCareer();
+    }, []);
 
     return (
         <div className="shadow-sm fixed top-0 right-0 left-0 bg-white z-10">
             <nav className="h-20 flex justify-between items-center container m-auto">
-                <div className="flex justify-start items-center">
+                <div className="flex justify-start items-center h-full">
                     <Link to="/" className="block h-20 py-3">
                         <img src={Logo} alt="Logo" className="h-full w-auto"></img>
                     </Link>
@@ -50,27 +63,103 @@ function Header() {
                                     <div className="flex">
                                         <div className="flex flex-col p-3">
                                             <h2 className="font-semibold pb-2">Việc theo ngành nghề</h2>
-                                            <Link className="hover:text-[#1772bd] p-1">
-                                                Việc làm Công nghệ thông tin
-                                            </Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm Kinh doanh</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm Kế toán</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm Kỹ thuật</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm Marketing</Link>
+                                            {listCareer?.map((career) => (
+                                                <Link
+                                                    to={`/jobs/careers/${career.id}`}
+                                                    key={career.id}
+                                                    className="hover:text-[#1772bd] p-1"
+                                                >
+                                                    Việc làm {career.name}
+                                                </Link>
+                                            ))}
                                         </div>
                                         <div className="flex flex-col p-3">
                                             <h2 className="font-semibold pb-2">Việc theo địa điểm</h2>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm tại Hà Nội</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm tại Đà Nẵng</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm tại Hồ Chí Minh</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm tại Bình Dương</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm tại Hải Phòng</Link>
+                                            <Link
+                                                className="hover:text-[#1772bd] p-1"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    navigate({
+                                                        pathname: '/jobs',
+                                                        search: createSearchParams({
+                                                            keyword: '',
+                                                            address: 'Hà Nội',
+                                                        }).toString(),
+                                                    });
+                                                }}
+                                            >
+                                                Việc làm tại Hà Nội
+                                            </Link>
+                                            <Link
+                                                className="hover:text-[#1772bd] p-1"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    navigate({
+                                                        pathname: '/jobs',
+                                                        search: createSearchParams({
+                                                            keyword: '',
+                                                            address: 'Đà Nẵng',
+                                                        }).toString(),
+                                                    });
+                                                }}
+                                            >
+                                                Việc làm tại Đà Nẵng
+                                            </Link>
+                                            <Link
+                                                className="hover:text-[#1772bd] p-1"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    navigate({
+                                                        pathname: '/jobs',
+                                                        search: createSearchParams({
+                                                            keyword: '',
+                                                            address: 'Hồ Chí Minh',
+                                                        }).toString(),
+                                                    });
+                                                }}
+                                            >
+                                                Việc làm tại Hồ Chí Minh
+                                            </Link>
+                                            <Link
+                                                className="hover:text-[#1772bd] p-1"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    navigate({
+                                                        pathname: '/jobs',
+                                                        search: createSearchParams({
+                                                            keyword: '',
+                                                            address: 'Bình Dương',
+                                                        }).toString(),
+                                                    });
+                                                }}
+                                            >
+                                                Việc làm tại Bình Dương
+                                            </Link>
+                                            <Link
+                                                className="hover:text-[#1772bd] p-1"
+                                                onClick={(e) => {
+                                                    e.preventDefault();
+                                                    navigate({
+                                                        pathname: '/jobs',
+                                                        search: createSearchParams({
+                                                            keyword: '',
+                                                            address: 'Hải Phòng',
+                                                        }).toString(),
+                                                    });
+                                                }}
+                                            >
+                                                Việc làm tại Hải Phòng
+                                            </Link>
                                         </div>
                                         <div className="flex flex-col p-3">
                                             <h2 className="font-semibold pb-2">Việc theo nhu cầu</h2>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm tuyển gấp</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm nổi bật</Link>
-                                            <Link className="hover:text-[#1772bd] p-1">Việc làm không kinh nghiệm</Link>
+                                            {/* <Link className="hover:text-[#1772bd] p-1">Việc làm tuyển gấp</Link> */}
+                                            <Link to={`/jobs/featured`} className="hover:text-[#1772bd] p-1">
+                                                Việc làm nổi bật
+                                            </Link>
+                                            <Link to={`/jobs/noExp`} className="hover:text-[#1772bd] p-1">
+                                                Việc làm không kinh nghiệm
+                                            </Link>
                                         </div>
                                     </div>
                                 }
@@ -85,7 +174,7 @@ function Header() {
                             <CustomTooltip
                                 title={
                                     <div className="flex flex-col">
-                                        <Link to={'/company'} className="p-1 hover:text-[#1772bd]">
+                                        <Link to={'/company/featured'} className="p-1 hover:text-[#1772bd]">
                                             Công ty tiêu biểu
                                         </Link>
                                         <Link to={'/company'} className="p-1 hover:text-[#1772bd]">
@@ -104,17 +193,39 @@ function Header() {
                             <CustomTooltip
                                 title={
                                     <div className="flex flex-col">
-                                        <Link to={'/cv/create'} className="p-1 hover:text-[#1772bd]">
+                                        <Link
+                                            to={'/cv/create'}
+                                            className="p-1 hover:text-[#1772bd]"
+                                            onClick={(e) => {
+                                                if (!user) {
+                                                    e.preventDefault();
+                                                    if (window.confirm('Bạn cần đăng nhập để tạo CV')) {
+                                                        navigate('/login');
+                                                    }
+                                                }
+                                            }}
+                                        >
                                             Tạo CV
                                         </Link>
-                                        <Link to={'/cv/upload'} className="p-1 hover:text-[#1772bd]">
-                                            Tải lên CV
+                                        <Link
+                                            to={'/cv/upload'}
+                                            className="p-1 hover:text-[#1772bd]"
+                                            onClick={(e) => {
+                                                if (!user) {
+                                                    e.preventDefault();
+                                                    if (window.confirm('Bạn cần đăng nhập để tải lên CV')) {
+                                                        navigate('/login');
+                                                    }
+                                                }
+                                            }}
+                                        >
+                                            Tải lên chứng chỉ
                                         </Link>
                                     </div>
                                 }
                             >
                                 <div className="cursor-pointer flex items-center">
-                                    <Link to={'/cv/view'}>CV/Hồ sơ</Link>
+                                    <Link to={'/cv/view'}>CV/Chứng chỉ</Link>
                                     <ArrowDropDownIcon></ArrowDropDownIcon>
                                 </div>
                             </CustomTooltip>
@@ -137,13 +248,19 @@ function Header() {
                                     <Link to={'/cv/view'} className="p-1 hover:text-[#1772bd]">
                                         Xem hồ sơ/CV
                                     </Link>
-                                    <Link to={'#'} className="p-1 hover:text-[#1772bd]">
+                                    {/* <Link to={'#'} className="p-1 hover:text-[#1772bd]">
                                         Việc làm đã lưu
-                                    </Link>
-                                    <Link to={'#'} className="p-1 hover:text-[#1772bd]">
+                                    </Link> */}
+                                    <Link to={'/jobs/job-applied'} className="p-1 hover:text-[#1772bd]">
                                         Việc làm đã ứng tuyển
                                     </Link>
-                                    <Link to={'#'} className="p-1 hover:text-[#1772bd]">
+                                    <Link to={'/candidate/attachments'} className="p-1 hover:text-[#1772bd]">
+                                        Chứng chỉ của bạn
+                                    </Link>
+                                    <Link to={'/candidate/info'} className="p-1 hover:text-[#1772bd]">
+                                        Thông tin cá nhân
+                                    </Link>
+                                    <Link to={'/candidate/changePassword'} className="p-1 hover:text-[#1772bd]">
                                         Đổi mật khẩu
                                     </Link>
                                     <button
@@ -165,10 +282,14 @@ function Header() {
                             }
                         >
                             <div className="flex items-center  cursor-pointer">
-                                <div className="w-[36px] h-[36px] object-cover">
-                                    <img src={AvatarMale} alt="avatar"></img>
+                                <div className="w-[45px] h-[45px] rounded-full overflow-hidden">
+                                    <img
+                                        className="w-full h-full object-contain"
+                                        src={user?.image || AvatarMale}
+                                        alt="avatar"
+                                    ></img>
                                 </div>
-                                <span className="pl-2 font-semibold">{user?.name || 'Dương Đình Thanh'}</span>
+                                <span className="pl-2 font-semibold">{user?.name || user?.email}</span>
                                 <ArrowDropDownIcon></ArrowDropDownIcon>
                             </div>
                         </CustomTooltip>

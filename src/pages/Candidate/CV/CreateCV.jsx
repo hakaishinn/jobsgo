@@ -4,7 +4,7 @@ import CandidateLayout from '~/layout/candidateLayout';
 function CreateCV() {
     return (
         <CandidateLayout>
-            <FormCV tab={'create'}></FormCV>
+            <FormCV tab={'create'} type={'create'}></FormCV>
         </CandidateLayout>
     );
 }

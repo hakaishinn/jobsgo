@@ -24,3 +24,15 @@ export const login = async (email, password) => {
         console.log(error);
     }
 };
+export const loginGoogleAndFacebook = async (email, name, role) => {
+    try {
+        const res = await request.post('/v1/auth/loginGoogleAndFacebook', {
+            email,
+            name,
+            role,
+        });
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

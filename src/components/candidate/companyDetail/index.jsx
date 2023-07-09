@@ -1,21 +1,58 @@
-import { LocationOnOutlined, PublicOutlined } from '@mui/icons-material';
-import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Facebook, LinkedIn, LocationOnOutlined, PhoneOutlined, PublicOutlined, Twitter } from '@mui/icons-material';
+import { useEffect, useState } from 'react';
+import { Link, useParams } from 'react-router-dom';
 import JobItem from '../slider/jobItem';
+import AvatarRecruiter from '~/assets/images/recruiter/avatar-recruiter.png';
+
+import * as jobService from '~/service/jobService';
+import * as userService from '~/service/userService';
 
 function CompanyDetail() {
+    const { id } = useParams();
     const [tab, setTab] = useState(1);
+    const [company, setCompany] = useState();
+    const [jobs, setJobs] = useState([]);
+
+    const getAddress = (specificAddress, ward, district, city) => {
+        let result = [];
+        if (specificAddress) result.push(specificAddress);
+        if (ward) result.push(ward);
+        if (district) result.push(district);
+        if (city) result.push(city);
+
+        return result.join(', ');
+    };
+
+    useEffect(() => {
+        const getData = async () => {
+            const res = await jobService.viewJobOpenByRecruiterId(id);
+            if (res?.success) {
+                setJobs(res.data);
+            }
+        };
+        getData();
+    }, [id]);
+
+    useEffect(() => {
+        const getCompany = async () => {
+            const res = await userService.getUserById(id);
+            if (res?.success) {
+                setCompany(res.data);
+            }
+        };
+        getCompany();
+    }, [id]);
 
     return (
         <div className="container mx-auto mt-8">
             <div className="flex items-center mb-4">
                 <div className="w-[100px] h-[100px]">
-                    <img src="https://jobsgo.vn/media/img/employer/32894-200x200.jpg?v=1612163479" alt="cty" />
+                    <img src={company?.image || AvatarRecruiter} alt="avatar" />
                 </div>
 
                 <div className="flex flex-col p-4">
-                    <h1 className="text-2xl font-bold">Ngân hàng Thương mại Cổ phần Đông Nam Á</h1>
-                    <p className="text-xl">SEABANK</p>
+                    <h1 className="text-2xl font-bold">{company?.name || ''}</h1>
+                    <p className="text-xl">{company?.shortName || ''}</p>
                 </div>
             </div>
             <div className="border-b">
@@ -33,7 +70,7 @@ function CompanyDetail() {
                         tab === 2 ? 'text-sky-600 border-b-2 border-sky-800' : ''
                     } hover:text-sky-600 hover:border-b-2 hover:border-sky-800`}
                 >
-                    Việc làm <span className="text-sky-700">(3)</span>
+                    Việc làm <span className="text-sky-700">({jobs.length})</span>
                 </button>
             </div>
 
@@ -42,51 +79,102 @@ function CompanyDetail() {
                     <div className="col-span-2">
                         <h2 className="text-xl font-bold my-2">Giới thiệu công ty</h2>
 
-                        <p>
-                            Ngân hàng TMCP Đông Nam Á (SeABank) có trụ sở chính tại 25 Trần Hưng Đạo, Hoàn Kiếm, Hà Nội,
-                            SeABank được biết đến là một trong nhóm dẫn đầu các ngân hàng thương mại cổ phần lớn nhất
-                            Việt Nam về qui mô vốn điều lệ, mạng lưới hoạt động, mức độ nhận biết thương hiệu và tốc độ
-                            tăng trưởng ổn định. Thành lập từ năm 1994, SeABank trải qua chặng đường 25 năm phát triển
-                            để đạt được thành tựu hôm nay với vốn điều lệ 7.688 tỷ đồng, tổng tài sản đạt 150 nghìn tỷ
-                            đồng và một mạng lưới hoạt động trên khắp 3 miền đất nước với 165 chi nhánh và điểm giao
-                            dịch. Sứ mệnh Phục vụ với sự tận tâm, nhiệt huyết để mang đến cuộc sống hạnh phúc hơn và một
-                            tương lai thịnh vượng cho cộng đồng. Tầm nhìn Trở thành ngân hàng được yêu thích nhất tại
-                            Việt Nam, cung cấp đầy đủ, đa dạng các sản phẩm và dịch vụ tài chính với trải nghiệm tốt
-                            nhất cho mọi đối tượng khách hàng. SeABank cam kết minh bạch thông tin và mang tới dịch vụ
-                            hoàn hảo cùng lợi ích cao nhất cho khách hàng, nhà đầu tư, đảm bảo sự phát triển bền vững
-                            của Ngân hàng. Chiến lược phát triển Xây dựng và phát triển SeABank được yêu thích nhất là
-                            chiến lược phát triển cốt lõi của SeABank thời gian tới. Trong chiến lược phát triển ngân
-                            hàng bán lẻ, SeABank sẽ tập trung đặc biệt vào khách hàng cá nhân và đồng thời phát triển
-                            mảng khách hàng doanh nghiệp vừa và nhỏ cũng như doanh nghiệp lớn. Các sản phẩm dịch vụ của
-                            SeABank được thiết kế đa dạng phù hợp với nhu cầu và năng lực tài chính của từng đối tượng
-                            và phân khúc khách hàng. Phương châm hoạt động Phát triển toàn diện, an toàn, hiệu quả và
-                            bền vững đóng góp vào sự phồn thịnh của nền kinh tế và xã hội đất nước.
-                        </p>
+                        <p>{company?.description || ''}</p>
                     </div>
 
                     <div className="rounded-lg p-4 shadow-ssm h-max my-4">
                         <h2 className="text-xl font-bold">Thông tin</h2>
                         <div>
                             <div className="flex items-center gap py-4 text-[#666]">
-                                <div className="flex justify-center items-center w-[30px] h-[30px] rounded-full text-sky-600 bg-sky-100 mr-2">
-                                    <LocationOnOutlined fontSize="small" />
-                                </div>
-                                <span className="">25 Trần Hưng Đạo, Hoàn Kiếm, Hà Nội</span>
+                                {company?.city && (
+                                    <>
+                                        <div className="flex justify-center items-center w-[30px] h-[30px] rounded-full text-sky-600 bg-sky-100 mr-2">
+                                            <LocationOnOutlined fontSize="small" />
+                                        </div>
+                                        {/* <span>{`${company?.specificAddress} ${company?.wards} ${company?.districts} ${company?.city}`}</span> */}
+                                        <span>
+                                            {getAddress(
+                                                company?.specificAddress,
+                                                company?.wards,
+                                                company?.districts,
+                                                company?.city,
+                                            )}
+                                        </span>
+                                    </>
+                                )}
                             </div>
                             <div className="flex items-center gap py-4 text-[#666]">
-                                <div className="flex justify-center items-center w-[30px] h-[30px] rounded-full text-sky-600 bg-sky-100 mr-2">
-                                    <PublicOutlined fontSize="small" />
-                                </div>
-                                <Link className="text-sky-600 underline">seabank.com.vn</Link>
+                                {company?.website && (
+                                    <>
+                                        <div className="flex justify-center items-center w-[30px] h-[30px] rounded-full text-sky-600 bg-sky-100 mr-2">
+                                            <PublicOutlined fontSize="small" />
+                                        </div>
+                                        <Link to={company?.website} className="text-sky-600 underline">
+                                            {company?.website}
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+                            <div className="flex items-center gap py-4 text-[#666]">
+                                {company?.facebook && (
+                                    <>
+                                        <div className="flex justify-center items-center w-[30px] h-[30px] rounded-full text-sky-600 bg-sky-100 mr-2">
+                                            <Facebook fontSize="small" />
+                                        </div>
+                                        <Link to={company?.facebook} className="text-sky-600 underline">
+                                            {company?.facebook}
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+                            <div className="flex items-center gap py-4 text-[#666]">
+                                {company?.twitter && (
+                                    <>
+                                        <div className="flex justify-center items-center w-[30px] h-[30px] rounded-full text-sky-600 bg-sky-100 mr-2">
+                                            <Twitter fontSize="small" />
+                                        </div>
+                                        <Link to={company?.twitter} className="text-sky-600 underline">
+                                            {company?.twitter}
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+                            <div className="flex items-center gap py-4 text-[#666]">
+                                {company?.linkedin && (
+                                    <>
+                                        <div className="flex justify-center items-center w-[30px] h-[30px] rounded-full text-sky-600 bg-sky-100 mr-2">
+                                            <LinkedIn fontSize="small" />
+                                        </div>
+                                        <Link to={company?.linkedin} className="text-sky-600 underline">
+                                            {company?.linkedin}
+                                        </Link>
+                                    </>
+                                )}
+                            </div>
+                            <div className="flex items-center gap py-4 text-[#666]">
+                                {company?.phone && (
+                                    <>
+                                        <div className="flex justify-center items-center w-[30px] h-[30px] rounded-full text-sky-600 bg-sky-100 mr-2">
+                                            <PhoneOutlined fontSize="small" />
+                                        </div>
+                                        <Link
+                                            to={`tel:${company?.phone}`}
+                                            className="text-sky-600 underline"
+                                            value={company?.phone || ''}
+                                        >
+                                            {company?.phone || ''}
+                                        </Link>
+                                    </>
+                                )}
                             </div>
                         </div>
                     </div>
                 </div>
             ) : (
                 <div className="grid grid-cols-3 gap-1">
-                    <JobItem></JobItem>
-                    <JobItem></JobItem>
-                    <JobItem></JobItem>
+                    {jobs.map((job) => (
+                        <JobItem job={job}></JobItem>
+                    ))}
                 </div>
             )}
         </div>

@@ -6,12 +6,17 @@ import {
     KeyOutlined,
     LogoutOutlined,
 } from '@mui/icons-material';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 
 import { Tooltip, tooltipClasses } from '@mui/material';
 import { styled } from '@mui/material/styles';
+import { useContext } from 'react';
+import { AppContext } from '~/context/AppProvider';
+import AvatarRecruiter from '~/assets/images/recruiter/avatar-recruiter.png';
 
-function Header() {
+function Header({ recruiter, admin }) {
+    const { setRecruiter } = useContext(AppContext);
+    const navigate = useNavigate();
     const CustomTooltip = styled(({ className, ...props }) => <Tooltip {...props} classes={{ popper: className }} />)(
         ({ theme }) => ({
             [`& .${tooltipClasses.tooltip}`]: {
@@ -25,28 +30,39 @@ function Header() {
             },
         }),
     );
+
+    const handleLogout = (e) => {
+        e.preventDefault();
+        localStorage.removeItem('user');
+        setRecruiter(undefined);
+        navigate('/recruiter/login');
+    };
     return (
         <div className="bg-sky-600">
             <div className="container m-auto flex justify-between items-center min-h-[50px] text-white text-sm">
                 <div className="flex items-center">
                     <Link to={'/recruiter/managerJobs/open'} className="block h-[50px] py-1">
-                        <img src="https://jobsgo.vn/img/logo-2019.png" alt="logo" className="h-full w-auto" />
+                        <img
+                            src="https://jobsgo.vn/img/logo-2019.png"
+                            alt="logo"
+                            className="h-full w-auto object-contain"
+                        />
                     </Link>
 
                     <div className="flex items-center ml-4 text-sm">
                         <span>
-                            CSKH: <strong>Ngô Thị Thu Giang</strong>
+                            CSKH: <strong>{admin?.name}</strong>
                         </span>
-                        <div className="flex items-center mx-4">
-                            <Phone className="mr-1"></Phone> 0387878747
-                        </div>
-                        <div className="flex items-center">
-                            <MailOutline className="mr-1"></MailOutline> giang@gmail.com
-                        </div>
+                        <Link to={`tel:${admin?.phone}`} className="flex items-center mx-4">
+                            <Phone className="mr-1"></Phone> {admin?.phone}
+                        </Link>
+                        <Link to={`mailto:${admin?.emailCompany}`} className="flex items-center">
+                            <MailOutline className="mr-1"></MailOutline> {admin?.emailCompany}
+                        </Link>
                     </div>
                 </div>
                 <div className="flex justify-center items-center">
-                    <Link className="flex items-center">
+                    <Link to={`/recruiter/buyPackage`} className="flex items-center">
                         <ShoppingCartOutlined />
                         Mua dịch vụ
                     </Link>
@@ -66,7 +82,11 @@ function Header() {
                                     <KeyOutlined className="mr-2" />
                                     Đổi mật khẩu
                                 </Link>
-                                <Link to={'/recruiter'} className="hover:bg-black/10 flex items-center p-2">
+                                <Link
+                                    to={'/recruiter/login'}
+                                    className="hover:bg-black/10 flex items-center p-2"
+                                    onClick={handleLogout}
+                                >
                                     <LogoutOutlined className="mr-2" />
                                     Đăng xuất
                                 </Link>
@@ -75,9 +95,9 @@ function Header() {
                     >
                         <div className="flex items-center ml-6 cursor-pointer">
                             <div className="w-[35px] h-[35px] mr-2 rounded-full border-2 border-white overflow-hidden">
-                                <img src="https://employer.jobsgo.vn/bolt/assets/images/image.png" alt="avatar" />
+                                <img src={recruiter?.image || AvatarRecruiter} alt="avatar" />
                             </div>
-                            <p>thanh@gmail.com</p>
+                            <p>{recruiter?.email}</p>
                         </div>
                     </CustomTooltip>
                 </div>

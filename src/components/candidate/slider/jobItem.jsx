@@ -1,28 +1,45 @@
-import { LocationOnOutlined, AccessTime, AttachMoney } from '@mui/icons-material';
+import { LocationOnOutlined, AccessTime, AttachMoney, StarOutline } from '@mui/icons-material';
 import { Link } from 'react-router-dom';
+import * as format from '~/utils/handleDate';
+import AvatarRecruiter from '~/assets/images/recruiter/avatar-recruiter.png';
 function JobItem({ job, className }) {
     const classes = className ? className : '';
     return (
-        <Link to={'/jobs/1'} className={`p-2 flex items-center bg-white mx-1 my-2 border rounded-md ${classes}`}>
-            <div className="w-[80px] h-[80px]">
-                <img src="https://jobsgo.vn/media/img/employer/89916-200x200.jpg?v=1657185647" alt="cty" />
+        <Link
+            to={`/jobs/${job?.id}`}
+            className={`p-2 flex items-center justify-between gap-4 bg-white mx-1 my-2 border rounded-md ${classes}`}
+        >
+            <div className="w-[100px] h-[100px] overflow-hidden rounded-full object-contain border">
+                <img src={job?.recruiter?.image || AvatarRecruiter} alt="avatar" />
             </div>
-            <div className="pl-1">
-                <p className="text-red-600 font-semibold">Trưởng phòng kinh doanh - Hồ Chí Minh</p>
-                <p className="text-sm py-1">Công ty cổ phần Thép việt xô Hà Nội</p>
+            <div className="flex-1">
+                <p className="text-red-600 font-semibold line-clamp-1">{job?.title}</p>
+                <p className="text-sm py-1 line-clamp-1">{job?.recruiter?.name}</p>
 
-                <div className="flex items-center flex-wrap">
-                    <div className="border flex items-center p-1 m-1">
+                <div className="flex items-center flex-wrap gap-2 pb-2">
+                    <div className="border flex items-center p-1">
                         <LocationOnOutlined fontSize="small"></LocationOnOutlined>
-                        <span className="text-xs">Bình Dương</span>
+                        <span className="text-xs">{job?.city}</span>
                     </div>
-                    <div className="border flex items-center ml-1 p-1 m-1">
+                    <div className="border flex items-center p-1">
                         <AccessTime fontSize="small"></AccessTime>
-                        <span className="text-xs">05/06/2023</span>
+                        <span className="text-xs">{format.formatDate(job?.expiredAt)}</span>
                     </div>
-                    <div className="border flex items-center ml-1 p-1 m-1">
+                    <div className="border flex items-center p-1">
                         <AttachMoney fontSize="small"></AttachMoney>
-                        <span className="text-xs">20 triệu VNĐ</span>
+                        <span className="text-xs">
+                            {job?.statusSalary ? (
+                                <p>Thỏa thuận</p>
+                            ) : (
+                                <p>
+                                    {job?.salaryFrom} - {job?.salaryTo} triệu
+                                </p>
+                            )}
+                        </span>
+                    </div>
+                    <div className="border flex items-center p-1">
+                        <StarOutline fontSize="small"></StarOutline>
+                        <span className="text-xs">{job?.natureOfWork}</span>
                     </div>
                 </div>
             </div>
