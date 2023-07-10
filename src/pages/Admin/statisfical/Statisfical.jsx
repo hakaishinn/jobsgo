@@ -232,9 +232,7 @@ function Statisfical() {
                         </button>
                     </div>
                     <div className="mx-10 mt-10">
-                        <h2 className="text-xl font-bold text-center">
-                            Thống kê của tháng {month}-{year}
-                        </h2>
+                        <h2 className="text-xl font-bold text-center">Dữ liệu thống kê</h2>
                         <table className="table-auto w-full">
                             <thead className="bg-gray-400">
                                 <tr>

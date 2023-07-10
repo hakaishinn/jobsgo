@@ -58,7 +58,7 @@ function CreatePack({ onModal, onCloseModal }) {
                                             maxRows={4}
                                             onChange={handleInput}
                                         />
-                                        <TextField
+                                        {/* <TextField
                                             id="outlined-textarea"
                                             label="Hình ảnh"
                                             placeholder="Placeholder"
@@ -66,7 +66,7 @@ function CreatePack({ onModal, onCloseModal }) {
                                             multiline
                                             value={inputs.image}
                                             onChange={handleInput}
-                                        />
+                                        /> */}
                                         <TextField
                                             id="standard-textarea"
                                             label="Giảm giá"
@@ -99,14 +99,14 @@ function CreatePack({ onModal, onCloseModal }) {
                                         />
                                         <Select
                                             onChange={handleInput}
-                                            name="typepack"
+                                            name="typePackage"
                                             className="mt-4 ml-4"
                                             defaultValue="0"
-                                            value={inputs.typepack}
+                                            value={inputs.typePackage}
                                         >
                                             <MenuItem value="0">Chọn gói</MenuItem>
-                                            <MenuItem value="1">Gold</MenuItem>
-                                            <MenuItem value="2">Premium</MenuItem>
+                                            <MenuItem value="1">Cơ bản</MenuItem>
+                                            <MenuItem value="2">VIP</MenuItem>
                                         </Select>
                                     </div>
                                     <div>

@@ -29,6 +29,7 @@ import Loading from '~/components/loading';
 import { addValidatorOnBlur, removeValidatorOnInput, validatorMultiple, errorClass } from '~/utils/validator';
 
 function FormCV({ tab, type }) {
+    const sidebarRef = useRef([]);
     const inputsRef = useRef([]);
     const messageErrorRef = useRef([]);
     const { user } = useContext(AppContext);
@@ -409,23 +410,121 @@ function FormCV({ tab, type }) {
 
             <div className="grid grid-cols-3 gap-4 mt-8">
                 <div className="border rounded p-2">
-                    <div className="px-2 py-1 border mt-1">
+                    <div
+                        onClick={() =>
+                            sidebarRef.current[0].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                        className="px-2 py-1 border mt-1 block"
+                    >
                         <h2 className="text-xl font-semibold">1. Thông tin cơ bản</h2>
                     </div>
-                    <div className="px-2 py-1 border mt-1">
-                        <h2 className="text-xl font-semibold">2. Kỹ năng chuyên môn</h2>
+                    <div
+                        className="px-2 py-1 border mt-1 block"
+                        onClick={() =>
+                            sidebarRef.current[1].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                    >
+                        <h2 className="text-xl font-semibold">2. Giới thiệu bản thân</h2>
                     </div>
-                    <div className="px-2 py-1 border mt-1">
-                        <h2 className="text-xl font-semibold">3. Kinh nghiệm làm việc</h2>
+                    <div
+                        className="px-2 py-1 border mt-1 block"
+                        onClick={() =>
+                            sidebarRef.current[2].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                    >
+                        <h2 className="text-xl font-semibold">3. Mục tiêu nghề nghiệp</h2>
                     </div>
-                    <div className="px-2 py-1 border mt-1">
-                        <h2 className="text-xl font-semibold">4. Quá trình học tập</h2>
+                    <div
+                        className="px-2 py-1 border mt-1 block"
+                        onClick={() =>
+                            sidebarRef.current[3].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                    >
+                        <h2 className="text-xl font-semibold">4. Kỹ năng chuyển môn</h2>
+                    </div>
+                    <div
+                        className="px-2 py-1 border mt-1 block"
+                        onClick={() =>
+                            sidebarRef.current[4].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                    >
+                        <h2 className="text-xl font-semibold">5. Kinh nghiệm làm việc</h2>
+                    </div>
+                    <div
+                        className="px-2 py-1 border mt-1 block"
+                        onClick={() =>
+                            sidebarRef.current[5].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                    >
+                        <h2 className="text-xl font-semibold">6. Quá trình học tập</h2>
+                    </div>
+                    <div
+                        className="px-2 py-1 border mt-1 block"
+                        onClick={() =>
+                            sidebarRef.current[6].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                    >
+                        <h2 className="text-xl font-semibold">7. Ngôn ngữ thành thạo</h2>
+                    </div>
+                    <div
+                        className="px-2 py-1 border mt-1 block"
+                        onClick={() =>
+                            sidebarRef.current[7].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                    >
+                        <h2 className="text-xl font-semibold">8. Kỹ năng mềm</h2>
+                    </div>
+                    <div
+                        className="px-2 py-1 border mt-1 block"
+                        onClick={() =>
+                            sidebarRef.current[8].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                    >
+                        <h2 className="text-xl font-semibold">9. Sở thích</h2>
+                    </div>
+                    <div
+                        className="px-2 py-1 border mt-1 block"
+                        onClick={() =>
+                            sidebarRef.current[9].scrollIntoView({
+                                behavior: 'smooth',
+                                block: 'start',
+                            })
+                        }
+                    >
+                        <h2 className="text-xl font-semibold">10. File đính kèm</h2>
                     </div>
                 </div>
 
                 <div className="col-span-2">
                     <div className="flex justify-start items-center border p-4">
-                        <div className="w-[170px] h-[170px] relative group overflow-hidden object-contain">
+                        <div id="info" className="w-[170px] h-[170px] relative group overflow-hidden object-contain">
                             <img
                                 className="w-full h-full object-contain"
                                 src={resume?.image || userInfo?.image || AvatarMale}
@@ -566,7 +665,10 @@ function FormCV({ tab, type }) {
                             </div>
                         </div>
                     </div>
-                    <div className="border p-4 text-[#333] mt-4">
+                    <div
+                        ref={(el) => (sidebarRef.current[0] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
                         <h3 className="uppercase text-lg text-sky-600 font-semibold">thông tin cơ bản</h3>
                         <div className="my-2 flex gap-2">
                             <strong className="w-max">
@@ -710,7 +812,12 @@ function FormCV({ tab, type }) {
                             <p>(triệu VNĐ)</p>
                         </div>
                     </div>
-                    <div className="border p-4 text-[#333] mt-4">
+
+                    {/* ////////////// Giới thiệu bản thân*/}
+                    <div
+                        ref={(el) => (sidebarRef.current[1] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
                         <h3 className="uppercase text-lg text-sky-600 font-semibold">
                             Giới thiệu bản thân <span className="text-red-500">*</span>
                         </h3>
@@ -728,7 +835,10 @@ function FormCV({ tab, type }) {
                             error
                         </span>
                     </div>
-                    <div className="border p-4 text-[#333] mt-4">
+                    <div
+                        ref={(el) => (sidebarRef.current[2] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
                         <h3 className="uppercase text-lg text-sky-600 font-semibold">
                             Mục tiêu nghề nghiệp <span className="text-red-500">*</span>
                         </h3>
@@ -746,7 +856,10 @@ function FormCV({ tab, type }) {
                             error
                         </span>
                     </div>
-                    <div className="border p-4 text-[#333] mt-4">
+                    <div
+                        ref={(el) => (sidebarRef.current[3] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
                         <div className="flex justify-between items-center">
                             <div>
                                 <h3 className="uppercase text-lg text-sky-600 font-semibold">
@@ -813,8 +926,11 @@ function FormCV({ tab, type }) {
                             ))}
                         </ul>
                     </div>
-                    <div className="border p-4 text-[#333] mt-4">
-                        <div className="flex justify-between items-center">
+                    <div
+                        ref={(el) => (sidebarRef.current[4] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
+                        <div ref={(el) => (sidebarRef.current[4] = el)} className="flex justify-between items-center">
                             <h3 className="uppercase text-lg text-sky-600 font-semibold">Kinh nghiệm làm việc</h3>
                             <button
                                 className="flex justify-center items-center px-1 py-2 border border-sky-400 text-sky-700"
@@ -880,7 +996,10 @@ function FormCV({ tab, type }) {
                         </div>
                     </div>
 
-                    <div className="border p-4 text-[#333] mt-4">
+                    <div
+                        ref={(el) => (sidebarRef.current[5] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
                         <div className="flex justify-between items-center">
                             <h3 className="uppercase text-lg text-sky-600 font-semibold">Quá trình học tập</h3>
                             <button
@@ -950,7 +1069,10 @@ function FormCV({ tab, type }) {
                             ))}
                         </div>
                     </div>
-                    <div className="border p-4 text-[#333] mt-4">
+                    <div
+                        ref={(el) => (sidebarRef.current[6] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
                         <div className="flex justify-between items-center">
                             <h3 className="uppercase text-lg text-sky-600 font-semibold">Ngôn ngữ thành thạo</h3>
                             <button
@@ -1015,7 +1137,10 @@ function FormCV({ tab, type }) {
                             </div>
                         </div>
                     </div>
-                    <div className="border p-4 text-[#333] mt-4">
+                    <div
+                        ref={(el) => (sidebarRef.current[7] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
                         <div className="flex justify-between items-center">
                             <h3 className="uppercase text-lg text-sky-600 font-semibold">Kỹ năng mềm</h3>
                             <button
@@ -1079,7 +1204,10 @@ function FormCV({ tab, type }) {
                             ))}
                         </div>
                     </div>
-                    <div className="border p-4 text-[#333] mt-4">
+                    <div
+                        ref={(el) => (sidebarRef.current[8] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
                         <div className="flex justify-between items-center">
                             <h3 className="uppercase text-lg text-sky-600 font-semibold">Sở thích</h3>
                             <button
@@ -1141,7 +1269,10 @@ function FormCV({ tab, type }) {
                             </ul>
                         </div>
                     </div>
-                    <div className="border p-4 text-[#333] mt-4">
+                    <div
+                        ref={(el) => (sidebarRef.current[9] = el)}
+                        className="border p-4 text-[#333] mt-4 scroll-mt-24"
+                    >
                         <div className="flex justify-between items-center">
                             <h3 className="uppercase text-lg text-sky-600 font-semibold">File đính kèm</h3>
                             <button

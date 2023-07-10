@@ -5,11 +5,13 @@ import BtnCreateJob from '../btnCreateJob';
 import { degrees, typePositions } from '~/data/constants';
 import { useEffect, useState } from 'react';
 import * as resumeService from '~/service/resumeService';
-import * as careerService from '~/service/careerService';
+// import * as careerService from '~/service/careerService';
 import * as languageService from '~/service/languageService';
+import * as proSkillService from '~/service/proSkillService';
 
 function SearchCandidate({ className, title, tab }) {
-    const [listCareer, setListCareer] = useState([]);
+    // const [listCareer, setListCareer] = useState([]);
+    const [listProSkill, setListProSkill] = useState([]);
     const [listLanguage, setListLanguage] = useState([]);
     const [search, setSearch] = useState([]);
     const [dataSearch, setDataSearch] = useState([]);
@@ -29,15 +31,15 @@ function SearchCandidate({ className, title, tab }) {
 
     useEffect(() => {
         const getData = async () => {
-            const resCareer = await careerService.getAllCareer();
-            if (resCareer?.success) {
-                setListCareer(
-                    resCareer.data.map((career) => ({
-                        label: career.name,
-                        id: career.id,
-                    })),
-                );
-            }
+            // const resCareer = await careerService.getAllCareer();
+            // if (resCareer?.success) {
+            //     setListCareer(
+            //         resCareer.data.map((career) => ({
+            //             label: career.name,
+            //             id: career.id,
+            //         })),
+            //     );
+            // }
 
             const resLanguage = await languageService.getAllLanguage();
             if (resLanguage?.success) {
@@ -45,6 +47,15 @@ function SearchCandidate({ className, title, tab }) {
                     resLanguage.data.map((language) => ({
                         label: language.name,
                         id: language.id,
+                    })),
+                );
+            }
+            const resProSkill = await proSkillService.getAllProSkill();
+            if (resProSkill?.success) {
+                setListProSkill(
+                    resProSkill.data.map((proSkill) => ({
+                        label: proSkill.name,
+                        id: proSkill.id,
                     })),
                 );
             }
@@ -76,14 +87,14 @@ function SearchCandidate({ className, title, tab }) {
                         />
                     </div>
                     <div>
-                        <p className="font-semibold mb-1">Chuyên ngành</p>
+                        <p className="font-semibold mb-1">Kỹ năng chuyên môn</p>
                         <Autocomplete
                             className="bg-white rounded-md w-full"
                             disablePortal
-                            options={listCareer}
+                            options={listProSkill}
                             size="small"
                             onChange={(e, value) => searchJob(value, 'specialized')}
-                            renderInput={(params) => <TextField {...params} placeholder="Chọn chuyên ngành" />}
+                            renderInput={(params) => <TextField {...params} placeholder="Chọn kỹ năng chuyên môn" />}
                         />
                     </div>
                     <div>

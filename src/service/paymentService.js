@@ -39,3 +39,17 @@ export const getAllPayment = async () => {
         console.log(error);
     }
 };
+export const getPaymentByRecruiterId = async (id) => {
+    try {
+        const user = JSON.parse(localStorage.getItem('user'));
+        const config = {
+            headers: {
+                Authorization: 'Bearer ' + user.accessToken,
+            },
+        };
+        const res = await request.get(`/payments/recruiter/${id}`, config);
+        return res.data;
+    } catch (error) {
+        console.log(error);
+    }
+};

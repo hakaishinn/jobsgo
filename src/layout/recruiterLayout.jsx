@@ -6,9 +6,10 @@ import { AppContext } from '~/context/AppProvider';
 
 function RecruiterLayout({ children, tab }) {
     const { recruiter, admin } = useContext(AppContext);
+    const flag = JSON.parse(localStorage.getItem('user'))?.roles?.includes('RECRUITER');
     return (
         <>
-            {recruiter ? (
+            {flag ? (
                 <>
                     <Header recruiter={recruiter} admin={admin} />
                     <div className="grid grid-cols-5">
